@@ -1,4 +1,4 @@
-# openIMIS Backend Insuree reference module
+# openIMIS Frontend Insuree reference module
 This repository holds the files of the openIMIS Frontend Insuree reference module.
 It is dedicated to be deployed as a module of [openimis-fe_js](https://github.com/openimis/openimis-fe_js).
 
