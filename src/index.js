@@ -6,6 +6,7 @@ import { PoliciesPage } from "./components/PoliciesPage";
 import { ContributionsPage } from "./components/ContributionsPage";
 import Enquiry from "./components/Enquiry";
 import messages_en from "./translations/en.json";
+import enquiry from "./reducers/enquiry";
 
 const InsureeModule = {
   "translations": [{key: 'en', messages: messages_en}],
@@ -18,6 +19,7 @@ const InsureeModule = {
   ],
   "core.AppBar": [Enquiry],
   "core.MainMenu": [InsureeMainMenu],
+  "reducers" : [{key: 'insuree', reducer: enquiry}],
 }
 
 export { InsureeModule };
