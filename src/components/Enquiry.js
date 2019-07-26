@@ -66,10 +66,10 @@ class Enquiry extends Component {
   };  
 
   render() {
-    const { classes, intl } = this.props;
+    const { classes, intl, ...others } = this.props;
     return (      
       <div className={classes.search}>
-        <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose}/>
+        <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} {...others}/>
         <div className={classes.searchIcon}>
           <SearchIcon />
         </div>

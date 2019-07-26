@@ -4,6 +4,16 @@
     "insuree.menu.addFamilyOrGroup": "Add Family/Group",
     "insuree.menu.familiesOrGroups": "Families/Groups",
     "insuree.menu.insurees": "Insurees",
-    "insuree.menu.policies": "Policies",
-    "insuree.menu.contributions": "Contributions"
+    "insuree.ageUnit": "Years",
+    "insuree.label.regionFSP": "Region of FSP",
+    "insuree.label.districtFSP": "District of FSP",
+    "insuree.label.levelFSP": "Level of FSP",
+    "insuree.label.firstServicePoint": "First Service Point",
+    "insuree.familySummary": "Family Details",
+    "insuree.familySummary.chfId": "CHFID",
+    "insuree.familySummary.name": "Member Name",
+    "insuree.familySummary.phone": "Phone",
+    "insuree.familySummary.head": "(HEAD)",
+    "insuree.moreLinks.capped": "Capped Items/Services",
+    "insuree.moreLinks.profile": "Profile"
 }

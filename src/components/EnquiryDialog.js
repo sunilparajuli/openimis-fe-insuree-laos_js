@@ -1,44 +1,25 @@
 import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
-import { Dialog, Grid, Avatar, Typography, CircularProgress, Button, DialogActions, DialogContent } from "@material-ui/core";
+import { Dialog, CircularProgress, Button, DialogActions, DialogContent } from "@material-ui/core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { enquiry } from "../actions/enquiry";
+import { enquiry } from "../actions/insuree";
 import { formatMessage } from "@openimis/fe-core";
-import { Error } from "@openimis/fe-core";
+import { Contributions, Error } from "@openimis/fe-core";
+import InsureeSummary from "./InsureeSummary";
+
+const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
 
 const styles = theme => ({
     container: {
         display: "flex",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
     },
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
         width: 200
-    },
-    dense: {
-        marginTop: 19
-    },
-    menu: {
-        width: 200
-    },
-    bigAvatar: {
-        margin: 10,
-        width: 100,
-        height: 100
-    },
-    label: {
-        color: "grey"
-    },
-    paper: {
-        marginTop: theme.spacing(2)
-    },
-    paperHeader: {
-        margin: theme.spacing(2),
-        paddingTop: theme.spacing(2),
-        color: "grey"
     },
     progress: {
         margin: theme.spacing(2),
@@ -56,43 +37,34 @@ class EnquiryDialog extends Component {
             this.props.enquiry(this.props.chfid);
         }
     }
-
-    handleKeyPress = event => {
-        if (event.charCode === 13) {
+    escFunction = event => {
+        if (event.keyCode === 27) {
             this.props.onClose();
         }
+    }
+    componentDidMount() {
+        document.addEventListener("keydown", this.escFunction, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.escFunction, false);
     }
 
     render() {
         const { intl, classes,
-            enquiry, fetching, onClose,
-            insuree, error, errorMessage, errorDetail,
-            ...other
+            fetching, insuree, error,
+            onClose
         } = this.props;
         return (
-            <Dialog onKeyPress={e => this.handleKeyPress(e)} {...other}>
+            <Dialog maxWidth="md" fullWidth={true} open={this.props.open}>
                 <DialogContent>
-                    {fetching && <CircularProgress className={classes.progress} />}
-                    {!fetching && error && <Error
-                        code={error}
-                        message={errorMessage}
-                        detail={errorDetail}
-                    />}
-                    {!fetching && insuree &&
+                    {!!fetching && (<CircularProgress className={classes.progress} />)}
+                    {!fetching && !!error && (<Error error={error} />)}
+                    {!fetching && !!insuree && (
                         <form className={classes.container} noValidate autoComplete="off">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <Typography variant="h6">
-                                        {insuree && insuree.chfId}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography className={classes.label} variant="caption">
-                                        {insuree && insuree.lastName}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </form>}
+                            <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
+                        </form>
+                    )}
+                    <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY}/>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} color="primary">
@@ -107,9 +79,7 @@ class EnquiryDialog extends Component {
 const mapStateToProps = state => ({
     fetching: state.insuree.fetching,
     insuree: state.insuree.insuree,
-    error: state.insuree.error,
-    errorMessage: state.insuree.errorMessage,
-    errorDetail: state.insuree.errorDetail
+    error: state.insuree.error
 });
 
 const mapDispatchToProps = dispatch => {
