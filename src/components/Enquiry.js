@@ -4,6 +4,7 @@ import { fade, withStyles, withTheme } from '@material-ui/core/styles';
 import { InputBase } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { formatMessage } from "@openimis/fe-core";
+import EnquiryDialog from "./EnquiryDialog";
 
 const styles = theme => ({
   search: {
@@ -46,10 +47,29 @@ const styles = theme => ({
 });
 
 class Enquiry extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { open: false };
+  }
+
+  handleKeyPress = event => {
+    if (event.charCode === 13) {
+      this.setState({ 
+        open: true,
+        chfid: event.target.value
+      });
+    }
+  }
+
+  handleClose = () => {
+    this.setState({ open: false});
+  };  
+
   render() {
-    const { classes, intl } = this.props;
-    return (
+    const { classes, intl, ...others } = this.props;
+    return (      
       <div className={classes.search}>
+        <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} {...others}/>
         <div className={classes.searchIcon}>
           <SearchIcon />
         </div>
@@ -59,6 +79,7 @@ class Enquiry extends Component {
             root: classes.inputRoot,
             input: classes.inputInput,
           }}
+          onKeyPress={e => this.handleKeyPress(e)}
         />
       </div>
     );
