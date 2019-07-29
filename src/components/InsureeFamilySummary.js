@@ -2,10 +2,10 @@ import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from "redux";
-import { insureeFamily } from "../actions/insuree";
+import { fetchInsureeFamily } from "../actions";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { formatMessage, Contributions, Error, SmallTable } from "@openimis/fe-core";
-import { CircularProgress, Paper } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
+import { formatMessage, Contributions, ProgressOrError, SmallTable } from "@openimis/fe-core";
 
 const INSUREE_FAMILY_SUMMARY_CONTRIBUTION_KEY = "insuree.InsureeFamilySummary";
 
@@ -16,7 +16,7 @@ class InsureeFamilySummary extends Component {
     constructor(props) {
         super(props);
         if (!!props.insuree) {
-            props.insureeFamily(props.insuree.chfId);
+            props.fetchInsureeFamily(props.insuree.chfId);
         }
     }
 
@@ -27,7 +27,7 @@ class InsureeFamilySummary extends Component {
                 || prevProps.insuree.chfId !== this.props.insuree.chfId
             )
         ) {
-            this.props.insureeFamily(this.props.insuree.chfId);
+            this.props.fetchInsureeFamily(this.props.insuree.chfId);
         }
     }
 
@@ -35,8 +35,7 @@ class InsureeFamilySummary extends Component {
         const { classes, insuree, fetchingFamily, insureeFamilyMembers, errorFamily } = this.props;
         return (
             <Fragment>
-                {!!fetchingFamily && (<CircularProgress className={classes.progress} />)}
-                {!fetchingFamily && !!errorFamily && (<Error error={errorFamily} />)}
+                <ProgressOrError progress={fetchingFamily} error={errorFamily} />
                 {!fetchingFamily && !!insuree && !!insureeFamilyMembers && (
                     <Paper className={classes.paper}>
                         <SmallTable
@@ -70,7 +69,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ insureeFamily }, dispatch);
+    return bindActionCreators({ fetchInsureeFamily }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

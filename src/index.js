@@ -5,13 +5,24 @@ import { InsureesPage } from "./components/InsureesPage";
 import { CappedItemServicePage } from "./components/CappedItemServicePage";
 import { ProfilePage } from "./components/ProfilePage";
 import Enquiry from "./components/Enquiry";
+import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
-import InsureeMoreLinks from "./components/InsureeMoreLinks";
+import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
+import InsureeProfileLink from "./components/InsureeProfileLink";
+import InsureeSummary from "./components/InsureeSummary";
 import messages_en from "./translations/en.json";
-import enquiry from "./reducers/insuree";
+import reducer from "./reducer";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
+  "reducers": [{ key: 'insuree', reducer: reducer }],  
+  "components": [
+    {key: "insuree.Avatar", component: InsureeAvatar },
+    {key: "insuree.Summary", component: InsureeSummary },
+    {key: "insuree.FamilySummary", component: InsureeFamilySummary },
+    {key: "insuree.ProfileLink", component: InsureeProfileLink },
+    {key: "insuree.CappedItemServiceLink", component: InsureeCappedItemServiceLink },
+  ],  
   "core.Router": [
     { path: "insuree/create", component: CreatePage },
     { path: "insuree/families", component: FamiliesPage },
@@ -21,10 +32,11 @@ const DEFAULT_CONFIG = {
   ],
   "core.AppBar": [Enquiry],
   "core.MainMenu": [InsureeMainMenu],
-  "reducers": [{ key: 'insuree', reducer: enquiry }],
-  "insuree.InsureeSummary": [InsureeMoreLinks, InsureeFamilySummary],
+  "insuree.InsureeSummaryAvatar": [InsureeAvatar],
+  "insuree.InsureeSummary": [InsureeFamilySummary],
 }
 
 export const InsureeModule = (cfg) => {
   return { ...DEFAULT_CONFIG, ...(cfg && cfg['fe-insuree'] || {}) };
 }
+

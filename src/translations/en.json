@@ -14,6 +14,8 @@
     "insuree.familySummary.name": "Member Name",
     "insuree.familySummary.phone": "Phone",
     "insuree.familySummary.head": "(HEAD)",
-    "insuree.moreLinks.capped": "Capped Items/Services",
-    "insuree.moreLinks.profile": "Profile"
+    "insuree.link.cappedItemService": "Capped Items/Services",
+    "insuree.link.profile": "Profile",
+    "insuree.notFound": "Not Found",
+    "insuree.chfidNotFound": "No insuree with chfid '{chfid}' found."
 }

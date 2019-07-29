@@ -1,29 +1,16 @@
 import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
-import { Dialog, CircularProgress, Button, DialogActions, DialogContent } from "@material-ui/core";
+import { Dialog, Button, DialogActions, DialogContent } from "@material-ui/core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { enquiry } from "../actions/insuree";
-import { formatMessage } from "@openimis/fe-core";
-import { Contributions, Error } from "@openimis/fe-core";
+import { fetchInsuree } from "../actions";
+import { formatMessage, Contributions, Error, ProgressOrError } from "@openimis/fe-core";
 import InsureeSummary from "./InsureeSummary";
 
 const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
 
 const styles = theme => ({
-    container: {
-        display: "flex",
-        flexWrap: "wrap",
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200
-    },
-    progress: {
-        margin: theme.spacing(2),
-    }
 });
 
 class EnquiryDialog extends Component {
@@ -34,7 +21,7 @@ class EnquiryDialog extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.chfid !== this.props.chfid) {
-            this.props.enquiry(this.props.chfid);
+            this.props.fetchInsuree(this.props.chfid);
         }
     }
     escFunction = event => {
@@ -50,21 +37,23 @@ class EnquiryDialog extends Component {
     }
 
     render() {
-        const { intl, classes,
-            fetching, insuree, error,
-            onClose
-        } = this.props;
+        const { intl, fetching, fetched, insuree, error, onClose } = this.props;
         return (
             <Dialog maxWidth="md" fullWidth={true} open={this.props.open}>
                 <DialogContent>
-                    {!!fetching && (<CircularProgress className={classes.progress} />)}
-                    {!fetching && !!error && (<Error error={error} />)}
-                    {!fetching && !!insuree && (
-                        <form className={classes.container} noValidate autoComplete="off">
-                            <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
-                        </form>
+                    <ProgressOrError progress={fetching} error={error} />
+                    {!!fetched && !insuree && (
+                        <Error error={
+                            {
+                                code: formatMessage(intl, 'insuree', 'notFound'),
+                                detail: formatMessage(intl, 'insuree', 'chfidNotFound', {chfid: this.props.chfid})
+                            }
+                        }/>
                     )}
-                    <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY}/>
+                    {!fetching && !!insuree && (
+                        <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
+                    )}
+                    <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} color="primary">
@@ -78,12 +67,13 @@ class EnquiryDialog extends Component {
 
 const mapStateToProps = state => ({
     fetching: state.insuree.fetching,
+    fetched: state.insuree.fetched,
     insuree: state.insuree.insuree,
     error: state.insuree.error
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ enquiry }, dispatch);
+    return bindActionCreators({ fetchInsuree }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(

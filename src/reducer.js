@@ -1,8 +1,9 @@
 import { formatServerError, formatGraphQLError } from '@openimis/fe-core';
 
-function enquiry(
+function reducer(
     state = {
         fetching: false,
+        fetched: false,
         error: null,
         insuree: null,
         fetchingFamily: false,
@@ -16,6 +17,7 @@ function enquiry(
             return {
                 ...state,
                 fetching: true,
+                fetched: false,
                 insuree: null,
                 error: null,
             };
@@ -23,6 +25,7 @@ function enquiry(
             return {
                 ...state,
                 fetching: false,
+                fetched: true,
                 insuree: action.payload.data.insuree,
                 error: formatGraphQLError(action.payload)
             };
@@ -57,4 +60,4 @@ function enquiry(
     }
 }
 
-export default enquiry;
+export default reducer;

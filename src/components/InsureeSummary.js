@@ -1,17 +1,14 @@
 import React, { Component, Fragment } from "react";
 import { injectIntl, FormattedDate } from 'react-intl';
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid, Avatar, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { formatMessage, Contributions, FieldLabel } from "@openimis/fe-core";
 
+const INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY = "insuree.InsureeSummaryAvatar";
+const INSUREE_SUMMARY_CORE_CONTRIBUTION_KEY = "insuree.InsureeSummaryCore";
 const INSUREE_SUMMARY_CONTRIBUTION_KEY = "insuree.InsureeSummary";
 
 const styles = theme => ({
-    bigAvatar: {
-        margin: 10,
-        width: 120,
-        height: 120,
-    },
     rawValue: {
         textAlign: "center",
     },
@@ -29,10 +26,7 @@ class InsureeSummary extends Component {
         return (
             <Grid container>
                 <Grid item xs={2}>
-                    <Avatar
-                        src={insuree && insuree.photo && `/photos/${insuree.photo.folder}/${insuree.photo.filename}`}
-                        className={classes.bigAvatar}
-                    />
+                    <Contributions contributionKey={INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY} />
                 </Grid>
                 <Grid item xs={10}>
                     <Grid item xs={12}>
@@ -62,6 +56,7 @@ class InsureeSummary extends Component {
                                             {insuree && insuree.gender && insuree.gender.gender}
                                         </Typography>
                                     </Grid>
+                                    <Contributions contributionKey={INSUREE_SUMMARY_CORE_CONTRIBUTION_KEY} />
                                 </Grid>
                             </Grid>
                             <Grid item xs={6}>
