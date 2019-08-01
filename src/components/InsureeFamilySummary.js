@@ -48,7 +48,7 @@ class InsureeFamilySummary extends Component {
                             ]}
                             itemFormatters={[
                                 i => i.chfId,
-                                i => `${i.otherNames} ${i.lastName} ${i.head ? formatMessage(this.props.intl, "insuree", "insuree.familySummary.head"):  null}`,
+                                i => `${i.otherNames} ${i.lastName} ${i.head ? formatMessage(this.props.intl, "insuree", "familySummary.head"):  ""}`,
                                 i => i.phone,
                             ]}
                             items={insureeFamilyMembers}
