@@ -10,6 +10,7 @@ import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
 import InsureeProfileLink from "./components/InsureeProfileLink";
 import InsureeSummary from "./components/InsureeSummary";
+import InsureeFirstServicePoint from "./components/InsureeFirstServicePoint";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
 
@@ -19,6 +20,7 @@ const DEFAULT_CONFIG = {
   "components": [
     {key: "insuree.Avatar", component: InsureeAvatar },
     {key: "insuree.Summary", component: InsureeSummary },
+    {key: "insuree.FirstServicePoint", component: InsureeFirstServicePoint },
     {key: "insuree.FamilySummary", component: InsureeFamilySummary },
     {key: "insuree.ProfileLink", component: InsureeProfileLink },
     {key: "insuree.CappedItemServiceLink", component: InsureeCappedItemServiceLink },
@@ -34,9 +36,10 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
   "insuree.InsureeSummary": [InsureeFamilySummary],
+  "insuree.InsureeSummaryExt": [InsureeFirstServicePoint],
 }
 
 export const InsureeModule = (cfg) => {
-  return { ...DEFAULT_CONFIG, ...(cfg && cfg['fe-insuree'] || {}) };
+  return { ...DEFAULT_CONFIG, ...cfg };
 }
 

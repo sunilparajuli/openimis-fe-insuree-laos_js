@@ -5,7 +5,10 @@ export function fetchInsuree(chfid) {
       {
         insuree(chfId:"${chfid}")
         {
-          chfId, photo{folder,filename}, lastName, otherNames, dob, gender{code, gender, altLanguage}, age
+          chfId, lastName, otherNames, dob, age,
+          photo{folder,filename}, 
+          gender{code, gender, altLanguage}, 
+          healthFacility{id, code, name}
         }
       }
     `
