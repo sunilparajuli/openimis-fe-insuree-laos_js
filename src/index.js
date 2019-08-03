@@ -35,7 +35,6 @@ const DEFAULT_CONFIG = {
   "core.AppBar": [Enquiry],
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
-  "insuree.InsureeSummary": [InsureeFamilySummary],
   "insuree.InsureeSummaryExt": [InsureeFirstServicePoint],
 }
 
