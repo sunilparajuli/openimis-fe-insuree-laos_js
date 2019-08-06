@@ -16,7 +16,7 @@ class InsureeCappedItemServiceLink extends Component {
         const { classes, insuree } = this.props;
         return (
             <Grid item xs={12} className={classes.lnk}>
-                <Link href={`/insuree/cappedItemService?nshid=${insuree.chfId}`}>
+                <Link href={`${process.env.PUBLIC_URL || ""}/insuree/cappedItemService?nshid=${insuree.chfId}`}>
                     <FormattedMessage module="insuree" id="link.cappedItemService" />
                 </Link>
             </Grid>
