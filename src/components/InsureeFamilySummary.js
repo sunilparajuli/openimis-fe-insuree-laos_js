@@ -32,11 +32,11 @@ class InsureeFamilySummary extends Component {
     }
 
     render() {
-        const { classes, insuree, fetchingFamily, insureeFamilyMembers, errorFamily } = this.props;
+        const { classes, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
         return (
             <Fragment>
-                <ProgressOrError progress={fetchingFamily} error={errorFamily} />
-                {!fetchingFamily && !!insuree && !!insureeFamilyMembers && (
+                <ProgressOrError progress={fetchingFamilyMembers} error={errorFamilyMembers} />
+                {!!fetchedFamilyMembers && (
                     <Paper className={classes.paper}>
                         <SmallTable
                             module="insuree"
@@ -51,7 +51,7 @@ class InsureeFamilySummary extends Component {
                                 i => `${i.otherNames} ${i.lastName} ${i.head ? formatMessage(this.props.intl, "insuree", "familySummary.head"):  ""}`,
                                 i => i.phone,
                             ]}
-                            items={insureeFamilyMembers}
+                            items={familyMembers}
                         />
                     </Paper>
                 )}
@@ -63,9 +63,10 @@ class InsureeFamilySummary extends Component {
 
 const mapStateToProps = state => ({
     insuree: state.insuree.insuree,
-    fetchingFamily: state.insuree.fetchingFamily,
-    insureeFamilyMembers: state.insuree.insureeFamilyMembers,
-    errorFamily: state.insuree.errorFamily,
+    fetchingFamilyMembers: state.insuree.fetchingFamilyMembers,
+    fetchedFamilyMembers: state.insuree.fetchedFamilyMembers,
+    familyMembers: state.insuree.familyMembers,
+    errorFamilyMembers: state.insuree.errorFamilyMembers,
 });
 
 const mapDispatchToProps = dispatch => {

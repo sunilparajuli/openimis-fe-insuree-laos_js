@@ -16,7 +16,7 @@ import reducer from "./reducer";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
-  "reducers": [{ key: 'insuree', reducer: reducer }],  
+  "reducers": [{ key: 'insuree', reducer }],  
   "components": [
     {key: "insuree.Avatar", component: InsureeAvatar },
     {key: "insuree.Summary", component: InsureeSummary },
