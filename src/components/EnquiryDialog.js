@@ -14,10 +14,8 @@ const styles = theme => ({
 });
 
 class EnquiryDialog extends Component {
-    constructor(props) {
-        super(props);
-        this.state = ({ loading: false })
-    }
+
+    state = { loading: false }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.chfid !== this.props.chfid) {

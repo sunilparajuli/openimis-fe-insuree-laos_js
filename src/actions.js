@@ -7,13 +7,13 @@ export function fetchInsuree(chfid) {
       "family{id}",
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
-      "healthFacility{id, code, name}"]
+      "healthFacility{code, name}"]
   );
   return graphql(payload, 'INSUREE_ENQUIRY');
 }
 
 export function fetchInsureeFamily(chfid) {
-  let payload = formatPageQuery("insureeFamilyMembers",
+  let payload = formatQuery("insureeFamilyMembers",
     [`chfId:"${chfid}"`],
     ["chfId", "otherNames", "lastName", "head", "phone"]
   );

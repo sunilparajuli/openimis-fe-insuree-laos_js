@@ -17,13 +17,14 @@ import reducer from "./reducer";
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
   "reducers": [{ key: 'insuree', reducer }],  
-  "components": [
-    {key: "insuree.Avatar", component: InsureeAvatar },
-    {key: "insuree.Summary", component: InsureeSummary },
-    {key: "insuree.FirstServicePoint", component: InsureeFirstServicePoint },
-    {key: "insuree.FamilySummary", component: InsureeFamilySummary },
-    {key: "insuree.ProfileLink", component: InsureeProfileLink },
-    {key: "insuree.CappedItemServiceLink", component: InsureeCappedItemServiceLink },
+  "refs": [
+    {key: "insuree.Avatar", ref: InsureeAvatar },
+    {key: "insuree.Summary", ref: InsureeSummary },
+    {key: "insuree.FirstServicePoint", ref: InsureeFirstServicePoint },
+    {key: "insuree.FamilySummary", ref: InsureeFamilySummary },
+    {key: "insuree.ProfileLink", ref: InsureeProfileLink },
+    {key: "insuree.CappedItemServiceLink", ref: InsureeCappedItemServiceLink },
+    {key: "insuree.INSUREE_ID_TYPE", ref: "InsureeGQLType"}
   ],  
   "core.Router": [
     { path: "insuree/create", component: CreatePage },

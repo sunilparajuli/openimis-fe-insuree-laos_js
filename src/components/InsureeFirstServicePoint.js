@@ -24,7 +24,7 @@ class InsureeFirstServicePoint extends Component {
                 <FormattedMessage module="insuree" id="insuree.noFSP" />
             </div>
         );
-        let FSP = modulesManager.getComponent("location.HealthFacilityFullPath");
+        let FSP = modulesManager.getRef("location.HealthFacilityFullPath");
         return (
             <Grid container>
                 <Grid item xs={12} className={classes.title}>

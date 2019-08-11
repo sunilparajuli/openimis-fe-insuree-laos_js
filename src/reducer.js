@@ -49,7 +49,7 @@ function reducer(
                 ...state,
                 fetchingFamilyMembers: false,
                 fetchedFamilyMembers: true,
-                familyMembers: parseData(action.payload.data.insureeFamilyMembers),
+                familyMembers: action.payload.data.insureeFamilyMembers,
                 errorFamilyMembers: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_ERR':

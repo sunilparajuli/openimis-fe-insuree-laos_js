@@ -13,8 +13,7 @@ const styles = theme => ({});
 
 class InsureeFamilySummary extends Component {
 
-    constructor(props) {
-        super(props);
+    componentDidMount() {
         if (!!props.insuree) {
             props.fetchInsureeFamily(props.insuree.chfId);
         }

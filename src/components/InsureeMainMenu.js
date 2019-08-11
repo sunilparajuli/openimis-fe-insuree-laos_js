@@ -24,7 +24,7 @@ class InsureeMainMenu extends Component {
         icon: <PersonPin />,
         route: "/insuree/insurees"
       },
-      ...this.props.modulesManager.getContributions(INSUREE_MAIN_MENU_CONTRIBUTION_KEY)
+      ...this.props.modulesManager.getContribs(INSUREE_MAIN_MENU_CONTRIBUTION_KEY)
     ]
     return (
       <MainMenuContribution

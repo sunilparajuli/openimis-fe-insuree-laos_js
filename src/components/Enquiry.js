@@ -47,10 +47,8 @@ const styles = theme => ({
 });
 
 class Enquiry extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { open: false };
-  }
+
+  state = { open: false }
 
   handleKeyPress = event => {
     if (event.charCode === 13) {
