@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { fetchInsureeFamily } from "../actions";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
-import { formatMessage, Contributions, ProgressOrError, ResultTable, withModulesManager } from "@openimis/fe-core";
+import { formatMessage, Contributions, ProgressOrError, Table, withModulesManager } from "@openimis/fe-core";
 
 const INSUREE_FAMILY_SUMMARY_CONTRIBUTION_KEY = "insuree.InsureeFamilySummary";
 
@@ -37,7 +37,7 @@ class InsureeFamilySummary extends Component {
                 <ProgressOrError progress={fetchingFamilyMembers} error={errorFamilyMembers} />
                 {!!insuree && !!fetchedFamilyMembers && (
                     <Paper className={classes.paper}>
-                        <ResultTable
+                        <Table
                             module="insuree"
                             header="familySummary"
                             headers={[

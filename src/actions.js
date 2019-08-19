@@ -7,7 +7,7 @@ export function fetchInsuree(mm, chfid) {
       "family{id}",
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
-      "healthFacility{"+mm.getProjection("location.HealthFacilityPicker.projection").join(",")+"}"]
+      "healthFacility"+mm.getProjection("location.HealthFacilityPicker.projection")]
   );
   return graphql(payload, 'INSUREE_ENQUIRY');
 }
