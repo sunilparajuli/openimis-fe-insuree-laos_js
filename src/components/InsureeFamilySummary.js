@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { fetchInsureeFamily } from "../actions";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
-import { formatMessage, Contributions, ProgressOrError, SmallTable } from "@openimis/fe-core";
+import { formatMessage, Contributions, ProgressOrError, ResultTable, withModulesManager } from "@openimis/fe-core";
 
 const INSUREE_FAMILY_SUMMARY_CONTRIBUTION_KEY = "insuree.InsureeFamilySummary";
 
@@ -15,7 +15,7 @@ class InsureeFamilySummary extends Component {
 
     componentDidMount() {
         if (!!this.props.insuree) {
-            props.fetchInsureeFamily(this.props.insuree.chfId);
+            this.props.fetchInsureeFamily(this.props.modulesManager, this.props.insuree.chfId);
         }
     }
 
@@ -26,18 +26,18 @@ class InsureeFamilySummary extends Component {
                 || prevProps.insuree.chfId !== this.props.insuree.chfId
             )
         ) {
-            this.props.fetchInsureeFamily(this.props.insuree.chfId);
+            this.props.fetchInsureeFamily(this.props.modulesManager, this.props.insuree.chfId);
         }
     }
 
     render() {
-        const { classes, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
+        const { classes, insuree, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
         return (
             <Fragment>
                 <ProgressOrError progress={fetchingFamilyMembers} error={errorFamilyMembers} />
-                {!!fetchedFamilyMembers && (
+                {!!insuree && !!fetchedFamilyMembers && (
                     <Paper className={classes.paper}>
-                        <SmallTable
+                        <ResultTable
                             module="insuree"
                             header="familySummary"
                             headers={[
@@ -72,8 +72,8 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ fetchInsureeFamily }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
     injectIntl(withTheme(
         withStyles(styles)(InsureeFamilySummary)
-    ))
+    )))
 );

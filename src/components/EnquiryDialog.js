@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { fetchInsuree } from "../actions";
-import { formatMessage, Contributions, Error, ProgressOrError } from "@openimis/fe-core";
+import { formatMessage, Contributions, Error, ProgressOrError, withModulesManager } from "@openimis/fe-core";
 import InsureeSummary from "./InsureeSummary";
 
 const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
@@ -19,7 +19,7 @@ class EnquiryDialog extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.chfid !== this.props.chfid) {
-            this.props.fetchInsuree(this.props.chfid);
+            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
         }
     }
     escFunction = event => {
@@ -74,8 +74,8 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ fetchInsuree }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(
+export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
     injectIntl(withTheme(
         withStyles(styles)(EnquiryDialog)
-    ))
+    )))
 );

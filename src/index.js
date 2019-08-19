@@ -5,6 +5,7 @@ import { InsureesPage } from "./components/InsureesPage";
 import { CappedItemServicePage } from "./components/CappedItemServicePage";
 import { ProfilePage } from "./components/ProfilePage";
 import Enquiry from "./components/Enquiry";
+import InsureePicker from "./components/InsureePicker";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
@@ -18,14 +19,16 @@ const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
   "reducers": [{ key: 'insuree', reducer }],  
   "refs": [
+    {key: "insuree.InsureePicker", ref: InsureePicker },
+    {key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
+
     {key: "insuree.Avatar", ref: InsureeAvatar },
     {key: "insuree.Summary", ref: InsureeSummary },
     {key: "insuree.FirstServicePoint", ref: InsureeFirstServicePoint },
     {key: "insuree.FamilySummary", ref: InsureeFamilySummary },
     {key: "insuree.ProfileLink", ref: InsureeProfileLink },
     {key: "insuree.CappedItemServiceLink", ref: InsureeCappedItemServiceLink },
-    {key: "insuree.INSUREE_ID_TYPE", ref: "InsureeGQLType"}
-  ],  
+  ],
   "core.Router": [
     { path: "insuree/create", component: CreatePage },
     { path: "insuree/families", component: FamiliesPage },

@@ -1,4 +1,4 @@
-import { parseData, formatServerError, formatGraphQLError } from '@openimis/fe-core';
+import { parseData, pageInfo, formatServerError, formatGraphQLError } from '@openimis/fe-core';
 
 function reducer(
     state = {
@@ -10,6 +10,11 @@ function reducer(
         fetchedFamilyMembers: false,
         errorFamilyMembers: null,
         familyMembers: null,
+        fetchingInsurees: false,
+        fetchedInsurees: false,
+        errorInsurees: null,
+        insurees: [],
+        insureesPageInfo: { totalCount: 0 },
     },
     action,
 ) {
@@ -57,6 +62,29 @@ function reducer(
                 ...state,
                 fetchingFamilyMembers: false,
                 errorFamilyMembers: formatServerError(action.payload)
+            };
+        case 'INSUREE_INSUREES_REQ':
+            return {
+                ...state,
+                fetchingInsurees: true,
+                fetchedInsurees: false,
+                insurees: [],
+                errorInsurees: null,
+            };
+        case 'INSUREE_INSUREES_RESP':
+            return {
+                ...state,
+                fetchingInsurees: false,
+                fetchedInsurees: true,
+                insurees: parseData(action.payload.data.insurees),
+                insureesPageInfo: pageInfo(action.payload.data.insurees),
+                errorInsurees: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_INSUREES_ERR':
+            return {
+                ...state,
+                fetching: false,
+                error: formatServerError(action.payload)
             };
         default:
             return state;
