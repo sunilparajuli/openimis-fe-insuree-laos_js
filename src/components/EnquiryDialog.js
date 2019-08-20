@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { fetchInsuree } from "../actions";
-import { formatMessage, Contributions, Error, ProgressOrError, withModulesManager } from "@openimis/fe-core";
+import { formatMessage, formatMessageWithValues, Contributions, Error, ProgressOrError, withModulesManager } from "@openimis/fe-core";
 import InsureeSummary from "./InsureeSummary";
 
 const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
@@ -44,7 +44,7 @@ class EnquiryDialog extends Component {
                         <Error error={
                             {
                                 code: formatMessage(intl, 'insuree', 'notFound'),
-                                detail: formatMessage(intl, 'insuree', 'chfidNotFound', {chfid: this.props.chfid})
+                                detail: formatMessageWithValues(intl, 'insuree', 'chfidNotFound', {chfid: this.props.chfid})
                             }
                         }/>
                     )}

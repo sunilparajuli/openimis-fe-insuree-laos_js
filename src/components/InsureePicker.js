@@ -112,7 +112,7 @@ class InsureePicker extends Component {
     getSuggestions = (filters) => {
         this.setState(
             {filters: filters},
-            e => this.props.fetchInsurees(this.filtersToQueryParams())
+            e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
         );
     }
 
