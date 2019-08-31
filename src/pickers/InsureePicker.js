@@ -45,7 +45,7 @@ class RawFilter extends Component {
     _onChange = (a, v) => {
         this.setState(
             { [a]: v },
-            e => this.props.onChange(this.stateToFilters())            
+            e => this.props.onChange(this.stateToFilters())
         )
     }
 
@@ -111,7 +111,7 @@ class InsureePicker extends Component {
 
     getSuggestions = (filters) => {
         this.setState(
-            {filters: filters},
+            { filters: filters },
             e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
         );
     }
@@ -133,7 +133,7 @@ class InsureePicker extends Component {
         )
     }
 
-    onSelect = v => this.props.onChange(v)
+    onSelect = v => this.props.onChange(v, this.formatSuggestion(v))
 
     onChangePage = (page, nbr) => {
         if (nbr > this.state.page) {
@@ -155,9 +155,7 @@ class InsureePicker extends Component {
                 e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
             )
         }
-    }    
-
-    onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
+    }
 
     render() {
         const { insurees, insureesPageInfo, value, readOnly = false } = this.props;
@@ -173,10 +171,10 @@ class InsureePicker extends Component {
                 pageSize={this.state.pageSize}
                 count={insureesPageInfo.totalCount}
                 onChangePage={this.onChangePage}
-                onChangeRowsPerPage={this.onChangeRowsPerPage}   
-                onSelect={this.onSelect}    
-                value={value}    
-                readOnly={readOnly}     
+                onChangeRowsPerPage={this.onChangeRowsPerPage}
+                onSelect={this.onSelect}
+                value={value}
+                readOnly={readOnly}
             />
         )
     }

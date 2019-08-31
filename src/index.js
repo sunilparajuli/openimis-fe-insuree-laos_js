@@ -5,7 +5,7 @@ import { InsureesPage } from "./components/InsureesPage";
 import { CappedItemServicePage } from "./components/CappedItemServicePage";
 import { ProfilePage } from "./components/ProfilePage";
 import Enquiry from "./components/Enquiry";
-import InsureePicker from "./components/InsureePicker";
+import InsureePicker from "./pickers/InsureePicker";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
