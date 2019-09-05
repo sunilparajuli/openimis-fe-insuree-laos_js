@@ -93,6 +93,19 @@ class InsureePicker extends Component {
         afterCursor: null,
         beforeCursor: null,
         filters: [],
+        selected: null,
+    }
+
+    componentDidMount() {
+        if (this.props.value) {
+            this.setState({ selected: this.props.value });
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!_.isEqual(prevProps.value, this.props.value)) {
+            this.setState({ selected: value });
+        }
     }
 
     formatSuggestion = a => !!a ? `${a.lastName} ${a.otherNames} (${a.chfId})` : "";
@@ -133,7 +146,12 @@ class InsureePicker extends Component {
         )
     }
 
-    onSelect = v => this.props.onChange(v, this.formatSuggestion(v))
+    onSelect = v => {
+        this.setState(
+            { selected: v },
+            this.props.onChange(v, this.formatSuggestion(v))
+        )
+    }
 
     onChangePage = (page, nbr) => {
         if (nbr > this.state.page) {
@@ -158,7 +176,7 @@ class InsureePicker extends Component {
     }
 
     render() {
-        const { insurees, insureesPageInfo, value, readOnly = false } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false } = this.props;
         return (
             <Picker
                 module="insuree"
@@ -173,7 +191,7 @@ class InsureePicker extends Component {
                 onChangePage={this.onChangePage}
                 onChangeRowsPerPage={this.onChangeRowsPerPage}
                 onSelect={this.onSelect}
-                value={value}
+                value={this.state.selected}
                 readOnly={readOnly}
             />
         )
