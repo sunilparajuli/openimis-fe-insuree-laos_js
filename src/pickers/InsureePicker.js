@@ -104,7 +104,7 @@ class InsureePicker extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (!_.isEqual(prevProps.value, this.props.value)) {
-            this.setState({ selected: value });
+            this.setState({ selected: this.props.value });
         }
     }
 
