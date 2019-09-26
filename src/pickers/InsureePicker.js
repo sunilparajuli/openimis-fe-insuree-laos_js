@@ -85,16 +85,18 @@ class RawFilter extends Component {
 
 const Filter = withTheme(withStyles(styles)(RawFilter));
 
+const INIT_STATE = {
+    page: 0,
+    pageSize: 10,
+    afterCursor: null,
+    beforeCursor: null,
+    filters: [],
+    selected: null,
+}
+
 class InsureePicker extends Component {
 
-    state = {
-        page: 0,
-        pageSize: 10,
-        afterCursor: null,
-        beforeCursor: null,
-        filters: [],
-        selected: null,
-    }
+    state = INIT_STATE;
 
     componentDidMount() {
         if (this.props.value) {
@@ -103,12 +105,17 @@ class InsureePicker extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!_.isEqual(prevProps.value, this.props.value)) {
+        if (prevProps.reset !== this.props.reset) {
+            this.setState({
+                ...INIT_STATE,
+                selected: this.props.value
+            });
+        } else if (!_.isEqual(prevProps.value, this.props.value)) {
             this.setState({ selected: this.props.value });
         }
     }
 
-    formatSuggestion = a => !!a ? `${a.lastName} ${a.otherNames} (${a.chfId})` : "";
+    formatSuggestion = a => !!a ? `${a.lastName} ${a.otherNames} (${a.chfId})` : ""
 
     filtersToQueryParams = () => {
         let prms = [...this.state.filters];
