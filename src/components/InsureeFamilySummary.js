@@ -31,7 +31,7 @@ class InsureeFamilySummary extends Component {
     }
 
     render() {
-        const { classes, insuree, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
+        const { intl, classes, insuree, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
         return (
             <Fragment>
                 <ProgressOrError progress={fetchingFamilyMembers} error={errorFamilyMembers} />
@@ -39,7 +39,7 @@ class InsureeFamilySummary extends Component {
                     <Paper className={classes.paper}>
                         <Table
                             module="insuree"
-                            header="familySummary"
+                            header={formatMessage(intl, "insuree", "familySummary")}
                             headers={[
                                 "familySummary.chfId",
                                 "familySummary.name",
