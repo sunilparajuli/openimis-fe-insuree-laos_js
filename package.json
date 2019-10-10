@@ -1,6 +1,6 @@
 {
   "name": "@openimis/fe-insuree",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "license": "AGPL-3.0-only",
   "description": "openIMIS Frontend Insuree reference module",
   "repository": "openimis/openimis-fe-insuree_js",
