@@ -183,11 +183,11 @@ class InsureePicker extends Component {
     }
 
     render() {
-        const { insurees, insureesPageInfo, readOnly = false } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false, withLabel = true } = this.props;
         return (
             <Picker
                 module="insuree"
-                label="Insuree.label"
+                label={!!withLabel ? "Insuree.label" : null}
                 dialogTitle="Insuree.picker.dialog.title"
                 filter={<Filter onChange={this.debouncedGetSuggestion} />}
                 suggestions={insurees}
