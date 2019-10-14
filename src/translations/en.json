@@ -19,5 +19,10 @@
     "insuree.notFound": "Not Found",
     "insuree.chfidNotFound": "No insuree with chfid '{chfid}' found.",
     "insuree.noFSP": "First Service Point not registered.",
-    "insuree.FSP.title": "First Service Point"
+    "insuree.FSP.title": "First Service Point",
+    "insuree.Insuree.label": "Insuree",
+    "insuree.Insuree.picker.dialog.title": "Search Insuree",
+    "insuree.Insuree.chfId": "CHF ID",
+    "insuree.Insuree.lastName": "Last Name",
+    "insuree.Insuree.otherNames": "Other Names"
 }

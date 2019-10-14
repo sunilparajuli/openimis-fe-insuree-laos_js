@@ -1,4 +1,4 @@
-import { formatServerError, formatGraphQLError } from '@openimis/fe-core';
+import { parseData, pageInfo, formatServerError, formatGraphQLError } from '@openimis/fe-core';
 
 function reducer(
     state = {
@@ -6,9 +6,15 @@ function reducer(
         fetched: false,
         error: null,
         insuree: null,
-        fetchingFamily: false,
-        errorFamily: null,
-        insureeFamilyMembers: null,        
+        fetchingFamilyMembers: false,
+        fetchedFamilyMembers: false,
+        errorFamilyMembers: null,
+        familyMembers: null,
+        fetchingInsurees: false,
+        fetchedInsurees: false,
+        errorInsurees: null,
+        insurees: [],
+        insureesPageInfo: { totalCount: 0 },
     },
     action,
 ) {
@@ -38,22 +44,47 @@ function reducer(
         case 'INSUREE_FAMILY_REQ':
             return {
                 ...state,
-                fetchingFamily: true,
-                insureeFamilyMembers: null,
-                errorFamily: null,
+                fetchingFamilyMembers: true,
+                fetchedFamilyMembers: false,
+                familyMembers: null,
+                errorFamilyMembers: null,
             };
         case 'INSUREE_FAMILY_RESP':
             return {
                 ...state,
-                fetchingFamily: false,
-                insureeFamilyMembers: action.payload.data.insureeFamilyMembers,
-                errorFamily: formatGraphQLError(action.payload)
+                fetchingFamilyMembers: false,
+                fetchedFamilyMembers: true,
+                familyMembers: action.payload.data.insureeFamilyMembers,
+                errorFamilyMembers: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_ERR':
             return {
                 ...state,
-                fetchingFamily: false,
-                errorFamily: formatServerError(action.payload)
+                fetchingFamilyMembers: false,
+                errorFamilyMembers: formatServerError(action.payload)
+            };
+        case 'INSUREE_INSUREES_REQ':
+            return {
+                ...state,
+                fetchingInsurees: true,
+                fetchedInsurees: false,
+                insurees: [],
+                errorInsurees: null,
+            };
+        case 'INSUREE_INSUREES_RESP':
+            return {
+                ...state,
+                fetchingInsurees: false,
+                fetchedInsurees: true,
+                insurees: parseData(action.payload.data.insurees),
+                insureesPageInfo: pageInfo(action.payload.data.insurees),
+                errorInsurees: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_INSUREES_ERR':
+            return {
+                ...state,
+                fetching: false,
+                error: formatServerError(action.payload)
             };
         default:
             return state;

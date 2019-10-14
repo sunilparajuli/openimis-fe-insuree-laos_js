@@ -5,6 +5,7 @@ import { InsureesPage } from "./components/InsureesPage";
 import { CappedItemServicePage } from "./components/CappedItemServicePage";
 import { ProfilePage } from "./components/ProfilePage";
 import Enquiry from "./components/Enquiry";
+import InsureePicker from "./pickers/InsureePicker";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
@@ -16,15 +17,18 @@ import reducer from "./reducer";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
-  "reducers": [{ key: 'insuree', reducer: reducer }],  
-  "components": [
-    {key: "insuree.Avatar", component: InsureeAvatar },
-    {key: "insuree.Summary", component: InsureeSummary },
-    {key: "insuree.FirstServicePoint", component: InsureeFirstServicePoint },
-    {key: "insuree.FamilySummary", component: InsureeFamilySummary },
-    {key: "insuree.ProfileLink", component: InsureeProfileLink },
-    {key: "insuree.CappedItemServiceLink", component: InsureeCappedItemServiceLink },
-  ],  
+  "reducers": [{ key: 'insuree', reducer }],  
+  "refs": [
+    {key: "insuree.InsureePicker", ref: InsureePicker },
+    {key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
+
+    {key: "insuree.Avatar", ref: InsureeAvatar },
+    {key: "insuree.Summary", ref: InsureeSummary },
+    {key: "insuree.FirstServicePoint", ref: InsureeFirstServicePoint },
+    {key: "insuree.FamilySummary", ref: InsureeFamilySummary },
+    {key: "insuree.ProfileLink", ref: InsureeProfileLink },
+    {key: "insuree.CappedItemServiceLink", ref: InsureeCappedItemServiceLink },
+  ],
   "core.Router": [
     { path: "insuree/create", component: CreatePage },
     { path: "insuree/families", component: FamiliesPage },
@@ -36,6 +40,7 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
   "insuree.InsureeSummaryExt": [InsureeFirstServicePoint],
+
 }
 
 export const InsureeModule = (cfg) => {

@@ -24,8 +24,8 @@ const styles = theme => ({
 class InsureeSummary extends Component {
     render() {
         const { modulesManager, classes, insuree } = this.props;
-        let hasAvatarContribution = modulesManager.getContributions(INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY).length > 0
-        let hasExtContributions = modulesManager.getContributions(INSUREE_SUMMARY_EXT_CONTRIBUTION_KEY).length > 0
+        let hasAvatarContribution = modulesManager.getContribs(INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY).length > 0
+        let hasExtContributions = modulesManager.getContribs(INSUREE_SUMMARY_EXT_CONTRIBUTION_KEY).length > 0
         return (
             <Grid container>
                 {hasAvatarContribution && (
