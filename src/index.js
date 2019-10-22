@@ -40,7 +40,6 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
   "insuree.InsureeSummaryExt": [InsureeFirstServicePoint],
-
 }
 
 export const InsureeModule = (cfg) => {
