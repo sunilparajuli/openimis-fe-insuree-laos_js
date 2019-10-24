@@ -183,7 +183,7 @@ class InsureePicker extends Component {
     }
 
     render() {
-        const { insurees, insureesPageInfo, readOnly = false, withLabel = true } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true } = this.props;
         return (
             <Picker
                 module="insuree"
@@ -200,6 +200,7 @@ class InsureePicker extends Component {
                 onSelect={this.onSelect}
                 value={this.state.selected}
                 readOnly={readOnly}
+                required={required}
             />
         )
     }
