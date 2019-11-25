@@ -1,11 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { injectIntl } from 'react-intl';
 import { Dialog, Button, DialogActions, DialogContent } from "@material-ui/core";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import { Router } from "react-router-dom";
 import { fetchInsuree } from "../actions";
-import { formatMessage, formatMessageWithValues, Contributions, Error, ProgressOrError, withModulesManager } from "@openimis/fe-core";
+import {
+    formatMessage, formatMessageWithValues, Contributions, Error, ProgressOrError,
+    withModulesManager, withHistory
+} from "@openimis/fe-core";
 import InsureeSummary from "./InsureeSummary";
 
 const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
@@ -35,23 +39,27 @@ class EnquiryDialog extends Component {
     }
 
     render() {
-        const { intl, fetching, fetched, insuree, error, onClose } = this.props;
+        const { intl, history, fetching, fetched, insuree, error, onClose } = this.props;
         return (
-            <Dialog maxWidth="md" fullWidth={true} open={this.props.open}>
+            <Dialog maxWidth="lg" fullWidth={true} open={this.props.open}>
                 <DialogContent>
                     <ProgressOrError progress={fetching} error={error} />
                     {!!fetched && !insuree && (
                         <Error error={
                             {
                                 code: formatMessage(intl, 'insuree', 'notFound'),
-                                detail: formatMessageWithValues(intl, 'insuree', 'chfidNotFound', {chfid: this.props.chfid})
+                                detail: formatMessageWithValues(intl, 'insuree', 'chfidNotFound', { chfid: this.props.chfid })
                             }
-                        }/>
+                        } />
                     )}
                     {!fetching && !!insuree && (
-                        <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
+                        <Fragment>
+                            <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
+                            <Router history={history}>
+                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} />
+                            </Router>
+                        </Fragment>
                     )}
-                    <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose} color="primary">
@@ -74,8 +82,8 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ fetchInsuree }, dispatch);
 };
 
-export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
+export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(
     injectIntl(withTheme(
         withStyles(styles)(EnquiryDialog)
-    )))
+    ))))
 );
