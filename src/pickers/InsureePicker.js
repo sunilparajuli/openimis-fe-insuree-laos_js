@@ -55,7 +55,7 @@ class RawFilter extends Component {
             <Grid container>
                 <Grid item xs={4} className={classes.item}>
                     <TextInput
-                        autofocus={true}
+                        autoFocus={true}
                         module="insuree"
                         label="Insuree.chfId"
                         value={this.state.chfId}
