@@ -3,11 +3,11 @@ import { graphql, formatQuery, formatPageQueryWithCount } from "@openimis/fe-cor
 export function fetchInsuree(mm, chfid) {
   let payload = formatQuery("insuree",
     [`chfId:"${chfid}"`],
-    ["chfId", "lastName", "otherNames", "dob", "age",
+    ["id", "chfId", "lastName", "otherNames", "dob", "age",
       "family{id}",
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
-      "healthFacility"+mm.getProjection("location.HealthFacilityPicker.projection")]
+      "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")]
   );
   return graphql(payload, 'INSUREE_ENQUIRY');
 }

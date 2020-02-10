@@ -24,5 +24,6 @@
     "insuree.Insuree.picker.dialog.title": "Search Insuree",
     "insuree.Insuree.chfId": "CHF ID",
     "insuree.Insuree.lastName": "Last Name",
-    "insuree.Insuree.otherNames": "Other Names"
+    "insuree.Insuree.otherNames": "Other Names",
+    "insuree.Insuree.names": "Name"
 }
