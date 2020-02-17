@@ -25,5 +25,10 @@
     "insuree.Insuree.chfId": "CHF ID",
     "insuree.Insuree.lastName": "Last Name",
     "insuree.Insuree.otherNames": "Other Names",
-    "insuree.Insuree.names": "Name"
+    "insuree.Insuree.names": "Name",
+    "insuree.gender": "Gender",
+    "insuree.gender.null": "Any",
+    "insuree.gender.M": "Male",
+    "insuree.gender.F": "Female",
+    "insuree.gender.O": "Other"
 }
