@@ -26,7 +26,7 @@ class InsureeChfIdPicker extends Component {
 
     componentDidMount() {
         if (this.props.value) {
-            this.setState({ 
+            this.setState({
                 search: !!this.props.value ? this.props.value.chfId : null,
                 selected: this.props.value,
             });
@@ -43,7 +43,7 @@ class InsureeChfIdPicker extends Component {
         } else if (!_.isEqual(prevProps.insuree, this.props.insuree)) {
             this.props.onChange(this.props.insuree, this.formatInsuree(this.props.insuree))
         } else if (!_.isEqual(prevProps.value, this.props.value)) {
-            this.setState({ 
+            this.setState({
                 search: !!this.props.value ? this.props.value.chfId : null,
                 selected: this.props.value
             });
@@ -52,7 +52,7 @@ class InsureeChfIdPicker extends Component {
 
     fetch = (chfId) => {
         this.setState(
-            { 
+            {
                 search: chfId,
                 selected: null
             },
@@ -72,10 +72,12 @@ class InsureeChfIdPicker extends Component {
     }
 
     render() {
+        const { readOnly = false } = this.props;
         return (
             <Grid container>
                 <Grid item xs={4}>
                     <TextInput
+                        readOnly={readOnly}
                         autoFocus={true}
                         module="insuree"
                         label="Insuree.chfId"
