@@ -72,7 +72,7 @@ class InsureeChfIdPicker extends Component {
     }
 
     render() {
-        const { readOnly = false } = this.props;
+        const { readOnly = false, required= false } = this.props;
         return (
             <Grid container>
                 <Grid item xs={4}>
@@ -86,6 +86,7 @@ class InsureeChfIdPicker extends Component {
                         inputProps={{
                             "maxLength": this.chfIdMaxLength,
                         }}
+                        required={required}
                     />
                 </Grid>
                 <Grid item xs={8}>
