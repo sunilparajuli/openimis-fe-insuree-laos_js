@@ -49,3 +49,4 @@ None
 
 ## Configurations Options
 * `debounceTime`: debounce time (in ms) before triggering the search in insuree picker (Default: `800`)
+* `insureeForm.chfIdMaxLength`, the max size of an insuree CHF ID, default 9;
