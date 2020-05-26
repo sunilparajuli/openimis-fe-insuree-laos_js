@@ -19,8 +19,6 @@ const styles = theme => ({
 
 class EnquiryDialog extends Component {
 
-    state = { loading: false }
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.chfid !== this.props.chfid) {
             this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);

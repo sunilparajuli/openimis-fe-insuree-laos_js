@@ -26,27 +26,27 @@ class InsureeChfIdPicker extends Component {
 
     componentDidMount() {
         if (this.props.value) {
-            this.setState({
-                search: !!this.props.value ? this.props.value.chfId : null,
-                selected: this.props.value,
-            });
+            this.setState((state, props) => ({
+                search: !!props.value ? props.value.chfId : null,
+                selected: props.value,
+            }));
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.reset !== this.props.reset) {
-            this.setState({
+            this.setState((state, props) => ({
                 ...INIT_STATE,
-                search: !!this.props.value ? this.props.value.chfId : null,
-                selected: this.props.value
-            });
+                search: !!props.value ? props.value.chfId : null,
+                selected: props.value
+            }));
         } else if (!_.isEqual(prevProps.insuree, this.props.insuree)) {
             this.props.onChange(this.props.insuree, this.formatInsuree(this.props.insuree))
         } else if (!_.isEqual(prevProps.value, this.props.value)) {
-            this.setState({
-                search: !!this.props.value ? this.props.value.chfId : null,
-                selected: this.props.value
-            });
+            this.setState((state, props) => ({
+                search: !!props.value ? props.value.chfId : null,
+                selected: props.value
+            }));
         }
     }
 

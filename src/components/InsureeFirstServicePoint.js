@@ -31,7 +31,7 @@ class InsureeFirstServicePoint extends Component {
                 </Grid>
                 <Grid item xs={12} className={classes.details}>
                     <PublishedComponent
-                        id="location.HealthFacilityFullPath"
+                        pubRef="location.HealthFacilityFullPath"
                         hfid={insuree.healthFacility.id}
                     />
                 </Grid>

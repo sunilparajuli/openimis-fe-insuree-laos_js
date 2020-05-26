@@ -22,10 +22,6 @@ class RawFilter extends Component {
         chfId: "",
         lastName: "",
         otherNames: "",
-        page: 0,
-        pageSize: 0,
-        afterCursor: null,
-        beforeCursor: null,
     }
 
     stateToFilters = () => {
@@ -100,18 +96,18 @@ class InsureePicker extends Component {
 
     componentDidMount() {
         if (this.props.value) {
-            this.setState({ selected: this.props.value });
+            this.setState((state, props) => ({ selected: props.value }));
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.reset !== this.props.reset) {
-            this.setState({
+            this.setState((state, props) => ({
                 ...INIT_STATE,
-                selected: this.props.value
-            });
+                selected: props.value
+            }));
         } else if (!_.isEqual(prevProps.value, this.props.value)) {
-            this.setState({ selected: this.props.value });
+            this.setState((state, props) => ({ selected: props.value }));
         }
     }
 
@@ -162,21 +158,21 @@ class InsureePicker extends Component {
 
     onChangePage = (page, nbr) => {
         if (nbr > this.state.page) {
-            this.setState(
-                {
-                    page: this.state.page + 1,
+            this.setState((state, props) =>
+                ({
+                    page: state.page + 1,
                     beforeCursor: null,
-                    afterCursor: this.props.insureesPageInfo.endCursor,
-                },
+                    afterCursor: props.insureesPageInfo.endCursor,
+                }),
                 e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
             )
         } else if (nbr < this.state.page) {
-            this.setState(
-                {
-                    page: this.state.page - 1,
-                    beforeCursor: this.props.insureesPageInfo.startCursor,
+            this.setState((state, props) =>
+                ({
+                    page: state.page - 1,
+                    beforeCursor: props.insureesPageInfo.startCursor,
                     afterCursor: null,
-                },
+                }),
                 e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
             )
         }
