@@ -27,3 +27,15 @@ export function fetchInsureeFamily(mm, chfid) {
   );
   return graphql(payload, 'INSUREE_FAMILY');
 }
+
+export function fetchFamilySummaries(mm, filters) {
+  var projections = [
+    "uuid", "poverty", "validityFrom", "validityTo",
+    "headInsuree" + mm.getProjection("insuree.InsureePicker.projection"),
+    "location" + mm.getProjection("location.Location.FlatProjection")]
+  const payload = formatPageQueryWithCount("families",
+    filters,
+    projections
+  );
+  return graphql(payload, 'INSUREE_FAMILY_SEARCHER');
+}

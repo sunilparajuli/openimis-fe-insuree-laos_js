@@ -1,6 +1,6 @@
 import InsureeMainMenu from "./components/InsureeMainMenu";
 import { CreatePage } from "./components/CreatePage";
-import { FamiliesPage } from "./components/FamiliesPage";
+import { FamiliesPage } from "./pages/FamiliesPage";
 import { InsureesPage } from "./components/InsureesPage";
 import { CappedItemServicePage } from "./components/CappedItemServicePage";
 import { ProfilePage } from "./components/ProfilePage";

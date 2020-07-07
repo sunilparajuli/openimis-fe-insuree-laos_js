@@ -30,5 +30,16 @@
     "insuree.gender.null": "Any",
     "insuree.gender.M": "Male",
     "insuree.gender.F": "Female",
-    "insuree.gender.O": "Other"
+    "insuree.gender.O": "Other",
+    "familySummaries": "{count} Families/Group Found",
+    "familySummaries.insuranceNo": "Insurance No.",
+    "familySummaries.lastName": "Last Name",
+    "familySummaries.otherNames": "Given Name",
+    "familySummaries.locationLevel.0": "Region",
+    "familySummaries.locationLevel.1": "District",
+    "familySummaries.locationLevel.2": "Municipality",
+    "familySummaries.locationLevel.3": "Village",
+    "familySummaries.poverty": "Poverty",
+    "familySummaries.validFrom": "Valid From",
+    "familySummaries.validTo": "Valid To"
 }

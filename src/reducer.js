@@ -15,6 +15,11 @@ function reducer(
         errorInsurees: null,
         insurees: [],
         insureesPageInfo: { totalCount: 0 },
+        fetchingFaimilies: false,
+        fetchedFamilies: false,
+        errorFamilies: null,
+        families: [],
+        familiesPageInfo: { totalCount: 0 },        
     },
     action,
 ) {
@@ -85,6 +90,30 @@ function reducer(
                 ...state,
                 fetching: false,
                 error: formatServerError(action.payload)
+            };
+        case 'INSUREE_FAMILY_SEARCHER_REQ':
+            return {
+                ...state,
+                fetchingFamilies: true,
+                fetchedFamilies: false,
+                families: null,
+                familiesPageInfo: { totalCount: 0 },
+                errorFamilies: null,
+            };
+        case 'INSUREE_FAMILY_SEARCHER_RESP':
+            return {
+                ...state,
+                fetchingFamilies: false,
+                fetchedFamilies: true,
+                families: parseData(action.payload.data.families),
+                familiesPageInfo: pageInfo(action.payload.data.families),
+                errorFamilies: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_FAMILY_SEARCHER_ERR':
+            return {
+                ...state,
+                fetchingFamilies: false,
+                errorFamilies: formatServerError(action.payload)
             };
         default:
             return state;
