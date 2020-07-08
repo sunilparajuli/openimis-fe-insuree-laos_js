@@ -31,6 +31,10 @@
     "insuree.gender.M": "Male",
     "insuree.gender.F": "Female",
     "insuree.gender.O": "Other",
+    "insuree.Family.povertyStatus": "Poverty Status",
+    "insuree.Family.povertyStatus.null": "Any",
+    "insuree.Family.povertyStatus.true": "Yes",
+    "insuree.Family.povertyStatus.false": "No",    
     "familySummaries": "{count} Families/Group Found",
     "familySummaries.insuranceNo": "Insurance No.",
     "familySummaries.lastName": "Last Name",
@@ -55,9 +59,6 @@
     "insuree.FamilyFilter.dobTo": "Birth Date To",
     "insuree.FamilyFilter.gender": "Gender",
     "insuree.FamilyFilter.poverty": "Poverty Status",
-    "insuree.FamilyFilter.poverty.Tristate.-1": "Any",
-    "insuree.FamilyFilter.poverty.Tristate.0": "Yes",
-    "insuree.FamilyFilter.poverty.Tristate.1": "No",
     "insuree.FamilyFilter.confirmationNo": "Confirmation No.",
     "insuree.FamilyFilter.showHistory": "Show historical values"
 }

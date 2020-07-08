@@ -179,30 +179,17 @@ class FamilyFilter extends Component {
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="FamilyFilter.poverty" field={
-                    <Grid item xs={3}>
-                        <Grid container alignItems="center" justify="center" direction="column">
-                            <Grid item>
-                                <FormattedMessage module="insuree" id="FamilyFilter.poverty" />
-                            </Grid>
-                            <Grid item>
-                                <Slider className={classes.tristate}
-                                    min={-1}
-                                    max={1}
-                                    step={1}
-                                    value={this._filterValue('poverty') === null ? -1 : this._filterValue('poverty')}
-                                    defaultValue={-1}
-                                    valueLabelDisplay="off"
-                                    marks={this.tristateMarks}
-                                    onChange={(e, v) => onChangeFilters([
-                                        {
-                                            id: 'poverty',
-                                            value: v,
-                                            filter: v === -1 ? null : `nullAsFalsePoverty: ${!v}`
-                                        }
-                                    ])}
-                                />
-                            </Grid>
-                        </Grid>
+                    <Grid item xs={3} className={classes.item}>
+                        <PublishedComponent pubRef="insuree.FamilyPovertyStatusPicker"
+                            value={this._filterValue('poverty')}
+                            onChange={v => onChangeFilters([
+                                {
+                                    id: 'poverty',
+                                    value: v,
+                                    filter: v === null ? null : `nullAsFalsePoverty: ${v}`
+                                }
+                            ])}
+                        />
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="FamilyFilter.confirmationNo" field={

@@ -8,6 +8,7 @@ import Enquiry from "./components/Enquiry";
 import InsureePicker from "./pickers/InsureePicker";
 import InsureeChfIdPicker from "./pickers/InsureeChfIdPicker";
 import InsureeGenderPicker from "./pickers/InsureeGenderPicker";
+import FamilyPovertyStatusPicker from "./pickers/FamilyPovertyStatusPicker";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
@@ -25,6 +26,7 @@ const DEFAULT_CONFIG = {
     {key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
     {key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
     {key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
+    {key: "insuree.FamilyPovertyStatusPicker", ref: FamilyPovertyStatusPicker },
 
     {key: "insuree.Avatar", ref: InsureeAvatar },
     {key: "insuree.Summary", ref: InsureeSummary },
