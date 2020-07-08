@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
 import { Checkbox } from "@material-ui/core";
 import {
-    Searcher, withModulesManager, formatMessageWithValues, formatDateFromISO
+    decodeId, withModulesManager, formatMessageWithValues, formatDateFromISO,
+    Searcher
 } from "@openimis/fe-core";
 
 import { fetchFamilySummaries } from "../actions";
@@ -42,32 +43,60 @@ class FamilySearcher extends Component {
         if (!!state.beforeCursor) {
             prms.push(`before: "${state.beforeCursor}"`)
         }
+        if (!!state.orderBy) {
+            prms.push(`orderBy: ["${state.orderBy}"]`);
+        }
         return prms;
     }
 
-    headers = () => {
+    headers = (filters) => {
         var h = [
             "familySummaries.insuranceNo",
             "familySummaries.lastName",
             "familySummaries.otherNames",
+            "familySummaries.email",
+            "familySummaries.phone",
+            "familySummaries.dob",
         ]
         for (var i = 0; i < this.locationLevels; i++) {
             h.push(`familySummaries.locationLevel.${i}`)
         }
         h.push(
             "familySummaries.poverty",
-            "familySummaries.validFrom",
-            "familySummaries.validTo",
+            "familySummaries.confirmationNo",
         );
+        if (filters.showHistory && !!filters.showHistory.value) {
+            h.push(
+                "familySummaries.id",
+                "familySummaries.validityFrom",
+                "familySummaries.validityTo",
+            )
+        }
         return h;
     }
 
-    sorts = () => {
-        return [];
-    }
-
-    aligns = () => {
-        return []
+    sorts = (filters) => {
+        var results = [
+            ['headInsuree__chfId', true],
+            ['headInsuree__lastName', true],
+            ['headInsuree__otherNames', true],
+            ['headInsuree__email', true],
+            ['headInsuree__phone', true],
+            ['headInsuree__dob', true]
+        ];
+        _.times(this.locationLevels, () => results.push(null));
+        results.push(
+            null,
+            ['confirmationNo', true]
+        )
+        if (filters.showHistory && !!filters.showHistory.value) {
+            results.push(
+                null,
+                ['validityFrom', false],
+                ['validityTo', false]
+            );
+        }
+        return results;
     }
 
     parentLocation = (location, level) => {
@@ -79,28 +108,45 @@ class FamilySearcher extends Component {
         return !!loc ? loc.name : "";
     }
 
-    itemFormatters = () => {
-        var result = [
+    itemFormatters = (filters) => {
+        var formatters = [
             f => !!f.headInsuree ? f.headInsuree.chfId : "",
             f => !!f.headInsuree ? f.headInsuree.lastName : "",
             f => !!f.headInsuree ? f.headInsuree.otherNames : "",
+            f => !!f.headInsuree ? f.headInsuree.email : "",
+            f => !!f.headInsuree ? f.headInsuree.phone : "",
+            f => !!f.headInsuree ? formatDateFromISO(this.props.modulesManager, this.props.intl, f.headInsuree.dob) : "",
         ]
         for (var i = 0; i < this.locationLevels; i++) {
             // need a fixed variable to refer to as parentLocation argument
             let j = i + 0;
-            result.push(f => this.parentLocation(f.location, j))
+            formatters.push(f => this.parentLocation(f.location, j))
         }
-        result.push(
+        formatters.push(
             f => <Checkbox
                 color="primary"
                 checked={f.poverty}
                 readOnly
             />,
-            f => formatDateFromISO(this.props.modulesManager, this.props.intl, f.validityFrom),
-            f => formatDateFromISO(this.props.modulesManager, this.props.intl, f.validityTo),
+            f => f.confirmationNo,
         )
-        return result;
+        if (filters.showHistory && !!filters.showHistory.value) {
+            formatters.push(
+                f => decodeId(f.id),
+                f => formatDateFromISO(
+                    this.props.modulesManager,
+                    this.props.intl,
+                    f.validityFrom),
+                f => formatDateFromISO(
+                    this.props.modulesManager,
+                    this.props.intl,
+                    f.validityTo),
+            )
+        }
+        return formatters;
     }
+
+    rowDisabled = (selection, i) => !!i.validityTo
 
     render() {
         const { intl,
@@ -130,8 +176,8 @@ class FamilySearcher extends Component {
                 filtersToQueryParams={this.filtersToQueryParams}
                 headers={this.headers}
                 itemFormatters={this.itemFormatters}
-                aligns={this.aligns}
                 sorts={this.sorts}
+                rowDisabled={this.rowDisabled}
                 onDoubleClick={onDoubleClick}
             />
         )
