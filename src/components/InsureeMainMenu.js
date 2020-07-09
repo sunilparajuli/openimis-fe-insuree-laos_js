@@ -5,7 +5,7 @@ import { AssignmentInd, GroupAdd, People, PersonPin } from "@material-ui/icons";
 import { formatMessage, MainMenuContribution } from "@openimis/fe-core";
 import {
   RIGHT_FAMILY,
-  RIGHT_ADD_FAMILY,
+  RIGHT_FAMILY_ADD,
   RIGHT_INSUREE,
 } from "../constants";
 
@@ -15,7 +15,7 @@ class InsureeMainMenu extends Component {
   render() {
     const { rights } = this.props;
     let entries = [];
-    if (rights.includes(RIGHT_ADD_FAMILY)) {
+    if (rights.includes(RIGHT_FAMILY_ADD)) {
       entries.push(
         {
           text: formatMessage(this.props.intl, "insuree", "menu.addFamilyOrGroup"),

@@ -31,11 +31,11 @@ class InsureeFamilySummary extends Component {
     }
 
     render() {
-        const { intl, classes, insuree, fetchedFamilyMembers, fetchingFamilyMembers, familyMembers, errorFamilyMembers } = this.props;
+        const { intl, classes, insuree, fetchedInsureeInsureeFamilyMembers, fetchingInsureeFamilyMembers, insureeFamilyMembers, errorInsureeFamilyMembers } = this.props;
         return (
             <Fragment>
-                <ProgressOrError progress={fetchingFamilyMembers} error={errorFamilyMembers} />
-                {!!insuree && !!fetchedFamilyMembers && (
+                <ProgressOrError progress={fetchingInsureeFamilyMembers} error={errorInsureeFamilyMembers} />
+                {!!insuree && !!fetchedInsureeFamilyMembers && (
                     <Paper className={classes.paper}>
                         <Table
                             module="insuree"
@@ -50,7 +50,7 @@ class InsureeFamilySummary extends Component {
                                 i => `${i.otherNames} ${i.lastName} ${i.head ? formatMessage(this.props.intl, "insuree", "familySummary.head"):  ""}`,
                                 i => i.phone,
                             ]}
-                            items={familyMembers}
+                            items={insureeFamilyMembers}
                         />
                     </Paper>
                 )}
@@ -62,10 +62,10 @@ class InsureeFamilySummary extends Component {
 
 const mapStateToProps = state => ({
     insuree: state.insuree.insuree,
-    fetchingFamilyMembers: state.insuree.fetchingFamilyMembers,
-    fetchedFamilyMembers: state.insuree.fetchedFamilyMembers,
-    familyMembers: state.insuree.familyMembers,
-    errorFamilyMembers: state.insuree.errorFamilyMembers,
+    fetchingInsureeFamilyMembers: state.insuree.fetchingInsureeFamilyMembers,
+    fetchedInsureeFamilyMembers: state.insuree.fetchedInsureeFamilyMembers,
+    insureeFamilyMembers: state.insuree.insureeFamilyMembers,
+    errorInsureeFamilyMembers: state.insuree.errorInsureeFamilyMembers,
 });
 
 const mapDispatchToProps = dispatch => {

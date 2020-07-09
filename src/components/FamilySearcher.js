@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Checkbox } from "@material-ui/core";
+import { Checkbox, IconButton } from "@material-ui/core";
+import TabIcon from "@material-ui/icons/Tab";
 import {
     decodeId, withModulesManager, formatMessageWithValues, formatDateFromISO,
     Searcher
@@ -72,6 +73,7 @@ class FamilySearcher extends Component {
                 "familySummaries.validityTo",
             )
         }
+        h.push("familySummaries.openNewTab")
         return h;
     }
 
@@ -143,6 +145,7 @@ class FamilySearcher extends Component {
                     f.validityTo),
             )
         }
+        formatters.push(f => <IconButton onClick={e => this.props.onDoubleClick(f, true)} > <TabIcon /></IconButton >)
         return formatters;
     }
 

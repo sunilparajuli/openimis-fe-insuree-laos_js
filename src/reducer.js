@@ -6,20 +6,31 @@ function reducer(
         fetched: false,
         error: null,
         insuree: null,
-        fetchingFamilyMembers: false,
-        fetchedFamilyMembers: false,
-        errorFamilyMembers: null,
-        familyMembers: null,
+        fetchingInsureeFamilyMembers: false,
+        fetchedInsureeFamilyMembers: false,
+        errorInsureeFamilyMembers: null,
+        insureeFamilyMembers: null,
+        fetchingfamilyMembers: false,
+        fetchedfamilyMembers: false,
+        errorfamilyMembers: null,
+        familyMembers: null,        
         fetchingInsurees: false,
         fetchedInsurees: false,
         errorInsurees: null,
         insurees: [],
         insureesPageInfo: { totalCount: 0 },
-        fetchingFaimilies: false,
+        fetchingConfirmationTypes: false,
+        fetchedConfirmationTypes: false,
+        errorConfirmationTypes: null,
+        confirmationTypes: [],
+        fetchingFamilies: false,
         fetchedFamilies: false,
         errorFamilies: null,
         families: [],
-        familiesPageInfo: { totalCount: 0 },        
+        familiesPageInfo: { totalCount: 0 },
+        family: {},
+        fetchingFamily: false,
+        errorFamily: null,
     },
     action,
 ) {
@@ -49,24 +60,68 @@ function reducer(
         case 'INSUREE_FAMILY_REQ':
             return {
                 ...state,
-                fetchingFamilyMembers: true,
-                fetchedFamilyMembers: false,
-                familyMembers: null,
-                errorFamilyMembers: null,
+                fetchingInsureeFamilyMembers: true,
+                fetchedInsureeFamilyMembers: false,
+                insureeFamilyMembers: null,
+                errorInsureeFamilyMembers: null,
             };
         case 'INSUREE_FAMILY_RESP':
             return {
                 ...state,
-                fetchingFamilyMembers: false,
-                fetchedFamilyMembers: true,
-                familyMembers: action.payload.data.insureeFamilyMembers,
-                errorFamilyMembers: formatGraphQLError(action.payload)
+                fetchingInsureeFamilyMembers: false,
+                fetchedInsureeFamilyMembers: true,
+                insureeFamilyMembers: action.payload.data.insureeFamilyMembers,
+                errorInsureeFamilyMembers: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_ERR':
             return {
                 ...state,
+                fetchingInsureeFamilyMembers: false,
+                errorInsureeFamilyMembers: formatServerError(action.payload)
+            };
+        case 'INSUREE_FAMILY_MEMBERS_REQ':
+            return {
+                ...state,
+                fetchingInsureeFamilyMembers: true,
+                fetchedInsureeFamilyMembers: false,
+                insureeFamilyMembers: null,
+                errorInsureeFamilyMembers: null,
+            };
+        case 'INSUREE_FAMILY_MEMBERS_RESP':
+            return {
+                ...state,
+                fetchingFamilyMembers: false,
+                fetchedFamilyMembers: true,
+                familyMembers: action.payload.data.familyMembers,
+                errorFamilyMembers: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_FAMILY_MEMBERS_ERR':
+            return {
+                ...state,
                 fetchingFamilyMembers: false,
                 errorFamilyMembers: formatServerError(action.payload)
+            };
+        case 'INSUREE_GENDERS_REQ':
+            return {
+                ...state,
+                fetchingInsureeGenders: true,
+                fetchedInsureeGenders: false,
+                insureeGenders: null,
+                errorInsureeGenders: null,
+            };
+        case 'INSUREE_GENDERS_RESP':
+            return {
+                ...state,
+                fetchingInsureeGenders: false,
+                fetchedInsureeGenders: true,
+                insureeGenders: action.payload.data.insureeGenders,
+                errorInsureeGenders: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_GENDERS_ERR':
+            return {
+                ...state,
+                fetchingInsureeGenders: false,
+                errorInsureeGenders: formatServerError(action.payload)
             };
         case 'INSUREE_INSUREES_REQ':
             return {
@@ -114,6 +169,73 @@ function reducer(
                 ...state,
                 fetchingFamilies: false,
                 errorFamilies: formatServerError(action.payload)
+            };
+        case 'INSUREE_CONFIRMATION_TYPES_REQ':
+            return {
+                ...state,
+                fetchingConfirmationTypes: true,
+                fetchedConfirmationTypes: false,
+                confirmationTypes: null,
+                errorConfirmationTypes: null,
+            };
+        case 'INSUREE_CONFIRMATION_TYPES_RESP':
+            return {
+                ...state,
+                fetchingConfirmationTypes: false,
+                fetchedConfirmationTypes: true,
+                confirmationTypes: action.payload.data.confirmationTypes,
+                errorConfirmationTypes: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_CONFIRMATION_TYPES_ERR':
+            return {
+                ...state,
+                fetchingConfirmationTypes: false,
+                errorConfirmationTypes: formatServerError(action.payload)
+            };
+        case 'INSUREE_FAMILY_TYPES_REQ':
+            return {
+                ...state,
+                fetchingFamilyTypes: true,
+                fetchedFamilyTypes: false,
+                familyTypes: null,
+                errorFamilyTypes: null,
+            };
+        case 'INSUREE_FAMILY_TYPES_RESP':
+            return {
+                ...state,
+                fetchingFamilyTypes: false,
+                fetchedFamilyTypes: true,
+                familyTypes: action.payload.data.familyTypes,
+                errorFamilyTypes: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_FAMILY_TYPES_ERR':
+            return {
+                ...state,
+                fetchingFamilyTypes: false,
+                errorFamilyTypes: formatServerError(action.payload)
+            };
+        case 'INSUREE_FAMILY_OVERVIEW_REQ':
+            return {
+                ...state,
+                fetchingFamily: true,
+                fetchedFamily: false,
+                family: null,
+                errorFamily: null,
+            };
+        case 'INSUREE_FAMILY_OVERVIEW_RESP':
+            var families = parseData(action.payload.data.families);
+            return {
+                ...state,
+                fetchingFamily: false,
+                fetchedFamily: true,
+                family: (!!families && families.length > 0) ? families[0] : null,
+                errorInsureeFamilyMembers: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_FAMILY_OVERVIEW_ERR':
+            return {
+                ...state,
+                fetchingFamily: false,
+                errorFamily: formatServerError(action.payload)
             };
         default:
             return state;

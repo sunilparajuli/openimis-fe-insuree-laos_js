@@ -20,25 +20,12 @@ const styles = theme => ({
         padding: theme.spacing(1)
     },
     paperDivider: theme.paper.divider,
-    tristate: {
-        width: "200px",
-    },
 });
 
 class FamilyFilter extends Component {
 
     state = {
         showHistory: false,
-    }
-
-    constructor(props) {
-        super(props);
-        this.tristateMarks = [-1, 0, 1].map(value => {
-            return {
-                value,
-                label: formatMessage(props.intl, "insuree", `FamilyFilter.poverty.Tristate.${value}`)
-            }
-        })
     }
 
     debouncedOnChangeFilter = _debounce(
@@ -83,7 +70,7 @@ class FamilyFilter extends Component {
                 <ControlledField module="insuree" id="FamilyFilter.chfId" field={
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
-                            module="insuree" label="FamilyFilter.chfId"
+                            module="insuree" label="Family.chfId"
                             name="chfId"
                             value={this._filterValue('chfId')}
                             onChange={v => this.debouncedOnChangeFilter([
@@ -99,7 +86,7 @@ class FamilyFilter extends Component {
                 <ControlledField module="insuree" id="FamilyFilter.lastName" field={
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
-                            module="insuree" label="FamilyFilter.lastName"
+                            module="insuree" label="Family.lastName"
                             name="lastName"
                             value={this._filterValue('lastName')}
                             onChange={v => this.debouncedOnChangeFilter([
@@ -115,7 +102,7 @@ class FamilyFilter extends Component {
                 <ControlledField module="insuree" id="FamilyFilter.givenName" field={
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
-                            module="insuree" label="FamilyFilter.givenName"
+                            module="insuree" label="Family.otherNames"
                             name="givenName"
                             value={this._filterValue('givenName')}
                             onChange={v => this.debouncedOnChangeFilter([
@@ -131,7 +118,7 @@ class FamilyFilter extends Component {
                 <ControlledField module="insuree" id="FamilyFilter.email" field={
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
-                            module="insuree" label="FamilyFilter.email"
+                            module="insuree" label="Family.email"
                             name="email"
                             value={this._filterValue('email')}
                             onChange={v => this.debouncedOnChangeFilter([
@@ -151,7 +138,7 @@ class FamilyFilter extends Component {
                                 <PublishedComponent pubRef="core.DatePicker"
                                     value={this._filterValue('dobFrom')}
                                     module="insuree"
-                                    label="FamilyFilter.dobFrom"
+                                    label="Family.dobFrom"
                                     onChange={d => onChangeFilters([
                                         {
                                             id: 'dobFrom',
@@ -165,7 +152,7 @@ class FamilyFilter extends Component {
                                 <PublishedComponent pubRef="core.DatePicker"
                                     value={this._filterValue('dobTo')}
                                     module="insuree"
-                                    label="FamilyFilter.dobTo"
+                                    label="Family.dobTo"
                                     onChange={d => onChangeFilters([
                                         {
                                             id: 'dobTo',
@@ -195,7 +182,7 @@ class FamilyFilter extends Component {
                 <ControlledField module="insuree" id="FamilyFilter.confirmationNo" field={
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
-                            module="insuree" label="FamilyFilter.confirmationNo"
+                            module="insuree" label="Family.confirmationNo"
                             name="confirmationNo"
                             value={this._filterValue('confirmationNo')}
                             onChange={v => this.debouncedOnChangeFilter([
