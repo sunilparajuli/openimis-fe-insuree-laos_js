@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { injectIntl, FormattedDate } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid, Typography } from "@material-ui/core";
-import { formatMessage, withModulesManager, Contributions, ControlledField } from "@openimis/fe-core";
+import { formatMessage, withModulesManager, formatDateFromISO, Contributions, ControlledField } from "@openimis/fe-core";
 
 const INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY = "insuree.InsureeSummaryAvatar";
 const INSUREE_SUMMARY_CORE_CONTRIBUTION_KEY = "insuree.InsureeSummaryCore";
@@ -58,7 +58,7 @@ class InsureeSummary extends Component {
                                         {insuree && (
                                             <Fragment>
                                                 <ControlledField module="insuree" id="InsureeSummary.dob" field={
-                                                    <FormattedDate value={insuree.dob} />
+                                                    formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob)
                                                 } />
                                                 <ControlledField module="insuree" id="InsureeSummary.age" field={
                                                     ` (${insuree.age} ${formatMessage(this.props.intl, "insuree", "ageUnit")})`

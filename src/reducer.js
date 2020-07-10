@@ -10,9 +10,9 @@ function reducer(
         fetchedInsureeFamilyMembers: false,
         errorInsureeFamilyMembers: null,
         insureeFamilyMembers: null,
-        fetchingfamilyMembers: false,
-        fetchedfamilyMembers: false,
-        errorfamilyMembers: null,
+        fetchingFamilyMembers: false,
+        fetchedFamilyMembers: false,
+        errorFamilyMembers: null,
         familyMembers: null,        
         fetchingInsurees: false,
         fetchedInsurees: false,
@@ -82,10 +82,10 @@ function reducer(
         case 'INSUREE_FAMILY_MEMBERS_REQ':
             return {
                 ...state,
-                fetchingInsureeFamilyMembers: true,
-                fetchedInsureeFamilyMembers: false,
+                fetchingFamilyMembers: true,
+                fetchedFamilyMembers: false,
                 insureeFamilyMembers: null,
-                errorInsureeFamilyMembers: null,
+                errorFamilyMembers: null,
             };
         case 'INSUREE_FAMILY_MEMBERS_RESP':
             return {

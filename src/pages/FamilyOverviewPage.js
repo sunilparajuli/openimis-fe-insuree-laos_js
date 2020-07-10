@@ -76,6 +76,7 @@ class FamiliyOverview extends Component {
                         HeadPanel={FamilyMasterPanel}
                         Panels={[FamilyInsureesOverview]}
                         contributedPanelsKey={INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY}
+                        family={this.state.family}
                     />
                 )}
             </div>

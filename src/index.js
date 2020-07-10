@@ -20,7 +20,6 @@ import InsureeSummary from "./components/InsureeSummary";
 import InsureeFirstServicePoint from "./components/InsureeFirstServicePoint";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
-import FamilyInsureesOverview from "./components/FamilyInsureesOverview";
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";

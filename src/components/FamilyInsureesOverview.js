@@ -4,9 +4,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import _ from "lodash";
-import { Paper } from "@material-ui/core";
+import { Checkbox, Paper } from "@material-ui/core";
 import {
-    formatMessage, Table
+    formatMessage, withModulesManager, formatDateFromISO,
+    Table
 } from "@openimis/fe-core";
 
 import { fetchFamilyMembers } from "../actions";
@@ -17,12 +18,6 @@ const styles = theme => ({
 });
 
 class FamilyInsureesOverview extends Component {
-
-    // componentDidMount() {
-    //     if (!!this.props.edited && this.props.edited.headInsuree && this.props.edited.headInsuree.chfId) {
-    //         this.props.fetchInsureeFamily(this.props.modulesManager, this.props.edited.headInsuree.chfId);
-    //     }
-    // }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if ((!!prevProps.edited && prevProps.edited.uuid) !== (!!this.props.edited && this.props.edited.uuid)) {
@@ -44,23 +39,25 @@ class FamilyInsureesOverview extends Component {
         i => i.chfId || "",
         i => i.lastName || "",
         i => i.otherNames || "",
-        i => (i.gender && i.gender.code) || "",
-        i => i.dob || "",
-        i => i.cardIssued || "",
+        i => (i.gender && i.gender.code) ? formatMessage(this.props.intl, "insuree", `InsureeGender.${i.gender.code}`) : "",
+        i => formatDateFromISO(this.props.modulesManager, this.props.intl, i.dob),
+        i => <Checkbox color="primary" readOnly={true} disabled={true} checked={i.cardIssued} />,
     ];
 
     render() {
-        const { intl, classes, familyMembers } = this.props;
+        const { intl, classes, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
+
         return (
             <Paper className={classes.paper}>
-
                 <Table
                     module="insuree"
                     header={formatMessage(intl, "insuree", "Family.insurees")}
                     headers={this.headers}
                     itemFormatters={this.formatters}
                     items={familyMembers || []}
-                    onDelete={idx => console.log("delete " + idx)}
+                    fetching={fetchingFamilyMembers}
+                    error={errorFamilyMembers}
+                    onDelete={idx => console.log("TODO: delete " + idx)}
                 />
             </Paper>
         )
@@ -79,4 +76,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default injectIntl(withTheme(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(FamilyInsureesOverview))));
+export default withModulesManager(injectIntl(withTheme(withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(FamilyInsureesOverview)))));

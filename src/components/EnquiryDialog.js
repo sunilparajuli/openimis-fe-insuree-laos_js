@@ -54,7 +54,7 @@ class EnquiryDialog extends Component {
                         <Fragment>
                             <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
                             <Router history={history}>
-                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} />
+                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} insuree={insuree}/>
                             </Router>
                         </Fragment>
                     )}
