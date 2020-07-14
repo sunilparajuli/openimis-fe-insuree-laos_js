@@ -50,20 +50,20 @@ class FamilyMasterPanel extends Component {
                     />
                 </Grid>
                 <Grid item xs={3}>
-                <PublishedComponent
+                    <PublishedComponent
                         pubRef="insuree.FamilyTypePicker"
                         readOnly={true}
-                        withNull={true}    
-                        nullLabel={formatMessage(intl, "insuree", "Family.FamilyType.null")}                    
+                        withNull={true}
+                        nullLabel={formatMessage(intl, "insuree", "Family.FamilyType.null")}
                         value={edited.familyType}
                     />
-                </Grid>                
+                </Grid>
                 <Grid item xs={3}>
                     <PublishedComponent
                         pubRef="insuree.ConfirmationTypePicker"
                         readOnly={true}
-                        withNull={true}    
-                        nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}                    
+                        withNull={true}
+                        nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}
                         value={edited.confirmationType}
                     />
                 </Grid>
@@ -82,7 +82,7 @@ class FamilyMasterPanel extends Component {
                         multiline
                         rows={2}
                         readOnly={true}
-                        value={"" + edited.address }
+                        value={"" + edited.address}
                     />
                 </Grid>
                 <Grid item xs={3}>
@@ -90,7 +90,7 @@ class FamilyMasterPanel extends Component {
                         control={<Checkbox color="primary" checked={!!edited.poverty} disabled={true} />}
                         label={formatMessage(intl, "insuree", "Family.poverty")}
                     />
-                </Grid>                
+                </Grid>
             </Grid>
         );
     }
