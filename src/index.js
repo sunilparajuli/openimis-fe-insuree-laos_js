@@ -1,14 +1,18 @@
-import InsureeMainMenu from "./components/InsureeMainMenu";
-import { CreatePage } from "./components/CreatePage";
+import InsureeMainMenu from "./menus/InsureeMainMenu";
 import FamiliesPage from "./pages/FamiliesPage";
+import InsureePage from "./pages/InsureePage";
+import { CappedItemServicePage } from "./pages/CappedItemServicePage";
+import { InsureesPage } from "./pages/InsureesPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import FamilyOverviewPage from "./pages/FamilyOverviewPage";
-import { InsureesPage } from "./components/InsureesPage";
-import { CappedItemServicePage } from "./components/CappedItemServicePage";
-import { ProfilePage } from "./components/ProfilePage";
 import Enquiry from "./components/Enquiry";
 import InsureePicker from "./pickers/InsureePicker";
 import InsureeChfIdPicker from "./pickers/InsureeChfIdPicker";
 import InsureeGenderPicker from "./pickers/InsureeGenderPicker";
+import EducationPicker from "./pickers/EducationPicker";
+import ProfessionPicker from "./pickers/ProfessionPicker";
+import IdentificationTypePicker from "./pickers/IdentificationTypePicker";
+import InsureeMaritalStatusPicker from "./pickers/InsureeMaritalStatusPicker";
 import FamilyPovertyStatusPicker from "./pickers/FamilyPovertyStatusPicker";
 import ConfirmationTypePicker from "./pickers/ConfirmationTypePicker";
 import FamilyTypePicker from "./pickers/FamilyTypePicker";
@@ -17,11 +21,17 @@ import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
 import InsureeProfileLink from "./components/InsureeProfileLink";
 import InsureeSummary from "./components/InsureeSummary";
-import InsureeFirstServicePoint from "./components/InsureeFirstServicePoint";
+import InsureeFirstServicePointCondensed from "./components/InsureeFirstServicePointCondensed";
+import InsureeFirstServicePointPanel from "./components/InsureeFirstServicePointPanel";
+import InsureeAddress from "./components/InsureeAddress";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
+import InsureeDetailPanel from "./components/InsureeDetailPanel";
+
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
+const ROUTE_INSUREE_INSUREE = "insuree/insuree";
+const ROUTE_INSUREE_FIND_FAMILY = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
 
 const DEFAULT_CONFIG = {
@@ -32,23 +42,31 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
     { key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
     { key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
+    { key: "insuree.InsureeMaritalStatusPicker", ref: InsureeMaritalStatusPicker },
+    { key: "insuree.EducationPicker", ref: EducationPicker },
+    { key: "insuree.ProfessionPicker", ref: ProfessionPicker },
+    { key: "insuree.IdentificationTypePicker", ref: IdentificationTypePicker },
     { key: "insuree.FamilyPovertyStatusPicker", ref: FamilyPovertyStatusPicker },
     { key: "insuree.ConfirmationTypePicker", ref: ConfirmationTypePicker },
     { key: "insuree.FamilyTypePicker", ref: FamilyTypePicker },
 
+    { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FIND_FAMILY },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
+    { key: "insuree.route.insuree", ref: ROUTE_INSUREE_INSUREE },
 
     { key: "insuree.Avatar", ref: InsureeAvatar },
     { key: "insuree.Summary", ref: InsureeSummary },
-    { key: "insuree.FirstServicePoint", ref: InsureeFirstServicePoint },
+    { key: "insuree.InsureeFirstServicePointCondensed", ref: InsureeFirstServicePointCondensed },
+    { key: "insuree.InsureeFirstServicePointPanel", ref: InsureeFirstServicePointPanel },
     { key: "insuree.FamilySummary", ref: InsureeFamilySummary },
+    { key: "insuree.InsureeAddress", ref: InsureeAddress },
     { key: "insuree.ProfileLink", ref: InsureeProfileLink },
     { key: "insuree.CappedItemServiceLink", ref: InsureeCappedItemServiceLink },
   ],
   "core.Router": [
-    { path: "insuree/create", component: CreatePage },
     { path: ROUTE_INSUREE_FAMILIES, component: FamiliesPage },
     { path: ROUTE_INSUREE_FAMILY_OVERVIEW + "/:family_uuid", component: FamilyOverviewPage },
+    { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid/", component: InsureePage },
     { path: "insuree/insurees", component: InsureesPage },
     { path: "insuree/cappedItemService", component: CappedItemServicePage },
     { path: "insuree/profile", component: ProfilePage },
@@ -56,7 +74,8 @@ const DEFAULT_CONFIG = {
   "core.AppBar": [Enquiry],
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
-  "insuree.InsureeSummaryExt": [InsureeFirstServicePoint],
+  "insuree.InsureeSummaryExt": [InsureeFirstServicePointCondensed],
+  "insuree.InsureePage.panels": [InsureeDetailPanel, InsureeFirstServicePointPanel],
 }
 
 export const InsureeModule = (cfg) => {

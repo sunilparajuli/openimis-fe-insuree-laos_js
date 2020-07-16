@@ -106,8 +106,8 @@ class InsureeChfIdPicker extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-    fetching: state.insuree.fetching,
-    error: state.insuree.error,
+    fetching: state.insuree.fetchingInsuree,
+    error: state.insuree.errorInsuree,
     insuree: state.insuree.insuree,
 })
 

@@ -1,5 +1,11 @@
-import { graphql, formatQuery, formatPageQueryWithCount } from "@openimis/fe-core";
+import { graphql, formatQuery, formatPageQuery, formatPageQueryWithCount } from "@openimis/fe-core";
 
+const FAMILY_FULL_PROJECTION = mm => [
+  "id", "uuid", "poverty", "confirmationNo", "confirmationType{code}", "familyType{code}", "address",
+  "validityFrom", "validityTo",
+  "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
+  "location" + mm.getProjection("location.Location.FlatProjection")
+];
 
 export function fetchInsureeGenders() {
   const payload = formatQuery("insureeGenders",
@@ -10,18 +16,35 @@ export function fetchInsureeGenders() {
 }
 
 export function fetchInsuree(mm, chfid) {
-  let payload = formatQuery("insuree",
+  let payload = formatPageQuery("insurees",
     [`chfId:"${chfid}"`],
     ["id", "chfId", "lastName", "otherNames", "dob", "age",
-      "family{id}",
+      `family{id}`,
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
       "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")]
   );
-  return graphql(payload, 'INSUREE_ENQUIRY');
+  return graphql(payload, 'INSUREE_INSUREE');
 }
 
-export function fetchInsurees(mm, filters) {
+export function fetchInsureeFull(mm, uuid) {
+  let payload = formatPageQuery("insurees",
+    [`uuid:"${uuid}"`],
+    ["id", "chfId", "lastName", "otherNames", "dob", "age",
+      `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
+      "photo{folder,filename}",
+      "gender{code, gender, altLanguage}",
+      "education{id}",
+      "profession{id}",
+      "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
+      "currentAddress",
+      "typeOfId{code}", "passport",
+      "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")]
+  );
+  return graphql(payload, 'INSUREE_INSUREE');
+}
+
+export function fetchInsureesForPicker(mm, filters) {
   let payload = formatPageQueryWithCount("insurees",
     filters,
     mm.getRef("insuree.InsureePicker.projection")
@@ -52,7 +75,7 @@ export function fetchFamilySummaries(mm, filters) {
 export function fetchFamilyMembers(mm, family_uuid) {
   let payload = formatQuery("familyMembers",
     [`familyUuid:"${family_uuid}"`],
-    ["chfId", "otherNames", "lastName", "head", "phone", "gender{code}", "dob", "cardIssued"]
+    ["uuid", "chfId", "otherNames", "lastName", "head", "phone", "gender{code}", "dob", "cardIssued"]
   );
   return graphql(payload, 'INSUREE_FAMILY_MEMBERS');
 }
@@ -75,14 +98,33 @@ export function fetchFamilyTypes() {
 
 export function fetchFamily(mm, familyUuid) {
   let filter = `uuid: "${familyUuid}"`
-  var projections = [
-    "id", "uuid", "poverty", "confirmationNo", "confirmationType{code}", "familyType{code}", "address",
-    "validityFrom", "validityTo",
-    "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
-    "location" + mm.getProjection("location.Location.FlatProjection")]
   const payload = formatPageQueryWithCount("families",
     [filter],
-    projections
+    FAMILY_FULL_PROJECTION(mm)
   );
   return graphql(payload, 'INSUREE_FAMILY_OVERVIEW');
+}
+
+export function fetchEducations(mm) {
+  const payload = formatQuery("educations",
+    null,
+    ["id"]
+  );
+  return graphql(payload, 'INSUREE_EDUCATIONS');
+}
+
+export function fetchProfessions(mm) {
+  const payload = formatQuery("professions",
+    null,
+    ["id"]
+  );
+  return graphql(payload, 'INSUREE_PROFESSIONS');
+}
+
+export function fetchIdentificationTypes(mm) {
+  const payload = formatQuery("identificationTypes",
+    null,
+    ["code"]
+  );
+  return graphql(payload, 'INSUREE_IDENTIFICATION_TYPES');
 }

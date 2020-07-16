@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import { AssignmentInd, GroupAdd, People, PersonPin } from "@material-ui/icons";
-import { formatMessage, MainMenuContribution } from "@openimis/fe-core";
+import { formatMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   RIGHT_FAMILY,
   RIGHT_FAMILY_ADD,
@@ -61,4 +61,4 @@ const mapStateToProps = state => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
 });
 
-export default injectIntl(connect(mapStateToProps)(InsureeMainMenu));
+export default withModulesManager(injectIntl(connect(mapStateToProps)(InsureeMainMenu)));

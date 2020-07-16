@@ -77,6 +77,7 @@ class FamiliyOverview extends Component {
                         Panels={[FamilyInsureesOverview]}
                         contributedPanelsKey={INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY}
                         family={this.state.family}
+                        back={e => historyPush(modulesManager, history, "insuree.route.findFamily")}
                     />
                 )}
             </div>

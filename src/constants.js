@@ -1,4 +1,5 @@
 export const INSUREE_GENDERS = ["M", "F", "O"]
+export const INSUREE_MARITAL_STATUS = ["N", "W", "S", "D", "M"]
 export const FAMILY_POVERTY_STATUS = [true, false]
 
 export const RIGHT_FAMILY = 101001; //101000 in doc ... but in practice...

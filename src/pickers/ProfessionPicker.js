@@ -3,46 +3,46 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import { formatMessage, AutoSuggestion, withModulesManager } from "@openimis/fe-core";
-import { fetchFamilyTypes } from "../actions";
+import { fetchProfessions } from "../actions";
 import _debounce from "lodash/debounce";
 import _ from "lodash";
 
-class FamilyTypePicker extends Component {
+class ProfessionPicker extends Component {
 
     constructor(props) {
         super(props);
-        this.selectThreshold = props.modulesManager.getConf("fe-insuree", "FamilyTypePicker.selectThreshold", 10);
+        this.selectThreshold = props.modulesManager.getConf("fe-insuree", "ProfessionPicker.selectThreshold", 10);
     }
 
     componentDidMount() {
-        if (!this.props.familyTypes) {
+        if (!this.props.Professions) {
             // prevent loading multiple times the cache when component is
             // several times on a page
             setTimeout(
                 () => {
-                    !this.props.fetching && !this.props.fetched && this.props.fetchFamilyTypes(this.props.modulesManager)
+                    !this.props.fetching && !this.props.fetched && this.props.fetchProfessions(this.props.modulesManager)
                 },
                 Math.floor(Math.random() * 300)
             );
         }
     }
 
-    nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `FamilyType.null`)
+    nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `Profession.null`)
 
-    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `FamilyType.${i}`)}` : this.nullDisplay
+    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `Profession.${i}`)}` : this.nullDisplay
 
     onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 
     render() {
-        const { intl, familyTypes, withLabel = true, label, withPlaceholder = false, placeholder, value, reset,
+        const { intl, professions, withLabel = true, label, withPlaceholder = false, placeholder, value, reset,
             readOnly = false, required = false,
             withNull = false, nullLabel = null
         } = this.props;
         return <AutoSuggestion
             module="insuree"
-            items={familyTypes}
-            label={!!withLabel && (label || formatMessage(intl, "insuree", "FamilyTypePicker.label"))}
-            placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "FamilyTypePicker.placehoder")) : null}
+            items={professions}
+            label={!!withLabel && (label || formatMessage(intl, "insuree", "ProfessionPicker.label"))}
+            placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "ProfessionPicker.placehoder")) : null}
             getSuggestionValue={this.formatSuggestion}
             onSuggestionSelected={this.onSuggestionSelected}
             value={value}
@@ -57,14 +57,14 @@ class FamilyTypePicker extends Component {
 }
 
 const mapStateToProps = state => ({
-    familyTypes: state.insuree.familyTypes,
-    fetching: state.insuree.fetchingFamilyTypes,
-    fetched: state.medical.fetchedFamilyTypes,
+    professions: state.insuree.professions,
+    fetching: state.insuree.fetchingProfessions,
+    fetched: state.medical.fetchedProfessions,
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchFamilyTypes }, dispatch);
+    return bindActionCreators({ fetchProfessions }, dispatch);
 };
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(
-    withModulesManager(FamilyTypePicker)));
+    withModulesManager(ProfessionPicker)));

@@ -2,9 +2,9 @@ import { parseData, pageInfo, formatServerError, formatGraphQLError } from '@ope
 
 function reducer(
     state = {
-        fetching: false,
-        fetched: false,
-        error: null,
+        fetchingInsuree: false,
+        fetchedInsuree: false,
+        errorInsuree: null,
         insuree: null,
         fetchingInsureeFamilyMembers: false,
         fetchedInsureeFamilyMembers: false,
@@ -13,7 +13,7 @@ function reducer(
         fetchingFamilyMembers: false,
         fetchedFamilyMembers: false,
         errorFamilyMembers: null,
-        familyMembers: null,        
+        familyMembers: null,
         fetchingInsurees: false,
         fetchedInsurees: false,
         errorInsurees: null,
@@ -31,31 +31,43 @@ function reducer(
         family: {},
         fetchingFamily: false,
         errorFamily: null,
+        fetchingEducations: false,
+        fetchedEducations: false,
+        educations: null,
+        errorEducations: null,
+        fetchingProfessions: false,
+        fetchedProfessions: false,
+        professions: null,
+        errorProfessions: null,
+        fetchingIdentificationTypes: false,
+        fetchedIdentificationTypes: false,
+        identificationTypes: null,
+        errorIdentificationTypes: null,
     },
     action,
 ) {
     switch (action.type) {
-        case 'INSUREE_ENQUIRY_REQ':
+        case 'INSUREE_INSUREE_REQ':
             return {
                 ...state,
-                fetching: true,
-                fetched: false,
+                fetchingInsuree: true,
+                fetchedInsuree: false,
                 insuree: null,
-                error: null,
+                errorInsuree: null,
             };
-        case 'INSUREE_ENQUIRY_RESP':
+        case 'INSUREE_INSUREE_RESP':
             return {
                 ...state,
-                fetching: false,
-                fetched: true,
-                insuree: action.payload.data.insuree,
-                error: formatGraphQLError(action.payload)
+                fetchingInsuree: false,
+                fetchedInsuree: true,
+                insuree: parseData(action.payload.data.insurees)[0],
+                errorInsuree: formatGraphQLError(action.payload)
             };
-        case 'INSUREE_ENQUIRY_ERR':
+        case 'INSUREE_INSUREE_ERR':
             return {
                 ...state,
-                fetching: false,
-                error: formatServerError(action.payload)
+                fetchingInsuree: false,
+                errorInsuree: formatServerError(action.payload)
             };
         case 'INSUREE_FAMILY_REQ':
             return {
@@ -229,13 +241,79 @@ function reducer(
                 fetchingFamily: false,
                 fetchedFamily: true,
                 family: (!!families && families.length > 0) ? families[0] : null,
-                errorInsureeFamilyMembers: formatGraphQLError(action.payload)
+                errorFamily: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_OVERVIEW_ERR':
             return {
                 ...state,
                 fetchingFamily: false,
                 errorFamily: formatServerError(action.payload)
+            };
+        case 'INSUREE_EDUCATIONS_REQ':
+            return {
+                ...state,
+                fetchingEducations: true,
+                fetchedEducations: false,
+                educations: null,
+                errorEducations: null,
+            };
+        case 'INSUREE_EDUCATIONS_RESP':
+            return {
+                ...state,
+                fetchingEducations: false,
+                fetchedEducations: true,
+                educations: action.payload.data.educations,
+                errorEducations: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_EDUCATIONS_ERR':
+            return {
+                ...state,
+                fetchingEducations: false,
+                errorEducations: formatServerError(action.payload)
+            };
+        case 'INSUREE_PROFESSIONS_REQ':
+            return {
+                ...state,
+                fetchingProfessions: true,
+                fetchedProfessions: false,
+                professions: null,
+                errorProfessions: null,
+            };
+        case 'INSUREE_PROFESSIONS_RESP':
+            return {
+                ...state,
+                fetchingProfessions: false,
+                fetchedProfessions: true,
+                professions: action.payload.data.professions,
+                errorProfessions: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_PROFESSIONS_ERR':
+            return {
+                ...state,
+                fetchingProfessions: false,
+                errorProfessions: formatServerError(action.payload)
+            };
+        case 'INSUREE_IDENTIFICATION_TYPES_REQ':
+            return {
+                ...state,
+                fetchingIdentificationTypes: true,
+                fetchedIdentificationTypes: false,
+                identificationTypes: null,
+                errorIdentificationTypes: null,
+            };
+        case 'INSUREE_IDENTIFICATION_TYPES_RESP':
+            return {
+                ...state,
+                fetchingIdentificationTypes: false,
+                fetchedIdentificationTypes: true,
+                identificationTypes: action.payload.data.identificationTypes,
+                errorIdentificationTypes: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_IDENTIFICATION_TYPES_ERR':
+            return {
+                ...state,
+                fetchingIdentificationTypes: false,
+                errorIdentificationTypes: formatServerError(action.payload)
             };
         default:
             return state;

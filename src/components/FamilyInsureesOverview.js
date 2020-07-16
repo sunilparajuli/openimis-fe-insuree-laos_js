@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import _ from "lodash";
 import { Checkbox, Paper } from "@material-ui/core";
 import {
-    formatMessage, withModulesManager, formatDateFromISO,
+    formatMessage, withModulesManager, formatDateFromISO, historyPush,
     Table
 } from "@openimis/fe-core";
 
@@ -25,6 +25,9 @@ class FamilyInsureesOverview extends Component {
         }
     }
 
+    onDoubleClick = (i, newTab = false) => {
+        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", [i.uuid], newTab)
+    }
 
     headers = [
         "Insuree.chfId",
@@ -57,6 +60,7 @@ class FamilyInsureesOverview extends Component {
                     items={familyMembers || []}
                     fetching={fetchingFamilyMembers}
                     error={errorFamilyMembers}
+                    onDoubleClick={this.onDoubleClick}
                     onDelete={idx => console.log("TODO: delete " + idx)}
                 />
             </Paper>

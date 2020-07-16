@@ -16,7 +16,7 @@ const styles = theme => ({
     }
 })
 
-class InsureeFirstServicePoint extends Component {
+class InsureeFirstServicePointCondensed extends Component {
     render() {
         const { classes, insuree } = this.props;
         if (!insuree || !insuree.healthFacility) return (
@@ -45,4 +45,4 @@ const mapStateToProps = state => ({
     insuree: state.insuree.insuree,
 });
 
-export default withModulesManager(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeFirstServicePoint))));
+export default withModulesManager(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeFirstServicePointCondensed))));

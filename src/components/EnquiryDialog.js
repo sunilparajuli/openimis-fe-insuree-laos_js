@@ -70,10 +70,10 @@ class EnquiryDialog extends Component {
 }
 
 const mapStateToProps = state => ({
-    fetching: state.insuree.fetching,
-    fetched: state.insuree.fetched,
+    fetching: state.insuree.fetchingInsuree,
+    fetched: state.insuree.fetchedInsuree,
     insuree: state.insuree.insuree,
-    error: state.insuree.error
+    error: state.insuree.errorInsuree
 });
 
 const mapDispatchToProps = dispatch => {
