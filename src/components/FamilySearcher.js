@@ -35,8 +35,8 @@ class FamilySearcher extends Component {
 
     filtersToQueryParams = (state) => {
         let prms = Object.keys(state.filters)
-            .filter(f => !!state.filters[f]['filter'])
-            .map(f => state.filters[f]['filter']);
+            .filter(family => !!state.filters[f]['filter'])
+            .map(family => state.filters[f]['filter']);
         prms.push(`first: ${state.pageSize}`);
         if (!!state.afterCursor) {
             prms.push(`after: "${state.afterCursor}"`)
@@ -52,28 +52,28 @@ class FamilySearcher extends Component {
 
     headers = (filters) => {
         var h = [
-            "familySummaries.insuranceNo",
-            "familySummaries.lastName",
-            "familySummaries.otherNames",
-            "familySummaries.email",
-            "familySummaries.phone",
-            "familySummaries.dob",
+            "insuree.familySummaries.insuranceNo",
+            "insuree.familySummaries.lastName",
+            "insuree.familySummaries.otherNames",
+            "insuree.familySummaries.email",
+            "insuree.familySummaries.phone",
+            "insuree.familySummaries.dob",
         ]
         for (var i = 0; i < this.locationLevels; i++) {
-            h.push(`familySummaries.locationLevel.${i}`)
+            h.push(`location.locationType.${i}`)
         }
         h.push(
-            "familySummaries.poverty",
-            "familySummaries.confirmationNo",
+            "insuree.familySummaries.poverty",
+            "insuree.familySummaries.confirmationNo",
         );
         if (filters.showHistory && !!filters.showHistory.value) {
             h.push(
-                "familySummaries.id",
-                "familySummaries.validityFrom",
-                "familySummaries.validityTo",
+                "insuree.familySummaries.id",
+                "insuree.familySummaries.validityFrom",
+                "insuree.familySummaries.validityTo",
             )
         }
-        h.push("familySummaries.openNewTab")
+        h.push("insuree.familySummaries.openNewTab")
         return h;
     }
 
@@ -102,6 +102,7 @@ class FamilySearcher extends Component {
     }
 
     parentLocation = (location, level) => {
+        if (!location) return "";
         let loc = location
         for (var i = 1; i < this.locationLevels - level; i++) {
             if (!loc.parent) return ""
@@ -112,40 +113,40 @@ class FamilySearcher extends Component {
 
     itemFormatters = (filters) => {
         var formatters = [
-            f => !!f.headInsuree ? f.headInsuree.chfId : "",
-            f => !!f.headInsuree ? f.headInsuree.lastName : "",
-            f => !!f.headInsuree ? f.headInsuree.otherNames : "",
-            f => !!f.headInsuree ? f.headInsuree.email : "",
-            f => !!f.headInsuree ? f.headInsuree.phone : "",
-            f => !!f.headInsuree ? formatDateFromISO(this.props.modulesManager, this.props.intl, f.headInsuree.dob) : "",
+            family => !!family.headInsuree ? family.headInsuree.chfId : "",
+            family => !!family.headInsuree ? family.headInsuree.lastName : "",
+            family => !!family.headInsuree ? family.headInsuree.otherNames : "",
+            family => !!family.headInsuree ? family.headInsuree.email : "",
+            family => !!family.headInsuree ? family.headInsuree.phone : "",
+            family => !!family.headInsuree ? formatDateFromISO(this.props.modulesManager, this.props.intl, family.headInsuree.dob) : "",
         ]
         for (var i = 0; i < this.locationLevels; i++) {
             // need a fixed variable to refer to as parentLocation argument
             let j = i + 0;
-            formatters.push(f => this.parentLocation(f.location, j))
+            formatters.push(family => this.parentLocation(family.location, j))
         }
         formatters.push(
-            f => <Checkbox
+            family => <Checkbox
                 color="primary"
-                checked={f.poverty}
+                checked={family.poverty}
                 readOnly
             />,
-            f => f.confirmationNo,
+            family => family.confirmationNo,
         )
         if (filters.showHistory && !!filters.showHistory.value) {
             formatters.push(
-                f => decodeId(f.id),
-                f => formatDateFromISO(
+                family => decodeId(family.id),
+                family => formatDateFromISO(
                     this.props.modulesManager,
                     this.props.intl,
-                    f.validityFrom),
-                f => formatDateFromISO(
+                    family.validityFrom),
+                family => formatDateFromISO(
                     this.props.modulesManager,
                     this.props.intl,
-                    f.validityTo),
+                    family.validityTo),
             )
         }
-        formatters.push(f => <IconButton onClick={e => this.props.onDoubleClick(f, true)} > <TabIcon /></IconButton >)
+        formatters.push(family => <IconButton onClick={e => this.props.onDoubleClick(f, true)} > <TabIcon /></IconButton >)
         return formatters;
     }
 

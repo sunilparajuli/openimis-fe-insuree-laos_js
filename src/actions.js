@@ -61,7 +61,7 @@ export function fetchInsureeFamily(mm, chfid) {
 }
 
 export function fetchFamilySummaries(mm, filters) {
-  var projections = [
+  let projections = [
     "id", "uuid", "poverty", "confirmationNo", "validityFrom", "validityTo",
     "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
     "location" + mm.getProjection("location.Location.FlatProjection")]
@@ -69,13 +69,14 @@ export function fetchFamilySummaries(mm, filters) {
     filters,
     projections
   );
-  return graphql(payload, 'INSUREE_FAMILY_SEARCHER');
+  return graphql(payload, 'INSUREE_FAMILIES');
 }
 
-export function fetchFamilyMembers(mm, family_uuid) {
-  let payload = formatQuery("familyMembers",
-    [`familyUuid:"${family_uuid}"`],
-    ["uuid", "chfId", "otherNames", "lastName", "head", "phone", "gender{code}", "dob", "cardIssued"]
+export function fetchFamilyMembers(mm, filters) {
+  let projections = ["uuid", "chfId", "otherNames", "lastName", "head", "phone", "gender{code}", "dob", "cardIssued"];
+  const payload = formatPageQueryWithCount("familyMembers",
+    filters,
+    projections
   );
   return graphql(payload, 'INSUREE_FAMILY_MEMBERS');
 }
@@ -127,4 +128,16 @@ export function fetchIdentificationTypes(mm) {
     ["code"]
   );
   return graphql(payload, 'INSUREE_IDENTIFICATION_TYPES');
+}
+
+export function fetchInsureeSummaries(mm, filters) {
+  var projections = [
+    "id", "uuid", "validityFrom", "validityTo",
+    "chfId", "otherNames", "lastName", "phone", "gender{code}", "dob", "marital",
+    "currentVillage" + mm.getProjection("location.Location.FlatProjection")]
+  const payload = formatPageQueryWithCount("insurees",
+    filters,
+    projections
+  );
+  return graphql(payload, 'INSUREE_INSUREES');
 }

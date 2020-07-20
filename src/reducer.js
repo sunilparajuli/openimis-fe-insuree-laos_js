@@ -14,6 +14,7 @@ function reducer(
         fetchedFamilyMembers: false,
         errorFamilyMembers: null,
         familyMembers: null,
+        familyMembersPageInfo: { totalCount: 0 },
         fetchingInsurees: false,
         fetchedInsurees: false,
         errorInsurees: null,
@@ -104,7 +105,8 @@ function reducer(
                 ...state,
                 fetchingFamilyMembers: false,
                 fetchedFamilyMembers: true,
-                familyMembers: action.payload.data.familyMembers,
+                familyMembers: parseData(action.payload.data.familyMembers),
+                familyMembersPageInfo: pageInfo(action.payload.data.familyMembers),
                 errorFamilyMembers: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_MEMBERS_ERR':
@@ -158,7 +160,7 @@ function reducer(
                 fetching: false,
                 error: formatServerError(action.payload)
             };
-        case 'INSUREE_FAMILY_SEARCHER_REQ':
+        case 'INSUREE_FAMILIES_REQ':
             return {
                 ...state,
                 fetchingFamilies: true,
@@ -167,7 +169,7 @@ function reducer(
                 familiesPageInfo: { totalCount: 0 },
                 errorFamilies: null,
             };
-        case 'INSUREE_FAMILY_SEARCHER_RESP':
+        case 'INSUREE_FAMILIES_RESP':
             return {
                 ...state,
                 fetchingFamilies: false,
@@ -176,7 +178,7 @@ function reducer(
                 familiesPageInfo: pageInfo(action.payload.data.families),
                 errorFamilies: formatGraphQLError(action.payload)
             };
-        case 'INSUREE_FAMILY_SEARCHER_ERR':
+        case 'INSUREE_FAMILIES_ERR':
             return {
                 ...state,
                 fetchingFamilies: false,

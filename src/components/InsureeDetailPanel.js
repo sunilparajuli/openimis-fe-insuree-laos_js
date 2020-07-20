@@ -70,10 +70,10 @@ class InsureeDetailPanel extends Component {
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.InsureeMaritalStatusPicker"
-                                            value={!!edited.marital ? edited.gender.marital : ""}
+                                            value={!!edited.marital ? edited.marital : ""}
                                             module="insuree"
                                             readOnly={true}
-                                            nullLabel={formatMessage(intl, "insuree", "insureeMaritalStatus.N")}
+                                            nullLabel="InsureeMaritalStatus.N"
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>

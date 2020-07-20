@@ -46,7 +46,15 @@ class FamiliyOverview extends Component {
         if (prevState.family.headInsuree.chfId !== this.state.family.headInsuree.chfId) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { chfId: this.state.family.headInsuree.chfId })
         }
-        if (prevProps.fetchedFamily !== this.props.fetchedFamily && !!this.props.fetchedFamily) {
+        if (prevProps.family_uuid !== this.props.family_uuid) {
+            this.setState(
+                (state, props) => ({ family_uuid: props.family_uuid }),
+                e => this.props.fetchFamily(
+                    this.props.modulesManager,
+                    this.props.family_uuid
+                )
+            )            
+        } else if (prevProps.fetchedFamily !== this.props.fetchedFamily && !!this.props.fetchedFamily) {
             var family = { ...this.props.family };
             family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
             this.setState({ family, family_uuid: family.uuid, reset: this.state.reset + 1 });

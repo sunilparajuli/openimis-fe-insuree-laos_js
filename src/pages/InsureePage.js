@@ -6,7 +6,7 @@ import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush,
     Form, ProgressOrError
 } from "@openimis/fe-core";
-import { RIGHT_INSUREE, ROUTE_INSUREE_FAMILY_OVERVIEW } from "../constants";
+import { RIGHT_INSUREE } from "../constants";
 import FamilyDisplayPanel from "../components/FamilyDisplayPanel";
 
 
@@ -38,11 +38,35 @@ class InsureePage extends Component {
         }
     }
 
+    back = e => {
+        const { modulesManager, history, family_uuid, insuree_uuid } = this.props;
+        if (family_uuid) {
+            historyPush(modulesManager,
+                history,
+                "insuree.route.familyOverview",
+                [family_uuid]
+            );
+        } else {
+            historyPush(modulesManager,
+                history,
+                "insuree.route.findInsuree"
+            );
+        }
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.insuree.chfId !== this.state.insuree.chfId) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { chfId: this.state.insuree.chfId })
         }
-        if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
+        if (prevProps.insuree_uuid !== this.props.insuree_uuid) {
+            this.setState(
+                (state, props) => ({ insuree_uuid: props.insuree_uuid }),
+                e => this.props.fetchInsureeFull(
+                    this.props.modulesManager,
+                    this.props.insuree_uuid
+                )
+            )
+        } else if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
             var insuree = { ...this.props.insuree };
             insuree.ext = !!insuree.jsonExt ? JSON.parse(insuree.jsonExt) : {};
             this.setState({ insuree, insuree_uuid: insuree.uuid, reset: this.state.reset + 1 });
@@ -50,10 +74,8 @@ class InsureePage extends Component {
     }
 
     render() {
-        const { intl, classes, modulesManager, history, rights, insuree_uuid, insuree, fetchingInsuree, errorInsuree } = this.props;
+        const { intl, classes, rights, family_uuid, insuree_uuid, insuree, fetchingInsuree, errorInsuree } = this.props;
         if (!rights.includes(RIGHT_INSUREE)) return null;
-
-
         return (
             <div className={classes.page}>
                 <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
@@ -68,7 +90,7 @@ class InsureePage extends Component {
                         HeadPanel={FamilyDisplayPanel}
                         contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
                         insuree={this.state.insuree}
-                        back={e => historyPush(modulesManager, history, "insuree.route.familyOverview", [insuree.family.uuid])}
+                        back={this.back}
                     />
                 )}
             </div>
@@ -78,6 +100,7 @@ class InsureePage extends Component {
 
 const mapStateToProps = (state, props) => ({
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+    family_uuid: props.match.params.family_uuid,
     insuree_uuid: props.match.params.insuree_uuid,
     fetchingInsuree: state.insuree.fetchingInsuree,
     errorInsuree: state.insuree.errorInsuree,

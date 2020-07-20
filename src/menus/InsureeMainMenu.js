@@ -13,14 +13,14 @@ const INSUREE_MAIN_MENU_CONTRIBUTION_KEY = "insuree.MainMenu";
 
 class InsureeMainMenu extends Component {
   render() {
-    const { rights } = this.props;
+    const { modulesManager, rights } = this.props;
     let entries = [];
     if (rights.includes(RIGHT_FAMILY_ADD)) {
       entries.push(
         {
-          text: formatMessage(this.props.intl, "insuree", "menu.addFamilyOrGroup"),
+          text: "Add Family/Group - NOT IMPLEMENTED YET",
           icon: <GroupAdd />,
-          route: "/insuree/create",
+          route: "/" + modulesManager.getRef("insuree.route.findFamily"),
           withDivider: true
         }
       )
@@ -30,7 +30,7 @@ class InsureeMainMenu extends Component {
         {
           text: formatMessage(this.props.intl, "insuree", "menu.familiesOrGroups"),
           icon: <People />,
-          route: "/insuree/families"
+          route: "/" + modulesManager.getRef("insuree.route.findFamily")
         }
       )
     }
@@ -39,7 +39,7 @@ class InsureeMainMenu extends Component {
         {
           text: formatMessage(this.props.intl, "insuree", "menu.insurees"),
           icon: <PersonPin />,
-          route: "/insuree/insurees"
+          route: "/" + modulesManager.getRef("insuree.route.findInsuree")
         }
       )
     }

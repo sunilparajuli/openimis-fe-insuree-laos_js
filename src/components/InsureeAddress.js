@@ -55,7 +55,7 @@ class InsureeAddress extends Component {
         return (
             <TextInput
                 module="insuree"
-                label="Insuree.address"
+                label="Insuree.currentAddress"
                 multiline
                 rows={5}
                 readOnly={true}

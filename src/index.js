@@ -2,7 +2,7 @@ import InsureeMainMenu from "./menus/InsureeMainMenu";
 import FamiliesPage from "./pages/FamiliesPage";
 import InsureePage from "./pages/InsureePage";
 import { CappedItemServicePage } from "./pages/CappedItemServicePage";
-import { InsureesPage } from "./pages/InsureesPage";
+import InsureesPage from "./pages/InsureesPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import FamilyOverviewPage from "./pages/FamilyOverviewPage";
 import Enquiry from "./components/Enquiry";
@@ -16,6 +16,7 @@ import InsureeMaritalStatusPicker from "./pickers/InsureeMaritalStatusPicker";
 import FamilyPovertyStatusPicker from "./pickers/FamilyPovertyStatusPicker";
 import ConfirmationTypePicker from "./pickers/ConfirmationTypePicker";
 import FamilyTypePicker from "./pickers/FamilyTypePicker";
+import PhotoStatusPicker from "./pickers/PhotoStatusPicker";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
@@ -31,6 +32,7 @@ import InsureeDetailPanel from "./components/InsureeDetailPanel";
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
 const ROUTE_INSUREE_INSUREE = "insuree/insuree";
+const ROUTE_INSUREE_FIND_INSUREE = "insuree/insurees";
 const ROUTE_INSUREE_FIND_FAMILY = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
 
@@ -49,9 +51,11 @@ const DEFAULT_CONFIG = {
     { key: "insuree.FamilyPovertyStatusPicker", ref: FamilyPovertyStatusPicker },
     { key: "insuree.ConfirmationTypePicker", ref: ConfirmationTypePicker },
     { key: "insuree.FamilyTypePicker", ref: FamilyTypePicker },
+    { key: "insuree.PhotoStatusPicker", ref: PhotoStatusPicker },
 
     { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FIND_FAMILY },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
+    { key: "insuree.route.findInsuree", ref: ROUTE_INSUREE_FIND_INSUREE },
     { key: "insuree.route.insuree", ref: ROUTE_INSUREE_INSUREE },
 
     { key: "insuree.Avatar", ref: InsureeAvatar },
@@ -66,7 +70,7 @@ const DEFAULT_CONFIG = {
   "core.Router": [
     { path: ROUTE_INSUREE_FAMILIES, component: FamiliesPage },
     { path: ROUTE_INSUREE_FAMILY_OVERVIEW + "/:family_uuid", component: FamilyOverviewPage },
-    { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid/", component: InsureePage },
+    { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid/:family_uuid?", component: InsureePage },
     { path: "insuree/insurees", component: InsureesPage },
     { path: "insuree/cappedItemService", component: CappedItemServicePage },
     { path: "insuree/profile", component: ProfilePage },

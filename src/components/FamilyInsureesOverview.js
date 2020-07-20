@@ -6,8 +6,9 @@ import { injectIntl } from 'react-intl';
 import _ from "lodash";
 import { Checkbox, Paper } from "@material-ui/core";
 import {
-    formatMessage, withModulesManager, formatDateFromISO, historyPush,
-    Table
+    formatMessage, formatMessageWithValues,
+    withModulesManager, formatDateFromISO, historyPush,
+    Table, PagedDataHandler
 } from "@openimis/fe-core";
 
 import { fetchFamilyMembers } from "../actions";
@@ -17,16 +18,30 @@ const styles = theme => ({
     paper: theme.paper.paper,
 });
 
-class FamilyInsureesOverview extends Component {
+class FamilyInsureesOverview extends PagedDataHandler {
+
+    constructor(props) {
+        super(props);
+        this.rowsPerPageOptions = props.modulesManager.getConf("fe-insuree", "familyInsureesOverview.rowsPerPageOptions", [5, 10, 20]);
+        this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "familyInsureesOverview.defaultPageSize", 5);
+    }
+
+    componentDidMount() {
+        this.onChangeRowsPerPage(this.defaultPageSize);
+    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if ((!!prevProps.edited && prevProps.edited.uuid) !== (!!this.props.edited && this.props.edited.uuid)) {
-            this.props.fetchFamilyMembers(this.props.modulesManager, this.props.edited.uuid);
+        if (!_.isEqual(prevProps.family, this.props.family)) {
+            this.query();
         }
     }
 
+    queryPrms = () => [
+        `familyUuid:"${this.props.family.uuid}"`
+    ]
+
     onDoubleClick = (i, newTab = false) => {
-        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", [i.uuid], newTab)
+        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", [i.uuid, this.props.family.uuid], newTab)
     }
 
     headers = [
@@ -48,20 +63,27 @@ class FamilyInsureesOverview extends Component {
     ];
 
     render() {
-        const { intl, classes, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
-
+        const { intl, classes, pageInfo, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
         return (
             <Paper className={classes.paper}>
                 <Table
                     module="insuree"
-                    header={formatMessage(intl, "insuree", "Family.insurees")}
+                    header={formatMessageWithValues(intl, "insuree", "Family.insurees", { count: pageInfo.totalCount })}
                     headers={this.headers}
                     itemFormatters={this.formatters}
                     items={familyMembers || []}
                     fetching={fetchingFamilyMembers}
                     error={errorFamilyMembers}
                     onDoubleClick={this.onDoubleClick}
-                    onDelete={idx => console.log("TODO: delete " + idx)}
+                    onDelete={idx => alert("Not implemented yet...")}
+                    withPagination={true}
+                    rowsPerPageOptions={this.rowsPerPageOptions}
+                    defaultPageSize={this.defaultPageSize}
+                    page={this.currentPage()}
+                    pageSize={this.currentPageSize()}
+                    count={pageInfo.totalCount}
+                    onChangePage={this.onChangePage}
+                    onChangeRowsPerPage={this.onChangeRowsPerPage}
                 />
             </Paper>
         )
@@ -69,14 +91,16 @@ class FamilyInsureesOverview extends Component {
 }
 
 const mapStateToProps = state => ({
+    family: state.insuree.family,
     fetchingFamilyMembers: state.insuree.fetchingFamilyMembers,
     fetchedFamilyMembers: state.insuree.fetchedFamilyMembers,
     familyMembers: state.insuree.familyMembers,
+    pageInfo: state.insuree.familyMembersPageInfo,
     errorFamilyMembers: state.insuree.errorFamilyMembers,
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchFamilyMembers }, dispatch);
+    return bindActionCreators({ fetch: fetchFamilyMembers }, dispatch);
 };
 
 

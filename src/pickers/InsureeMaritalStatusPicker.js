@@ -8,7 +8,7 @@ class InsureeMaritalStatusPicker extends Component {
     render() {
         return <ConstantBasedPicker
             module="insuree"
-            label="insureeMaritalStatus"
+            label="InsureeMaritalStatus"
             constants={INSUREE_MARITAL_STATUS}
             {...this.props}
         />
