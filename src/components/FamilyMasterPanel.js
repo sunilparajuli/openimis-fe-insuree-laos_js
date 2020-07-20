@@ -15,6 +15,7 @@ const styles = theme => ({
 class FamilyMasterPanel extends Component {
     render() {
         const { intl, classes, edited } = this.props;
+        if (!edited) return null;
         return (
             <Grid container className={classes.item}>
                 <Grid item xs={12}>

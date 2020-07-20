@@ -18,22 +18,18 @@ const styles = theme => ({
 
 const INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY = "insuree.FamilyOverview.panels"
 
-class FamiliyOverview extends Component {
+class FamilyOverviewPage extends Component {
 
     state = {
         reset: 0,
-        family: {
-            headInsuree: {
-                chfId: null,
-            }
-        }
+        family: null,
     }
 
     componentDidMount() {
         document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { chfId: "" })
         if (this.props.family_uuid) {
             this.setState(
-                (state, props) => ({ family_uuid: props.family_uuid }),
+                (state, props) => ({ family_uuid: props.family_uuid, family: null }),
                 e => this.props.fetchFamily(
                     this.props.modulesManager,
                     this.props.family_uuid
@@ -43,17 +39,18 @@ class FamiliyOverview extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.family.headInsuree.chfId !== this.state.family.headInsuree.chfId) {
+        if ((prevState.family && prevState.family.headInsuree && prevState.family.headInsuree.chfId)
+            !== (this.state.family && this.state.family.headInsuree && this.state.family.headInsuree.chfId)) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { chfId: this.state.family.headInsuree.chfId })
         }
         if (prevProps.family_uuid !== this.props.family_uuid) {
             this.setState(
-                (state, props) => ({ family_uuid: props.family_uuid }),
+                (state, props) => ({ family_uuid: props.family_uuid, family: null }),
                 e => this.props.fetchFamily(
                     this.props.modulesManager,
                     this.props.family_uuid
                 )
-            )            
+            )
         } else if (prevProps.fetchedFamily !== this.props.fetchedFamily && !!this.props.fetchedFamily) {
             var family = { ...this.props.family };
             family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
@@ -66,7 +63,8 @@ class FamiliyOverview extends Component {
     }
 
     render() {
-        const { intl, classes, modulesManager, history, rights, family_uuid, family, fetchingFamily, errorFamily } = this.props;
+        const { intl, classes, modulesManager, history, rights, family_uuid, fetchingFamily, errorFamily, insuree } = this.props;
+        const { family } = this.state;
         if (!rights.includes(RIGHT_FAMILY)) return null;
 
 
@@ -84,7 +82,8 @@ class FamiliyOverview extends Component {
                         HeadPanel={FamilyMasterPanel}
                         Panels={[FamilyInsureesOverview]}
                         contributedPanelsKey={INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY}
-                        family={this.state.family}
+                        family={family}
+                        insuree={insuree}
                         back={e => historyPush(modulesManager, history, "insuree.route.findFamily")}
                     />
                 )}
@@ -100,8 +99,9 @@ const mapStateToProps = (state, props) => ({
     errorFamily: state.insuree.errorFamily,
     fetchedFamily: state.insuree.fetchedFamily,
     family: state.insuree.family,
+    insuree: state.insuree.insuree,
 })
 
 export default withHistory(withModulesManager(connect(mapStateToProps, { fetchFamily })(
-    injectIntl(withTheme(withStyles(styles)(FamiliyOverview))
+    injectIntl(withTheme(withStyles(styles)(FamilyOverviewPage))
     ))));

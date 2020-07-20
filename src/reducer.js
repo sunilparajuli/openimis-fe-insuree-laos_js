@@ -29,7 +29,7 @@ function reducer(
         errorFamilies: null,
         families: [],
         familiesPageInfo: { totalCount: 0 },
-        family: {},
+        family: null,
         fetchingFamily: false,
         errorFamily: null,
         fetchingEducations: false,
@@ -77,6 +77,7 @@ function reducer(
                 fetchedInsureeFamilyMembers: false,
                 insureeFamilyMembers: null,
                 errorInsureeFamilyMembers: null,
+                insuree: null,
             };
         case 'INSUREE_FAMILY_RESP':
             return {
@@ -98,6 +99,7 @@ function reducer(
                 fetchingFamilyMembers: true,
                 fetchedFamilyMembers: false,
                 insureeFamilyMembers: null,
+                insuree: null,
                 errorFamilyMembers: null,
             };
         case 'INSUREE_FAMILY_MEMBERS_RESP':
@@ -114,6 +116,11 @@ function reducer(
                 ...state,
                 fetchingFamilyMembers: false,
                 errorFamilyMembers: formatServerError(action.payload)
+            };
+        case 'INSUREE_FAMILY_MEMBER':
+            return {
+                ...state,
+                insuree: action.payload,
             };
         case 'INSUREE_GENDERS_REQ':
             return {

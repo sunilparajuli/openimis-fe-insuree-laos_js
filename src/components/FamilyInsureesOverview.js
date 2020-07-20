@@ -11,7 +11,7 @@ import {
     Table, PagedDataHandler
 } from "@openimis/fe-core";
 
-import { fetchFamilyMembers } from "../actions";
+import { fetchFamilyMembers, selectFamilyMember } from "../actions";
 
 
 const styles = theme => ({
@@ -30,8 +30,14 @@ class FamilyInsureesOverview extends PagedDataHandler {
         this.onChangeRowsPerPage(this.defaultPageSize);
     }
 
+    familyChanged = (prevProps) => (!prevProps.family && !!this.props.family)
+    || !!prevProps.family && !!this.props.family && !!this.props.family.uuid && 
+    (
+        prevProps.family.uuid == null || prevProps.family.uuid !== this.props.family.uuid
+    )
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!_.isEqual(prevProps.family, this.props.family)) {
+        if (this.familyChanged(prevProps)) {
             this.query();
         }
     }
@@ -42,6 +48,10 @@ class FamilyInsureesOverview extends PagedDataHandler {
 
     onDoubleClick = (i, newTab = false) => {
         historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", [i.uuid, this.props.family.uuid], newTab)
+    }
+
+    onChangeSelection = (i) => {
+        this.props.selectFamilyMember(i[0] || null)
     }
 
     headers = [
@@ -75,6 +85,8 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     fetching={fetchingFamilyMembers}
                     error={errorFamilyMembers}
                     onDoubleClick={this.onDoubleClick}
+                    withSelection={"single"}
+                    onChangeSelection={this.onChangeSelection}
                     onDelete={idx => alert("Not implemented yet...")}
                     withPagination={true}
                     rowsPerPageOptions={this.rowsPerPageOptions}
@@ -100,7 +112,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetch: fetchFamilyMembers }, dispatch);
+    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember }, dispatch);
 };
 
 

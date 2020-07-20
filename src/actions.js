@@ -81,6 +81,12 @@ export function fetchFamilyMembers(mm, filters) {
   return graphql(payload, 'INSUREE_FAMILY_MEMBERS');
 }
 
+export function selectFamilyMember(member) {
+  return dispatch => {
+    dispatch({ type: 'INSUREE_FAMILY_MEMBER', payload: member })
+  }
+}
+
 export function fetchConfirmationTypes() {
   const payload = formatQuery("confirmationTypes",
     null,
