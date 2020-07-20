@@ -30,11 +30,12 @@ class FamilyInsureesOverview extends PagedDataHandler {
         this.onChangeRowsPerPage(this.defaultPageSize);
     }
 
-    familyChanged = (prevProps) => (!prevProps.family && !!this.props.family)
-    || !!prevProps.family && !!this.props.family && !!this.props.family.uuid && 
-    (
-        prevProps.family.uuid == null || prevProps.family.uuid !== this.props.family.uuid
-    )
+    familyChanged = (prevProps) => (!prevProps.family && !!this.props.family) ||
+        (
+            !!prevProps.family &&
+            !!this.props.family &&
+            (prevProps.family.uuid == null || prevProps.family.uuid !== this.props.family.uuid)
+        )
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.familyChanged(prevProps)) {
@@ -42,9 +43,12 @@ class FamilyInsureesOverview extends PagedDataHandler {
         }
     }
 
-    queryPrms = () => [
-        `familyUuid:"${this.props.family.uuid}"`
-    ]
+    queryPrms = () => {
+        if (!!this.props.family && !!this.props.family.uuid) {
+            return [`familyUuid:"${this.props.family.uuid}"`];
+        }
+        return null;
+    }
 
     onDoubleClick = (i, newTab = false) => {
         historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", [i.uuid, this.props.family.uuid], newTab)
@@ -73,7 +77,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
     ];
 
     render() {
-        const { intl, classes, pageInfo, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
+        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
         return (
             <Paper className={classes.paper}>
                 <Table
@@ -81,7 +85,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     header={formatMessageWithValues(intl, "insuree", "Family.insurees", { count: pageInfo.totalCount })}
                     headers={this.headers}
                     itemFormatters={this.formatters}
-                    items={familyMembers || []}
+                    items={(!!family && familyMembers) || []}
                     fetching={fetchingFamilyMembers}
                     error={errorFamilyMembers}
                     onDoubleClick={this.onDoubleClick}

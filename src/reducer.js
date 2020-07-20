@@ -70,6 +70,13 @@ function reducer(
                 fetchingInsuree: false,
                 errorInsuree: formatServerError(action.payload)
             };
+        case 'INSUREE_FAMILY_NEW':
+            return {
+                ...state,
+                familyMembers: null,
+                familyMembersPageInfo: { totalCount: 0 },
+                family: null,
+            };
         case 'INSUREE_FAMILY_REQ':
             return {
                 ...state,

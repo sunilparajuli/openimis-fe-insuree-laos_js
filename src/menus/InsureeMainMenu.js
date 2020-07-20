@@ -18,9 +18,9 @@ class InsureeMainMenu extends Component {
     if (rights.includes(RIGHT_FAMILY_ADD)) {
       entries.push(
         {
-          text: "Add Family/Group - NOT IMPLEMENTED YET",
+          text: "Add Family/Group",
           icon: <GroupAdd />,
-          route: "/" + modulesManager.getRef("insuree.route.findFamily"),
+          route: "/" + modulesManager.getRef("insuree.route.newFamily"),
           withDivider: true
         }
       )

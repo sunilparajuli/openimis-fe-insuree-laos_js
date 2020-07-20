@@ -15,14 +15,13 @@ const styles = theme => ({
 class FamilyMasterPanel extends Component {
     render() {
         const { intl, classes, edited } = this.props;
-        if (!edited) return null;
         return (
             <Grid container className={classes.item}>
                 <Grid item xs={12}>
                     <PublishedComponent
                         pubRef="location.DetailedLocation"
                         withNull={true}
-                        value={edited.location}
+                        value={!edited ? "" : edited.location}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -31,7 +30,7 @@ class FamilyMasterPanel extends Component {
                         label="Family.chfId"
                         required={true}
                         readOnly={true}
-                        value={!!edited.headInsuree ? edited.headInsuree.chfId : ""}
+                        value={!edited || !edited.headInsuree ? "" : edited.headInsuree.chfId}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -40,7 +39,7 @@ class FamilyMasterPanel extends Component {
                         label="Family.lastName"
                         required={true}
                         readOnly={true}
-                        value={!!edited.headInsuree ? edited.headInsuree.lastName : ""}
+                        value={!edited || !edited.headInsuree ? "" : edited.headInsuree.lastName}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -49,7 +48,7 @@ class FamilyMasterPanel extends Component {
                         label="Family.otherNames"
                         required={true}
                         readOnly={true}
-                        value={!!edited.headInsuree ? edited.headInsuree.otherNames : ""}
+                        value={!edited || !edited.headInsuree ? "" : edited.headInsuree.otherNames}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -58,7 +57,7 @@ class FamilyMasterPanel extends Component {
                         readOnly={true}
                         withNull={true}
                         nullLabel={formatMessage(intl, "insuree", "Family.FamilyType.null")}
-                        value={edited.familyType}
+                        value={!edited ? "" : edited.familyType}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -67,7 +66,7 @@ class FamilyMasterPanel extends Component {
                         readOnly={true}
                         withNull={true}
                         nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}
-                        value={edited.confirmationType}
+                        value={!edited ? "" : edited.confirmationType}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -75,7 +74,7 @@ class FamilyMasterPanel extends Component {
                         module="insuree"
                         label="Family.confirmationNo"
                         readOnly={true}
-                        value={"" + edited.confirmationNo}
+                        value={!edited ? "" : edited.confirmationNo}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
@@ -85,12 +84,12 @@ class FamilyMasterPanel extends Component {
                         multiline
                         rows={2}
                         readOnly={true}
-                        value={"" + edited.address}
+                        value={!edited ? "" : edited.address}
                     />
                 </Grid>
                 <Grid item xs={3} className={classes.item}>
                     <FormControlLabel
-                        control={<Checkbox color="primary" checked={!!edited.poverty} disabled={true} />}
+                        control={<Checkbox color="primary" checked={!!edited && !!edited.poverty} disabled={true} />}
                         label={formatMessage(intl, "insuree", "Family.poverty")}
                     />
                 </Grid>

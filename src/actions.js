@@ -103,6 +103,12 @@ export function fetchFamilyTypes() {
   return graphql(payload, 'INSUREE_FAMILY_TYPES');
 }
 
+export function newFamily() {
+  return dispatch => {
+    dispatch({ type: 'INSUREE_FAMILY_NEW' })
+  }
+}
+
 export function fetchFamily(mm, familyUuid) {
   let filter = `uuid: "${familyUuid}"`
   const payload = formatPageQueryWithCount("families",
