@@ -35,8 +35,8 @@ class FamilySearcher extends Component {
 
     filtersToQueryParams = (state) => {
         let prms = Object.keys(state.filters)
-            .filter(family => !!state.filters[f]['filter'])
-            .map(family => state.filters[f]['filter']);
+            .filter(family => !!state.filters[family]['filter'])
+            .map(family => state.filters[family]['filter']);
         prms.push(`first: ${state.pageSize}`);
         if (!!state.afterCursor) {
             prms.push(`after: "${state.afterCursor}"`)
