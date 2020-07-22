@@ -187,6 +187,7 @@ class InsureeSearcher extends Component {
                 fetch={this.fetch}
                 rowIdentifier={this.rowIdentifier}
                 filtersToQueryParams={this.filtersToQueryParams}
+                defaultOrderBy="chfId"
                 headers={this.headers}
                 itemFormatters={this.itemFormatters}
                 sorts={this.sorts}

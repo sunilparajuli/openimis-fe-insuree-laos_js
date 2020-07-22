@@ -178,6 +178,7 @@ class FamilySearcher extends Component {
                 fetch={this.fetch}
                 rowIdentifier={this.rowIdentifier}
                 filtersToQueryParams={this.filtersToQueryParams}
+                defaultOrderBy="headInsuree__chfId"
                 headers={this.headers}
                 itemFormatters={this.itemFormatters}
                 sorts={this.sorts}
