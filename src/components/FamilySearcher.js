@@ -146,7 +146,7 @@ class FamilySearcher extends Component {
                     family.validityTo),
             )
         }
-        formatters.push(family => <IconButton onClick={e => this.props.onDoubleClick(f, true)} > <TabIcon /></IconButton >)
+        formatters.push(family => <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >)
         return formatters;
     }
 
