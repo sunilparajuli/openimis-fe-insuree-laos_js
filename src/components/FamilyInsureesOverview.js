@@ -8,6 +8,7 @@ import { Checkbox, Paper } from "@material-ui/core";
 import {
     formatMessage, formatMessageWithValues,
     withModulesManager, formatDateFromISO, historyPush,
+    formatSorter, sort,
     Table, PagedDataHandler
 } from "@openimis/fe-core";
 
@@ -27,7 +28,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
     }
 
     componentDidMount() {
-        this.onChangeRowsPerPage(this.defaultPageSize);
+        this.setState({ orderBy: "chfId" }, e => this.onChangeRowsPerPage(this.defaultPageSize))
     }
 
     familyChanged = (prevProps) => (!prevProps.family && !!this.props.family) ||
@@ -45,7 +46,10 @@ class FamilyInsureesOverview extends PagedDataHandler {
 
     queryPrms = () => {
         if (!!this.props.family && !!this.props.family.uuid) {
-            return [`familyUuid:"${this.props.family.uuid}"`];
+            return [
+                `familyUuid:"${this.props.family.uuid}"`,
+                `orderBy: "${this.state.orderBy}"`
+            ];
         }
         return null;
     }
@@ -67,6 +71,20 @@ class FamilyInsureesOverview extends PagedDataHandler {
         "Insuree.cardIssued",
     ];
 
+    sorter = (attr, asc = true) => [
+        () => this.setState((state, props) => ({ orderBy: sort(state.orderBy, attr, asc) }), e => this.query()),
+        () => formatSorter(this.state.orderBy, attr, asc)
+    ]
+
+    headerActions = [
+        this.sorter("chfId"),
+        this.sorter("lastName"),
+        this.sorter("otherNames"),
+        this.sorter("gender"),
+        this.sorter("dob"),
+        this.sorter("cardIssued"),
+    ];
+
     formatters = [
         i => i.chfId || "",
         i => i.lastName || "",
@@ -84,6 +102,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     module="insuree"
                     header={formatMessageWithValues(intl, "insuree", "Family.insurees", { count: pageInfo.totalCount })}
                     headers={this.headers}
+                    headerActions={this.headerActions}
                     itemFormatters={this.formatters}
                     items={(!!family && familyMembers) || []}
                     fetching={fetchingFamilyMembers}
