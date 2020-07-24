@@ -2,17 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
-import { formatMessage, AutoSuggestion, withModulesManager } from "@openimis/fe-core";
+import { formatMessage, SelectInput, withModulesManager } from "@openimis/fe-core";
 import { fetchInsureeGenders } from "../actions";
 import _debounce from "lodash/debounce";
 import _ from "lodash";
 
 class InsureeGenderPicker extends Component {
-
-    constructor(props) {
-        super(props);
-        this.selectThreshold = props.modulesManager.getConf("fe-insuree", "InsureeGenderPicker.selectThreshold", 10);
-    }
 
     componentDidMount() {
         if (!this.props.insureeGenders) {
@@ -31,25 +26,29 @@ class InsureeGenderPicker extends Component {
 
     formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `InsureeGender.${i}`)}` : this.nullDisplay
 
-    onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
+    onSuggestionSelected = v => {
+        this.props.onChange(v, this.formatSuggestion(v));
+    }
 
     render() {
-        const { intl, insureeGenders, withLabel = true, label, withPlaceholder = false, placeholder, value, reset,
+        const { intl, insureeGenders, module = "insuree", withLabel = true, label = "InsureeGenderPicker.label", withPlaceholder = false, placeholder, value, reset,
             readOnly = false, required = false,
             withNull = false, nullLabel = null
         } = this.props;
-        return <AutoSuggestion
-            module="medical"
-            items={insureeGenders}
-            label={!!withLabel && (label || formatMessage(intl, "insuree", "InsureeGenderPicker.label"))}
+        let options = !!insureeGenders ? insureeGenders.map(g => ({ value: g.code, label: this.formatSuggestion(g.code) })) : []
+        if (withNull) {
+            options.unshift({ value: null, label: this.formatSuggestion(null) })
+        }
+        return <SelectInput
+            module={module}
+            options={options}
+            label={!!withLabel ? label : null}
             placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "InsureeGenderPicker.placehoder")) : null}
-            getSuggestionValue={this.formatSuggestion}
-            onSuggestionSelected={this.onSuggestionSelected}
+            onChange={this.onSuggestionSelected}
             value={value}
             reset={reset}
             readOnly={readOnly}
             required={required}
-            selectThreshold={this.selectThreshold}
             withNull={withNull}
             nullLabel={this.nullDisplay}
         />

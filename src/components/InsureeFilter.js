@@ -130,7 +130,7 @@ class InsureeFilter extends Component {
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="InsureeFilter.email" field={
-                    <Grid item xs={3} className={classes.item}>
+                    <Grid item xs={2} className={classes.item}>
                         <TextInput
                             module="insuree" label="Insuree.email"
                             name="email"
@@ -146,7 +146,7 @@ class InsureeFilter extends Component {
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="InsureeFilter.phone" field={
-                    <Grid item xs={3} className={classes.item}>
+                    <Grid item xs={2} className={classes.item}>
                         <TextInput
                             module="insuree" label="Insuree.phone"
                             name="phone"
@@ -156,6 +156,22 @@ class InsureeFilter extends Component {
                                     id: 'phone',
                                     value: v,
                                     filter: `phone_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id="InsureeFilter.gender" field={
+                    <Grid item xs={2} className={classes.item}>
+                        <PublishedComponent
+                            pubRef="insuree.InsureeGenderPicker"
+                            withNull={true}
+                            value={this._filterValue('gender')}
+                            onChange={v => onChangeFilters([
+                                {
+                                    id: 'gender',
+                                    value: v,
+                                    filter: !!v ? `gender_Code: "${v}"` : null
                                 }
                             ])}
                         />

@@ -72,14 +72,11 @@ class InsureeSearcher extends Component {
         for (var i = 0; i < this.locationLevels; i++) {
             h.push(`location.locationType.${i}`)
         }
-        if (filters.showHistory && !!filters.showHistory.value) {
-            h.push(
-                "insuree.insureeSummaries.id",
-                "insuree.insureeSummaries.validityFrom",
-                "insuree.insureeSummaries.validityTo",
-            )
-        }
-        h.push("insuree.insureeSummaries.openNewTab")
+        h.push(
+            "insuree.insureeSummaries.validityFrom",
+            "insuree.insureeSummaries.validityTo",
+            "insuree.insureeSummaries.openNewTab"
+        )
         return h;
     }
 
@@ -96,16 +93,9 @@ class InsureeSearcher extends Component {
         ];
         _.times(this.locationLevels, () => results.push(null));
         results.push(
-            null,
-            ['confirmationNo', true]
-        )
-        if (filters.showHistory && !!filters.showHistory.value) {
-            results.push(
-                null,
-                ['validityFrom', false],
-                ['validityTo', false]
-            );
-        }
+            ['validityFrom', false],
+            ['validityTo', false],
+        );
         return results;
     }
 
@@ -158,20 +148,17 @@ class InsureeSearcher extends Component {
             let j = i + 0;
             formatters.push(insuree => this.parentLocation(insuree.currentVillage, j))
         }
-        if (filters.showHistory && !!filters.showHistory.value) {
-            formatters.push(
-                insuree => decodeId(insuree.id),
-                insuree => formatDateFromISO(
-                    this.props.modulesManager,
-                    this.props.intl,
-                    insuree.validityFrom),
-                insuree => formatDateFromISO(
-                    this.props.modulesManager,
-                    this.props.intl,
-                    insuree.validityTo),
-            )
-        }
-        formatters.push(insuree => <IconButton onClick={e => this.props.onDoubleClick(insuree, true)} > <TabIcon /></IconButton >)
+        formatters.push(
+            insuree => formatDateFromISO(
+                this.props.modulesManager,
+                this.props.intl,
+                insuree.validityFrom),
+            insuree => formatDateFromISO(
+                this.props.modulesManager,
+                this.props.intl,
+                insuree.validityTo),
+            insuree => <IconButton onClick={e => this.props.onDoubleClick(insuree, true)} > <TabIcon /></IconButton >
+        )
         return formatters;
     }
 
