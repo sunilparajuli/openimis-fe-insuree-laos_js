@@ -115,22 +115,42 @@ class InsureeFilter extends Component {
                         />
                     </Grid>
                 } />
-                <ControlledField module="insuree" id="InsureeFilter.maritalStatus" field={
-                    <Grid item xs={3} className={classes.item}>
-                        <PublishedComponent pubRef="insuree.InsureeMaritalStatusPicker"
-                            value={this._filterValue('maritalStatus')}
-                            onChange={v => onChangeFilters([
-                                {
-                                    id: 'maritalStatus',
-                                    value: v,
-                                    filter: `marital: "${v}"`
-                                }
-                            ])}
-                        />
+                <Grid item xs={3}>
+                    <Grid container>
+                        <ControlledField module="insuree" id="InsureeFilter.gender" field={
+                            <Grid item xs={6} className={classes.item}>
+                                <PublishedComponent
+                                    pubRef="insuree.InsureeGenderPicker"
+                                    withNull={true}
+                                    value={this._filterValue('gender')}
+                                    onChange={v => onChangeFilters([
+                                        {
+                                            id: 'gender',
+                                            value: v,
+                                            filter: !!v ? `gender_Code: "${v}"` : null
+                                        }
+                                    ])}
+                                />
+                            </Grid>
+                        } />
+                        <ControlledField module="insuree" id="InsureeFilter.maritalStatus" field={
+                            <Grid item xs={6} className={classes.item}>
+                                <PublishedComponent pubRef="insuree.InsureeMaritalStatusPicker"
+                                    value={this._filterValue('maritalStatus')}
+                                    onChange={v => onChangeFilters([
+                                        {
+                                            id: 'maritalStatus',
+                                            value: v,
+                                            filter: `marital: "${v}"`
+                                        }
+                                    ])}
+                                />
+                            </Grid>
+                        } />
                     </Grid>
-                } />
+                </Grid>
                 <ControlledField module="insuree" id="InsureeFilter.email" field={
-                    <Grid item xs={2} className={classes.item}>
+                    <Grid item xs={3} className={classes.item}>
                         <TextInput
                             module="insuree" label="Insuree.email"
                             name="email"
@@ -146,7 +166,7 @@ class InsureeFilter extends Component {
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="InsureeFilter.phone" field={
-                    <Grid item xs={2} className={classes.item}>
+                    <Grid item xs={3} className={classes.item}>
                         <TextInput
                             module="insuree" label="Insuree.phone"
                             name="phone"
@@ -156,22 +176,6 @@ class InsureeFilter extends Component {
                                     id: 'phone',
                                     value: v,
                                     filter: `phone_Icontains: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="InsureeFilter.gender" field={
-                    <Grid item xs={2} className={classes.item}>
-                        <PublishedComponent
-                            pubRef="insuree.InsureeGenderPicker"
-                            withNull={true}
-                            value={this._filterValue('gender')}
-                            onChange={v => onChangeFilters([
-                                {
-                                    id: 'gender',
-                                    value: v,
-                                    filter: !!v ? `gender_Code: "${v}"` : null
                                 }
                             ])}
                         />
@@ -211,35 +215,39 @@ class InsureeFilter extends Component {
                         </Grid>
                     </Grid>
                 } />
-                <ControlledField module="insuree" id="InsureeFilter.photoStatus" field={
-                    <Grid item xs={1} className={classes.item}>
-                        <PublishedComponent pubRef="insuree.PhotoStatusPicker"
-                            value={this._filterValue('photoStatus')}
-                            onChange={s => onChangeFilters([
-                                {
-                                    id: 'photoStatus',
-                                    value: s,
-                                    filter: `photo_Isnull: ${s === "with"}`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="InsureeFilter.showHistory" field={
-                    <Grid item xs={2} className={classes.item}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    color="primary"
-                                    checked={this.state.showHistory}
-                                    onChange={e => this._onChangeShowHistory()}
+                <Grid item xs={3}>
+                    <Grid container>
+                        <ControlledField module="insuree" id="InsureeFilter.photoStatus" field={
+                            <Grid item xs={6} className={classes.item}>
+                                <PublishedComponent pubRef="insuree.PhotoStatusPicker"
+                                    value={this._filterValue('photoStatus')}
+                                    onChange={s => onChangeFilters([
+                                        {
+                                            id: 'photoStatus',
+                                            value: s,
+                                            filter: `photo_Isnull: ${s === "with"}`
+                                        }
+                                    ])}
                                 />
-                            }
-                            label={formatMessage(intl, "insuree", "InsureeFilter.showHistory")}
-                        />
+                            </Grid>
+                        } />
+                        <ControlledField module="insuree" id="InsureeFilter.showHistory" field={
+                            <Grid item xs={6} className={classes.item}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            color="primary"
+                                            checked={this.state.showHistory}
+                                            onChange={e => this._onChangeShowHistory()}
+                                        />
+                                    }
+                                    label={formatMessage(intl, "insuree", "InsureeFilter.showHistory")}
+                                />
+                            </Grid>
+                        } />
                     </Grid>
-                } />
-            </Grid >
+                </Grid>
+            </Grid>
         )
     }
 }
