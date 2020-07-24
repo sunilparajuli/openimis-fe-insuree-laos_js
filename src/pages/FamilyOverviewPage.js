@@ -26,7 +26,7 @@ class FamilyOverviewPage extends Component {
     }
 
     componentDidMount() {
-        document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { chfId: "" })
+        document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { label: "" })
         if (this.props.family_uuid) {
             this.setState(
                 (state, props) => ({ family_uuid: props.family_uuid, family: {} }),
@@ -36,17 +36,18 @@ class FamilyOverviewPage extends Component {
                 )
             )
         } else if (!!this.props.family && !!this.props.family.uuid) {
-            console.log("NEW")
             this.setState(
                 (state, props) => ({ family_uuid: null, family: null }),
                 e => this.props.newFamily())
         }
     }
 
+    label = () => !!this.state.family && !!this.state.family.headInsuree ? `${this.state.family.headInsuree.lastName} ${this.state.family.headInsuree.otherNames} (${this.state.family.headInsuree.chfId})` : ""
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if ((prevState.family && prevState.family.headInsuree && prevState.family.headInsuree.chfId)
             !== (this.state.family && this.state.family.headInsuree && this.state.family.headInsuree.chfId)) {
-            document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { chfId: !!this.state.family && !!this.state.family.headInsuree ? this.state.family.headInsuree.chfId : "" })
+            document.title = formatMessageWithValues(this.props.intl, "insuree", "FamilyOverview.title", { label: this.label() })
         }
         if ((prevProps.family_uuid !== this.props.family_uuid) && !!this.props.family_uuid) {
             this.setState(
@@ -60,10 +61,6 @@ class FamilyOverviewPage extends Component {
             var family = { ...this.props.family };
             family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
             this.setState({ family, newFamily: false, family_uuid: family.uuid, reset: this.state.reset + 1 });
-        // } else if (!this.props.family_uuid) {
-        //     this.setState(
-        //         (state, props) => ({ family_uuid: null, family: null }),
-        //         e => this.props.newFamily())
         }
     }
 
@@ -82,7 +79,7 @@ class FamilyOverviewPage extends Component {
                     <Form
                         module="insuree"
                         title="FamilyOverview.title"
-                        titleParams={{ chfId: !!family && !!family.headInsuree && family.headInsuree.chfId ? family.headInsuree.chfId : "" }}
+                        titleParams={{ label: this.label()}}
                         edited_id={family_uuid}
                         edited={family}
                         reset={this.state.reset}

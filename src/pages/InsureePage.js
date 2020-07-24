@@ -26,7 +26,7 @@ class InsureePage extends Component {
     }
 
     componentDidMount() {
-        document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { chfId: "" })
+        document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: "" })
         if (this.props.insuree_uuid) {
             this.setState(
                 (state, props) => ({ insuree_uuid: props.insuree_uuid }),
@@ -54,9 +54,11 @@ class InsureePage extends Component {
         }
     }
 
+    label = () => !!this.state.insuree ? `${this.state.insuree.lastName} ${this.state.insuree.otherNames} (${this.state.insuree.chfId})` : ""
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.insuree.chfId !== this.state.insuree.chfId) {
-            document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { chfId: this.state.insuree.chfId })
+            document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: this.label() })
         }
         if (prevProps.insuree_uuid !== this.props.insuree_uuid) {
             this.setState(
@@ -74,7 +76,7 @@ class InsureePage extends Component {
     }
 
     render() {
-        const { intl, classes, rights, family_uuid, insuree_uuid, insuree, fetchingInsuree, errorInsuree } = this.props;
+        const { intl, classes, rights, insuree_uuid, insuree, fetchingInsuree, errorInsuree } = this.props;
         if (!rights.includes(RIGHT_INSUREE)) return null;
         return (
             <div className={classes.page}>
@@ -83,7 +85,7 @@ class InsureePage extends Component {
                     <Form
                         module="insuree"
                         title="Insuree.title"
-                        titleParams={{ chfId: insuree.chfId }}
+                        titleParams={{ label: this.label() }}
                         edited_id={insuree_uuid}
                         edited={this.state.insuree}
                         reset={this.state.reset}

@@ -4,9 +4,7 @@ import { Paper, Grid, Typography, Divider } from "@material-ui/core";
 import { FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 
 const styles = theme => ({
-    paper: {
-        paddingTop: theme.spacing(1)
-    },
+    paper: theme.paper.paper,
     tableTitle: theme.table.title,
     item: theme.paper.item,
 });
@@ -32,14 +30,14 @@ class InsureeDetailPanel extends Component {
         const { intl, classes, edited } = this.props;
         return (
             <Grid container>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <Fragment>
                             <Typography className={classes.tableTitle}>
                                 <FormattedMessage module="insuree" id="insuree.InsureeFirstServicePointPanel.title" />
                             </Typography>
                             <Divider />
-                            <Grid container>
+                            <Grid container className={classes.item}>
                                 <Grid item xs={12} className={classes.item}>
                                     {this.panel()}
                                 </Grid>

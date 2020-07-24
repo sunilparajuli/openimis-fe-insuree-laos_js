@@ -8,7 +8,7 @@ import {
 } from "@openimis/fe-core";
 
 const styles = theme => ({
-    paper: theme.paper,
+    paper: theme.paper.paper,
     tableTitle: theme.table.title,
     item: theme.paper.item,
 });
@@ -18,13 +18,13 @@ class InsureeDetailPanel extends Component {
         const { intl, classes, edited } = this.props;
         return (
             <Grid container>
-                <Grid item xs={12} className={classes.item}>
+                <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <Typography className={classes.tableTitle}>
                             <FormattedMessage module="insuree" id="insuree.InsureeDetailPanel.title" />
                         </Typography>
                         <Divider />
-                        <Grid container>
+                        <Grid container className={classes.item}>
                             <Grid item xs={4} className={classes.item}>
                                 <TextInput
                                     module="insuree"

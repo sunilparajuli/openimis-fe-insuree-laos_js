@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Checkbox, IconButton } from "@material-ui/core";
 import TabIcon from "@material-ui/icons/Tab";
 import {
-    decodeId, withModulesManager, formatMessageWithValues, formatDateFromISO,
+    withModulesManager, formatMessageWithValues, formatDateFromISO,
     Searcher
 } from "@openimis/fe-core";
 
@@ -65,15 +65,10 @@ class FamilySearcher extends Component {
         h.push(
             "insuree.familySummaries.poverty",
             "insuree.familySummaries.confirmationNo",
+            "insuree.familySummaries.validityFrom",
+            "insuree.familySummaries.validityTo",
+            "insuree.familySummaries.openNewTab"
         );
-        if (filters.showHistory && !!filters.showHistory.value) {
-            h.push(
-                "insuree.familySummaries.id",
-                "insuree.familySummaries.validityFrom",
-                "insuree.familySummaries.validityTo",
-            )
-        }
-        h.push("insuree.familySummaries.openNewTab")
         return h;
     }
 
@@ -89,15 +84,10 @@ class FamilySearcher extends Component {
         _.times(this.locationLevels, () => results.push(null));
         results.push(
             null,
-            ['confirmationNo', true]
-        )
-        if (filters.showHistory && !!filters.showHistory.value) {
-            results.push(
-                null,
-                ['validityFrom', false],
-                ['validityTo', false]
-            );
-        }
+            ['confirmationNo', true],
+            ['validityFrom', false],
+            ['validityTo', false]
+        );
         return results;
     }
 
@@ -132,21 +122,15 @@ class FamilySearcher extends Component {
                 readOnly
             />,
             family => family.confirmationNo,
-        )
-        if (filters.showHistory && !!filters.showHistory.value) {
-            formatters.push(
-                family => decodeId(family.id),
-                family => formatDateFromISO(
-                    this.props.modulesManager,
-                    this.props.intl,
-                    family.validityFrom),
-                family => formatDateFromISO(
-                    this.props.modulesManager,
-                    this.props.intl,
-                    family.validityTo),
-            )
-        }
-        formatters.push(family => <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >)
+            family => formatDateFromISO(
+                this.props.modulesManager,
+                this.props.intl,
+                family.validityFrom),
+            family => formatDateFromISO(
+                this.props.modulesManager,
+                this.props.intl,
+                family.validityTo),
+            family => <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >)
         return formatters;
     }
 

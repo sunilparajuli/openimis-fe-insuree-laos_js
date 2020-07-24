@@ -1,14 +1,16 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Checkbox, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import TabIcon from "@material-ui/icons/Tab";
+import SearchIcon from '@material-ui/icons/Search';
 import {
     decodeId, withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
     Searcher,
     PublishedComponent
 } from "@openimis/fe-core";
+import EnquiryDialog from "./EnquiryDialog";
 
 import { fetchInsureeSummaries } from "../actions";
 
@@ -17,6 +19,11 @@ import InsureeFilter from "./InsureeFilter";
 const INSUREE_SEARCHER_CONTRIBUTION_KEY = "insuree.InsureeSearcher";
 
 class InsureeSearcher extends Component {
+
+    state = {
+        open: false,
+        chfid: null,
+    }
 
     constructor(props) {
         super(props);
@@ -112,9 +119,18 @@ class InsureeSearcher extends Component {
         return !!loc ? loc.name : "";
     }
 
+    adornedChfId = (chfid) => (
+        <Fragment>
+            <IconButton size="small" onClick={e => this.setState({ open: true, chfid })}><SearchIcon /></IconButton>
+            {chfid}
+        </Fragment>
+    )
+
+    handleClose = () => { this.setState({ open: false, chfid: null }) }
+
     itemFormatters = (filters) => {
         var formatters = [
-            insuree => insuree.chfId,
+            insuree => this.adornedChfId(insuree.chfId),
             insuree => insuree.lastName,
             insuree => insuree.otherNames,
             insuree => <PublishedComponent
@@ -164,36 +180,39 @@ class InsureeSearcher extends Component {
     render() {
         const { intl,
             insurees, insureesPageInfo, fetchingInsurees, fetchedInsurees, errorInsurees,
-            defaultFilters, filterPaneContributionsKey, cacheFiltersKey, onDoubleClick
+            filterPaneContributionsKey, cacheFiltersKey, onDoubleClick
         } = this.props;
 
         let count = insureesPageInfo.totalCount;
 
         return (
-            <Searcher
-                module="insuree"
-                cacheFiltersKey={cacheFiltersKey}
-                FilterPane={InsureeFilter}
-                filterPaneContributionsKey={filterPaneContributionsKey}
-                items={insurees}
-                itemsPageInfo={insureesPageInfo}
-                fetchingItems={fetchingInsurees}
-                fetchedItems={fetchedInsurees}
-                errorItems={errorInsurees}
-                contributionKey={INSUREE_SEARCHER_CONTRIBUTION_KEY}
-                tableTitle={formatMessageWithValues(intl, "insuree", "insureeSummaries", { count })}
-                rowsPerPageOptions={this.rowsPerPageOptions}
-                defaultPageSize={this.defaultPageSize}
-                fetch={this.fetch}
-                rowIdentifier={this.rowIdentifier}
-                filtersToQueryParams={this.filtersToQueryParams}
-                defaultOrderBy="chfId"
-                headers={this.headers}
-                itemFormatters={this.itemFormatters}
-                sorts={this.sorts}
-                rowDisabled={this.rowDisabled}
-                onDoubleClick={onDoubleClick}
-            />
+            <Fragment>
+                <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} />
+                <Searcher
+                    module="insuree"
+                    cacheFiltersKey={cacheFiltersKey}
+                    FilterPane={InsureeFilter}
+                    filterPaneContributionsKey={filterPaneContributionsKey}
+                    items={insurees}
+                    itemsPageInfo={insureesPageInfo}
+                    fetchingItems={fetchingInsurees}
+                    fetchedItems={fetchedInsurees}
+                    errorItems={errorInsurees}
+                    contributionKey={INSUREE_SEARCHER_CONTRIBUTION_KEY}
+                    tableTitle={formatMessageWithValues(intl, "insuree", "insureeSummaries", { count })}
+                    rowsPerPageOptions={this.rowsPerPageOptions}
+                    defaultPageSize={this.defaultPageSize}
+                    fetch={this.fetch}
+                    rowIdentifier={this.rowIdentifier}
+                    filtersToQueryParams={this.filtersToQueryParams}
+                    defaultOrderBy="chfId"
+                    headers={this.headers}
+                    itemFormatters={this.itemFormatters}
+                    sorts={this.sorts}
+                    rowDisabled={this.rowDisabled}
+                    onDoubleClick={onDoubleClick}
+                />
+            </Fragment>
         )
     }
 }

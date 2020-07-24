@@ -76,6 +76,7 @@ function reducer(
                 familyMembers: null,
                 familyMembersPageInfo: { totalCount: 0 },
                 family: null,
+                insuree: null,
             };
         case 'INSUREE_FAMILY_REQ':
             return {

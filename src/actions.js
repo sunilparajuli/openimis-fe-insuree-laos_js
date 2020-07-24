@@ -18,7 +18,7 @@ export function fetchInsureeGenders() {
 export function fetchInsuree(mm, chfid) {
   let payload = formatPageQuery("insurees",
     [`chfId:"${chfid}"`],
-    ["id", "chfId", "lastName", "otherNames", "dob", "age",
+    ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
       `family{id}`,
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
@@ -30,7 +30,7 @@ export function fetchInsuree(mm, chfid) {
 export function fetchInsureeFull(mm, uuid) {
   let payload = formatPageQuery("insurees",
     [`uuid:"${uuid}"`],
-    ["id", "chfId", "lastName", "otherNames", "dob", "age",
+    ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
       `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
@@ -110,9 +110,9 @@ export function newFamily() {
 }
 
 export function fetchFamily(mm, familyUuid) {
-  let filter = `uuid: "${familyUuid}"`
+  let filters = [`uuid: "${familyUuid}"`, "showHistory: true"]
   const payload = formatPageQueryWithCount("families",
-    [filter],
+    filters,
     FAMILY_FULL_PROJECTION(mm)
   );
   return graphql(payload, 'INSUREE_FAMILY_OVERVIEW');

@@ -100,7 +100,7 @@ class FamilyFilter extends Component {
                     </Grid>
                 } />
                 <ControlledField module="insuree" id="FamilyFilter.givenName" field={
-                    <Grid item xs={3} className={classes.item}>
+                    <Grid item xs={2} className={classes.item}>
                         <TextInput
                             module="insuree" label="Family.otherNames"
                             name="givenName"
@@ -115,8 +115,24 @@ class FamilyFilter extends Component {
                         />
                     </Grid>
                 } />
+                <ControlledField module="insuree" id="FamilyFilter.phone" field={
+                    <Grid item xs={2} className={classes.item}>
+                        <TextInput
+                            module="insuree" label="Family.phone"
+                            name="phone"
+                            value={this._filterValue('email')}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: 'phone',
+                                    value: v,
+                                    filter: `headInsuree_Phone_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
                 <ControlledField module="insuree" id="FamilyFilter.email" field={
-                    <Grid item xs={3} className={classes.item}>
+                    <Grid item xs={2} className={classes.item}>
                         <TextInput
                             module="insuree" label="Family.email"
                             name="email"

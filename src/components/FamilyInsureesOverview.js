@@ -4,14 +4,15 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import _ from "lodash";
-import { Checkbox, Paper } from "@material-ui/core";
+import { Checkbox, Paper, IconButton } from "@material-ui/core";
+import SearchIcon from '@material-ui/icons/Search';
 import {
     formatMessage, formatMessageWithValues,
     withModulesManager, formatDateFromISO, historyPush,
     formatSorter, sort,
     Table, PagedDataHandler
 } from "@openimis/fe-core";
-
+import EnquiryDialog from "./EnquiryDialog";
 import { fetchFamilyMembers, selectFamilyMember } from "../actions";
 
 
@@ -20,6 +21,11 @@ const styles = theme => ({
 });
 
 class FamilyInsureesOverview extends PagedDataHandler {
+
+    state = {
+        open: false,
+        chfid: null,
+    }
 
     constructor(props) {
         super(props);
@@ -85,8 +91,17 @@ class FamilyInsureesOverview extends PagedDataHandler {
         this.sorter("cardIssued"),
     ];
 
+    adornedChfId = (chfid) => (
+        <Fragment>
+            <IconButton size="small" onClick={e => this.setState({ open: true, chfid })}><SearchIcon /></IconButton>
+            {chfid}
+        </Fragment>
+    )
+
+    handleClose = () => { this.setState({ open: false, chfid: null }) }
+
     formatters = [
-        i => i.chfId || "",
+        i => this.adornedChfId(i.chfId),
         i => i.lastName || "",
         i => i.otherNames || "",
         i => (i.gender && i.gender.code) ? formatMessage(this.props.intl, "insuree", `InsureeGender.${i.gender.code}`) : "",
@@ -98,6 +113,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
         const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
         return (
             <Paper className={classes.paper}>
+                <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} />
                 <Table
                     module="insuree"
                     header={formatMessageWithValues(intl, "insuree", "Family.insurees", { count: pageInfo.totalCount })}
