@@ -33,6 +33,16 @@ class FamilyFilter extends Component {
         this.filterFamiliesOnMembers = this.props.modulesManager.getConf("fe-insuree", "filterFamiliesOnMembers", true)
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (
+            prevProps.filters['showHistory'] !== this.props.filters['showHistory'] &&
+            !!this.props.filters['showHistory'] &&
+            this.state.showHistory !== this.props.filters['showHistory']['value']
+        ) {
+            this.setState((sate, props) => ({ showHistory: props.filters['showHistory']['value'] }))
+        }
+    }
+
     debouncedOnChangeFilter = _debounce(
         this.props.onChangeFilters,
         this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800)
@@ -204,7 +214,7 @@ class FamilyFilter extends Component {
         return (
             <Grid container className={classes.form}>
                 <ControlledField module="insuree" id="FamilyFilter.location" field={
-                    <Grid item xs={12} className={classes.item}>
+                    <Grid item xs={12}>
                         <PublishedComponent
                             pubRef="location.DetailedLocationFilter"
                             withNull={true}
