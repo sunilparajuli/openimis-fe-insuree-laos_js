@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import _debounce from "lodash/debounce";
@@ -28,6 +28,11 @@ class FamilyFilter extends Component {
         showHistory: false,
     }
 
+    constructor(props) {
+        super(props)
+        this.filterFamiliesOnMembers = this.props.modulesManager.getConf("fe-insuree", "filterFamiliesOnMembers", true)
+    }
+
     debouncedOnChangeFilter = _debounce(
         this.props.onChangeFilters,
         this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800)
@@ -52,6 +57,148 @@ class FamilyFilter extends Component {
         }));
     }
 
+    personFilter = (anchor) => {
+        const { classes, onChangeFilters } = this.props;
+        return (
+            <Fragment>
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.chfId`} field={
+                    <Grid item xs={1} className={classes.item}>
+                        <TextInput
+                            module="insuree" label={`Family.${anchor}.chfId`}
+                            name={`${anchor}_chfId`}
+                            value={this._filterValue(`${anchor}.chfId`)}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: `${anchor}.chfId`,
+                                    value: v,
+                                    filter: `${anchor}_ChfId_Istartswith: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.lastName`} field={
+                    <Grid item xs={2} className={classes.item}>
+                        <TextInput
+                            module="insuree" label={`Family.${anchor}.lastName`}
+                            name={`${anchor}_lastName`}
+                            value={this._filterValue(`${anchor}.lastName`)}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: `${anchor}.lastName`,
+                                    value: v,
+                                    filter: `${anchor}_LastName_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.givenName`} field={
+                    <Grid item xs={2} className={classes.item}>
+                        <TextInput
+                            module="insuree" label={`Family.${anchor}.otherNames`}
+                            name={`${anchor}_givenName`}
+                            value={this._filterValue(`${anchor}.givenName`)}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: `${anchor}.givenName`,
+                                    value: v,
+                                    filter: `headInsuree_OtherNames_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`InsureeFilter.${anchor}.gender`} field={
+                    <Grid item xs={1} className={classes.item}>
+                        <PublishedComponent
+                            pubRef="insuree.InsureeGenderPicker"
+                            withNull={true}
+                            label={`Family.${anchor}.gender`}
+                            value={this._filterValue(`${anchor}.gender`)}
+                            onChange={v => onChangeFilters([
+                                {
+                                    id: `${anchor}.gender`,
+                                    value: v,
+                                    filter: !!v ? `${anchor}_Gender_Code: "${v}"` : null
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.phone`} field={
+                    <Grid item xs={2} className={classes.item}>
+                        <TextInput
+                            module="insuree" label={`Family.${anchor}.phone`}
+                            name={`${anchor}_phone`}
+                            value={this._filterValue(`${anchor}.phone`)}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: `${anchor}.phone`,
+                                    value: v,
+                                    filter: `${anchor}_Phone_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.email`} field={
+                    <Grid item xs={2} className={classes.item}>
+                        <TextInput
+                            module="insuree" label={`Family.${anchor}.email`}
+                            name={`${anchor}_email`}
+                            value={this._filterValue(`${anchor}.email`)}
+                            onChange={v => this.debouncedOnChangeFilter([
+                                {
+                                    id: `${anchor}.email`,
+                                    value: v,
+                                    filter: `${anchor}_Email_Icontains: "${v}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                <ControlledField module="insuree" id={`FamilyFilter.${anchor}.dob`} field={
+                    <Grid item xs={2}>
+                        <Grid container>
+                            <Grid item xs={6} className={classes.item}>
+                                <PublishedComponent pubRef="core.DatePicker"
+                                    value={this._filterValue(`${anchor}.dobFrom`)}
+                                    module="insuree"
+                                    label={`Family.${anchor}.dobFrom`}
+                                    onChange={d => onChangeFilters([
+                                        {
+                                            id: `${anchor}.dobFrom`,
+                                            value: d,
+                                            filter: `${anchor}_Dob_Gte: "${d}"`
+                                        }
+                                    ])}
+                                />
+                            </Grid>
+                            <Grid item xs={6} className={classes.item}>
+                                <PublishedComponent pubRef="core.DatePicker"
+                                    value={this._filterValue(`${anchor}.dobTo`)}
+                                    module="insuree"
+                                    label={`Family.${anchor}.dobTo`}
+                                    onChange={d => onChangeFilters([
+                                        {
+                                            id: `${anchor}.dobTo`,
+                                            value: d,
+                                            filter: `${anchor}_Dob_Lte: "${d}"`
+                                        }
+                                    ])}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                } />
+            </Fragment>
+        )
+    }
+
+    familyHeadFilter = () => this.personFilter("headInsuree")
+    familyMemberFilter = () => this.personFilter("members")
+
     render() {
         const { intl, classes, filters, onChangeFilters } = this.props;
         return (
@@ -67,122 +214,10 @@ class FamilyFilter extends Component {
                         />
                     </Grid>
                 } />
-                <ControlledField module="insuree" id="FamilyFilter.chfId" field={
-                    <Grid item xs={3} className={classes.item}>
-                        <TextInput
-                            module="insuree" label="Family.chfId"
-                            name="chfId"
-                            value={this._filterValue('chfId')}
-                            onChange={v => this.debouncedOnChangeFilter([
-                                {
-                                    id: 'chfId',
-                                    value: v,
-                                    filter: `headInsuree_ChfId_Istartswith: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="FamilyFilter.lastName" field={
-                    <Grid item xs={3} className={classes.item}>
-                        <TextInput
-                            module="insuree" label="Family.lastName"
-                            name="lastName"
-                            value={this._filterValue('lastName')}
-                            onChange={v => this.debouncedOnChangeFilter([
-                                {
-                                    id: 'lastName',
-                                    value: v,
-                                    filter: `headInsuree_LastName_Icontains: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="FamilyFilter.givenName" field={
-                    <Grid item xs={2} className={classes.item}>
-                        <TextInput
-                            module="insuree" label="Family.otherNames"
-                            name="givenName"
-                            value={this._filterValue('givenName')}
-                            onChange={v => this.debouncedOnChangeFilter([
-                                {
-                                    id: 'givenName',
-                                    value: v,
-                                    filter: `headInsuree_OtherNames_Icontains: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="FamilyFilter.phone" field={
-                    <Grid item xs={2} className={classes.item}>
-                        <TextInput
-                            module="insuree" label="Family.phone"
-                            name="phone"
-                            value={this._filterValue('email')}
-                            onChange={v => this.debouncedOnChangeFilter([
-                                {
-                                    id: 'phone',
-                                    value: v,
-                                    filter: `headInsuree_Phone_Icontains: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="FamilyFilter.email" field={
-                    <Grid item xs={2} className={classes.item}>
-                        <TextInput
-                            module="insuree" label="Family.email"
-                            name="email"
-                            value={this._filterValue('email')}
-                            onChange={v => this.debouncedOnChangeFilter([
-                                {
-                                    id: 'email',
-                                    value: v,
-                                    filter: `headInsuree_Email_Icontains: "${v}"`
-                                }
-                            ])}
-                        />
-                    </Grid>
-                } />
-                <ControlledField module="insuree" id="FamilyFilter.dob" field={
-                    <Grid item xs={3}>
-                        <Grid container>
-                            <Grid item xs={6} className={classes.item}>
-                                <PublishedComponent pubRef="core.DatePicker"
-                                    value={this._filterValue('dobFrom')}
-                                    module="insuree"
-                                    label="Family.dobFrom"
-                                    onChange={d => onChangeFilters([
-                                        {
-                                            id: 'dobFrom',
-                                            value: d,
-                                            filter: `headInsuree_Dob_Gte: "${d}"`
-                                        }
-                                    ])}
-                                />
-                            </Grid>
-                            <Grid item xs={6} className={classes.item}>
-                                <PublishedComponent pubRef="core.DatePicker"
-                                    value={this._filterValue('dobTo')}
-                                    module="insuree"
-                                    label="Family.dobTo"
-                                    onChange={d => onChangeFilters([
-                                        {
-                                            id: 'dobTo',
-                                            value: d,
-                                            filter: `headInsuree_Dob_Lte: "${d}"`
-                                        }
-                                    ])}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                } />
+                {this.familyHeadFilter()}
+                {this.filterFamiliesOnMembers && this.familyMemberFilter()}
                 <ControlledField module="insuree" id="FamilyFilter.poverty" field={
-                    <Grid item xs={3} className={classes.item}>
+                    <Grid item xs={2} className={classes.item}>
                         <PublishedComponent pubRef="insuree.FamilyPovertyStatusPicker"
                             value={this._filterValue('poverty')}
                             onChange={v => onChangeFilters([

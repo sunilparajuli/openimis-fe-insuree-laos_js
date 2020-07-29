@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { Checkbox, IconButton } from "@material-ui/core";
+import { Checkbox, IconButton, Tooltip } from "@material-ui/core";
 import TabIcon from "@material-ui/icons/Tab";
 import {
-    withModulesManager, formatMessageWithValues, formatDateFromISO,
+    withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
     Searcher
 } from "@openimis/fe-core";
 
@@ -130,7 +130,12 @@ class FamilySearcher extends Component {
                 this.props.modulesManager,
                 this.props.intl,
                 family.validityTo),
-            family => <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >)
+            family => (
+                <Tooltip title={formatMessage(this.props.intl, "insuree", "familiesSummaries.openNewTabButton.tooltip")}>
+                    <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >
+                </Tooltip>
+            )
+        )
         return formatters;
     }
 

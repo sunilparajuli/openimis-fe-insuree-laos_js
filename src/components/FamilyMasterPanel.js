@@ -1,28 +1,53 @@
 import React, { Component, Fragment } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import { injectIntl } from 'react-intl';
 import {
     Grid,
     FormControlLabel,
     Checkbox,
     Typography,
     Divider,
+    Tooltip,
+    IconButton
 } from "@material-ui/core";
-import { TextInput, formatMessage, PublishedComponent, FormattedMessage } from "@openimis/fe-core";
+import { People as PeopleIcon } from '@material-ui/icons';
+import {
+    historyPush, withHistory, withModulesManager,
+    TextInput, formatMessage, PublishedComponent, FormattedMessage
+} from "@openimis/fe-core";
 
 
 const styles = theme => ({
     tableTitle: theme.table.title,
     item: theme.paper.item,
+    fullHeight: {
+        height: "100%"
+    },
 });
 
 class FamilyMasterPanel extends Component {
     render() {
-        const { intl, classes, edited } = this.props;
+        const { intl, classes, edited, openFamilyButton = false } = this.props;
         return (
             <Fragment>
-                <Typography className={classes.tableTitle}>
-                    <FormattedMessage module="insuree" id="insuree.FamilyDetailPanel.title" />
-                </Typography>
+                <Grid container className={classes.tableTitle}>
+                    <Grid item>
+                        <Grid container align="center" justify="center" direction="column" className={classes.fullHeight}>
+                            <Grid item>
+                                <Typography >
+                                    <FormattedMessage module="insuree" id="insuree.FamilyDetailPanel.title" />
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    {!!openFamilyButton && (
+                        <Grid item>
+                            <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
+                                <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [edited.uuid])}><PeopleIcon /></IconButton >
+                            </Tooltip>
+                        </Grid>
+                    )}
+                </Grid>
                 <Divider />
                 <Grid container className={classes.item}>
                     <Grid item xs={12}>
@@ -35,7 +60,7 @@ class FamilyMasterPanel extends Component {
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
                             module="insuree"
-                            label="Family.chfId"
+                            label="Family.headInsuree.chfId"
                             required={true}
                             readOnly={true}
                             value={!edited || !edited.headInsuree ? "" : edited.headInsuree.chfId}
@@ -44,7 +69,7 @@ class FamilyMasterPanel extends Component {
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
                             module="insuree"
-                            label="Family.lastName"
+                            label="Family.headInsuree.lastName"
                             required={true}
                             readOnly={true}
                             value={!edited || !edited.headInsuree ? "" : edited.headInsuree.lastName}
@@ -53,7 +78,7 @@ class FamilyMasterPanel extends Component {
                     <Grid item xs={3} className={classes.item}>
                         <TextInput
                             module="insuree"
-                            label="Family.otherNames"
+                            label="Family.headInsuree.otherNames"
                             required={true}
                             readOnly={true}
                             value={!edited || !edited.headInsuree ? "" : edited.headInsuree.otherNames}
@@ -107,6 +132,6 @@ class FamilyMasterPanel extends Component {
     }
 }
 
-export default withTheme(
+export default withModulesManager(withHistory(injectIntl(withTheme(
     withStyles(styles)(FamilyMasterPanel)
-);
+))));

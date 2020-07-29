@@ -2,11 +2,11 @@ import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
-import { IconButton } from "@material-ui/core";
-import TabIcon from "@material-ui/icons/Tab";
-import SearchIcon from '@material-ui/icons/Search';
+import { IconButton, Tooltip } from "@material-ui/core";
+import { Search as SearchIcon, People as PeopleIcon, Tab as TabIcon } from '@material-ui/icons';
 import {
-    decodeId, withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
+    withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage, 
+    withHistory, historyPush,
     Searcher,
     PublishedComponent
 } from "@openimis/fe-core";
@@ -75,6 +75,7 @@ class InsureeSearcher extends Component {
         h.push(
             "insuree.insureeSummaries.validityFrom",
             "insuree.insureeSummaries.validityTo",
+            "insuree.insureeSummaries.openFamily",
             "insuree.insureeSummaries.openNewTab"
         )
         return h;
@@ -157,7 +158,16 @@ class InsureeSearcher extends Component {
                 this.props.modulesManager,
                 this.props.intl,
                 insuree.validityTo),
-            insuree => <IconButton onClick={e => this.props.onDoubleClick(insuree, true)} > <TabIcon /></IconButton >
+            insuree => (
+                <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
+                    <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [insuree.family.uuid])}><PeopleIcon /></IconButton >
+                </Tooltip>
+            ),
+            insuree => (
+                <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openNewTabButton.tooltip")}>
+                    <IconButton onClick={e => this.props.onDoubleClick(insuree, true)}><TabIcon /></IconButton >
+                </Tooltip>
+            )
         )
         return formatters;
     }
@@ -219,4 +229,4 @@ const mapDispatchToProps = dispatch => {
         dispatch);
 };
 
-export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(injectIntl(InsureeSearcher)));
+export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(injectIntl(InsureeSearcher))));

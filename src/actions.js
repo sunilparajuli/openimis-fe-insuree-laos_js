@@ -146,6 +146,7 @@ export function fetchInsureeSummaries(mm, filters) {
   var projections = [
     "id", "uuid", "validityFrom", "validityTo",
     "chfId", "otherNames", "lastName", "phone", "gender{code}", "dob", "marital",
+    "family{uuid}",
     "currentVillage" + mm.getProjection("location.Location.FlatProjection")]
   const payload = formatPageQueryWithCount("insurees",
     filters,
