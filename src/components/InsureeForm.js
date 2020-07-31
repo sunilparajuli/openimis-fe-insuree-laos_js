@@ -13,15 +13,19 @@ const styles = theme => ({
     item: theme.paper.item,
 });
 
-class InsureeDetailPanel extends Component {
+class InsureeForm extends Component {
     render() {
-        const { intl, classes, edited } = this.props;
+        const {
+            intl, classes, edited,
+            title = "insuree.InsureeForm.title", titleParams = {},
+            readOnly = true, updateAttribute
+        } = this.props;
         return (
             <Grid container>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <Typography className={classes.tableTitle}>
-                            <FormattedMessage module="insuree" id="insuree.InsureeDetailPanel.title" />
+                            <FormattedMessage module="insuree" id={title} values={titleParams} />
                         </Typography>
                         <Divider />
                         <Grid container className={classes.item}>
@@ -30,8 +34,9 @@ class InsureeDetailPanel extends Component {
                                     module="insuree"
                                     label="Insuree.chfId"
                                     required={true}
-                                    readOnly={true}
-                                    value={!!edited.chfId ? edited.chfId : ""}
+                                    readOnly={readOnly}
+                                    value={!!edited && !!edited.chfId ? edited.chfId : ""}
+                                    onChange={v => updateAttribute('chfId', v)}
                                 />
                             </Grid>
                             <Grid item xs={4} className={classes.item}>
@@ -39,46 +44,61 @@ class InsureeDetailPanel extends Component {
                                     module="insuree"
                                     label="Insuree.lastName"
                                     required={true}
-                                    readOnly={true}
-                                    value={!!edited.lastName ? edited.lastName : ""}
+                                    readOnly={readOnly}
+                                    value={!!edited && !!edited.lastName ? edited.lastName : ""}
+                                    onChange={v => updateAttribute('lastName', v)}
                                 />
                             </Grid>
                             <Grid item xs={4} className={classes.item}>
                                 <TextInput
                                     module="insuree"
                                     label="Insuree.otherNames"
-                                    readOnly={true}
-                                    value={!!edited.otherNames ? edited.otherNames : ""}
+                                    required={true}
+                                    readOnly={readOnly}
+                                    value={!!edited && !!edited.otherNames ? edited.otherNames : ""}
+                                    onChange={v => updateAttribute('otherNames', v)}
                                 />
                             </Grid>
                             <Grid item xs={8}>
                                 <Grid container>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="core.DatePicker"
-                                            value={edited.dob}
+                                            value={!!edited ? edited.dob : null}
                                             module="insuree"
                                             label="Insuree.dob"
-                                            readOnly={true}
+                                            readOnly={readOnly}
+                                            required={true}
+                                            onChange={v => updateAttribute('dob', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.InsureeGenderPicker"
-                                            value={!!edited.gender ? edited.gender.code : ""}
+                                            value={!!edited && !!edited.gender ? edited.gender.code : ""}
                                             module="insuree"
-                                            readOnly={true}
+                                            readOnly={readOnly}
+                                            withNull={true}
+                                            nullLabel={formatMessage(intl, "insuree", "InsureeGender.none")}
+                                            onChange={v => updateAttribute('gender', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.InsureeMaritalStatusPicker"
-                                            value={!!edited.marital ? edited.marital : ""}
+                                            value={!!edited && !!edited.marital ? edited.marital : ""}
                                             module="insuree"
-                                            readOnly={true}
+                                            readOnly={readOnly}
+                                            withNull={true}
                                             nullLabel="InsureeMaritalStatus.N"
+                                            onChange={v => updateAttribute('marital', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <FormControlLabel
-                                            control={<Checkbox color="primary" checked={!!edited.card_issued} disabled={true} />}
+                                            control={<Checkbox
+                                                color="primary"
+                                                checked={!!edited && !!edited.card_issued}
+                                                disabled={readOnly}
+                                                onChange={v => updateAttribute('card_issued', !edited || !edited.card_issued)}
+                                            />}
                                             label={formatMessage(intl, "insuree", "Insuree.cardIssued")}
                                         />
                                     </Grid>
@@ -86,53 +106,66 @@ class InsureeDetailPanel extends Component {
                                         <PublishedComponent pubRef="insuree.InsureeAddress"
                                             value={edited}
                                             module="insuree"
-                                            readOnly={true}
+                                            readOnly={readOnly}
+                                            onChangeLocation={v => updateAttribute('location', v)}
+                                            onChangeAddress={v => updateAttribute('address', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={6} className={classes.item}>
                                         <TextInput
                                             module="insuree"
                                             label="Insuree.phone"
-                                            readOnly={true}
-                                            value={!!edited.phone ? edited.phone : ""}
+                                            readOnly={readOnly}
+                                            value={!!edited && !!edited.phone ? edited.phone : ""}
+                                            onChange={v => updateAttribute('phone', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={6} className={classes.item}>
                                         <TextInput
                                             module="insuree"
                                             label="Insuree.email"
-                                            readOnly={true}
-                                            value={!!edited.email ? edited.email : ""}
+                                            readOnly={readOnly}
+                                            value={!!edited && !!edited.email ? edited.email : ""}
+                                            onChange={v => updateAttribute('email', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.ProfessionPicker"
-                                            value={!!edited.profession ? edited.profession.id : ""}
-                                            readOnly={true}
                                             module="insuree"
+                                            value={!!edited && !!edited.profession ? edited.profession.id : null}
+                                            readOnly={readOnly}
+                                            withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "Profession.none")}
+                                            onChange={v => updateAttribute('profession', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.EducationPicker"
-                                            value={!!edited.education ? edited.education.id : ""}
-                                            readOnly={true}
+                                            module="insuree"
+                                            value={!!edited && !!edited.education ? edited.education.id : ""}
+                                            readOnly={readOnly}
+                                            withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "insuree.Education.none")}
+                                            onChange={v => updateAttribute('education', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.IdentificationTypePicker"
-                                            value={!!edited.typeOfId ? edited.typeOfId.code : ""}
-                                            readOnly={true}
+                                            module="insuree"
+                                            value={!!edited && !!edited.typeOfId ? edited.typeOfId : ""}
+                                            readOnly={readOnly}
+                                            withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "IdentificationType.none")}
+                                            onChange={v => updateAttribute('typeOfId', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <TextInput
                                             module="insuree"
                                             label="Insuree.passport"
-                                            readOnly={true}
-                                            value={!!edited.passport ? edited.passport : ""}
+                                            readOnly={readOnly}
+                                            value={!!edited && !!edited.passport ? edited.passport : ""}
+                                            onChange={v => updateAttribute('passport', !!v ? v : null)}
                                         />
                                     </Grid>
 
@@ -141,7 +174,7 @@ class InsureeDetailPanel extends Component {
                             <Grid item xs={4} className={classes.item}>
                                 <PublishedComponent pubRef="insuree.Avatar"
                                     insuree={edited}
-                                    readOnly={true}
+                                    readOnly={readOnly}
                                 />
                             </Grid>
                         </Grid>
@@ -153,5 +186,5 @@ class InsureeDetailPanel extends Component {
 }
 
 export default withTheme(
-    withStyles(styles)(InsureeDetailPanel)
+    withStyles(styles)(InsureeForm)
 );

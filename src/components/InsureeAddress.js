@@ -15,16 +15,26 @@ const styles = theme => ({
 
 class InsureeAddress extends Component {
 
+    state = {
+        editedLocation: false,
+        editedAddress: false,
+    }
+
 
     renderLocation = () => {
-        const { intl, classes, value } = this.props;
-        if (
-            !value.currentVillage ||
+        const { intl, classes, value, readOnly, onChangeLocation } = this.props;
+        if (!this.state.editedLocation && (
+            !value || !value.currentVillage ||
             (!!value.currentVillage && !!value.family && !!value.family.location && value.currentVillage.uuid === value.family.location.id)
-        ) {
+        )) {
             return (
                 <FormControlLabel
-                    control={<Checkbox color="primary" checked={true} disabled={true} />}
+                    control={<Checkbox
+                        color="primary"
+                        checked={!this.state.editedLocation}
+                        disabled={readOnly}
+                        onChange={e => this.setState((state) => ({ editedLocation: !state.editedLocation }))}
+                    />}
                     label={formatMessage(this.props.intl, "insuree", "Insuree.currentVillage.sameAsFamily")}
                 />
             )
@@ -33,21 +43,28 @@ class InsureeAddress extends Component {
             <PublishedComponent
                 pubRef="location.DetailedLocation"
                 withNull={true}
-                value={value.currentVillage}
+                value={!!value ? value.currentVillage : null}
                 split={true}
+                readOnly={readOnly}
+                onChange={onChangeLocation}
             />
         )
     }
 
     renderAddress = () => {
-        const { intl, classes, value } = this.props;
-        if (
-            !value.currentAddress ||
+        const { intl, classes, value, readOnly, onChangeAddress } = this.props;
+        if (!this.state.editedAddress && (
+            !value || !value.currentAddress ||
             (!!value.currerntAddress && !!value.family && !!value.family.address && value.currentAddress === value.family.address)
-        ) {
+        )) {
             return (
                 <FormControlLabel
-                    control={<Checkbox color="primary" checked={true} disabled={true} />}
+                    control={<Checkbox 
+                        color="primary"
+                        checked={!this.state.editedAddress}
+                        disabled={readOnly}
+                        onChange={e => this.setState((state) => ({ editedAddress: !state.editedAddress }))}
+                    />}
                     label={formatMessage(this.props.intl, "insuree", "Insuree.currentAddress.sameAsFamily")}
                 />
             )
@@ -58,8 +75,9 @@ class InsureeAddress extends Component {
                 label="Insuree.currentAddress"
                 multiline
                 rows={5}
-                readOnly={true}
-                value={"" + value.currentAddress}
+                readOnly={readOnly}
+                value={!!value.currentAddress ? value.currentAddress : ""}
+                onChange={onChangeAddress}
             />
         )
     }

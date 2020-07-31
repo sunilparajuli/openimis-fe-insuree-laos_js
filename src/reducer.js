@@ -1,4 +1,7 @@
-import { parseData, pageInfo, formatServerError, formatGraphQLError } from '@openimis/fe-core';
+import {
+    parseData, pageInfo, formatServerError, formatGraphQLError,
+    dispatchMutationReq, dispatchMutationResp, dispatchMutationErr,
+} from '@openimis/fe-core';
 
 function reducer(
     state = {
@@ -20,10 +23,6 @@ function reducer(
         errorInsurees: null,
         insurees: [],
         insureesPageInfo: { totalCount: 0 },
-        fetchingConfirmationTypes: false,
-        fetchedConfirmationTypes: false,
-        errorConfirmationTypes: null,
-        confirmationTypes: [],
         fetchingFamilies: false,
         fetchedFamilies: false,
         errorFamilies: null,
@@ -44,6 +43,8 @@ function reducer(
         fetchedIdentificationTypes: false,
         identificationTypes: null,
         errorIdentificationTypes: null,
+        submittingMutation: false,
+        mutation: {},
     },
     action,
 ) {
@@ -143,7 +144,7 @@ function reducer(
                 ...state,
                 fetchingInsureeGenders: false,
                 fetchedInsureeGenders: true,
-                insureeGenders: action.payload.data.insureeGenders,
+                insureeGenders: action.payload.data.insureeGenders.map(g => g.code),
                 errorInsureeGenders: formatGraphQLError(action.payload)
             };
         case 'INSUREE_GENDERS_ERR':
@@ -212,7 +213,7 @@ function reducer(
                 ...state,
                 fetchingConfirmationTypes: false,
                 fetchedConfirmationTypes: true,
-                confirmationTypes: action.payload.data.confirmationTypes,
+                confirmationTypes: action.payload.data.confirmationTypes.map(c => c.code),
                 errorConfirmationTypes: formatGraphQLError(action.payload)
             };
         case 'INSUREE_CONFIRMATION_TYPES_ERR':
@@ -234,7 +235,7 @@ function reducer(
                 ...state,
                 fetchingFamilyTypes: false,
                 fetchedFamilyTypes: true,
-                familyTypes: action.payload.data.familyTypes,
+                familyTypes: action.payload.data.familyTypes.map(t => t.code),
                 errorFamilyTypes: formatGraphQLError(action.payload)
             };
         case 'INSUREE_FAMILY_TYPES_ERR':
@@ -279,7 +280,7 @@ function reducer(
                 ...state,
                 fetchingEducations: false,
                 fetchedEducations: true,
-                educations: action.payload.data.educations,
+                educations: action.payload.data.educations.map(e => e.id),
                 errorEducations: formatGraphQLError(action.payload)
             };
         case 'INSUREE_EDUCATIONS_ERR':
@@ -301,7 +302,7 @@ function reducer(
                 ...state,
                 fetchingProfessions: false,
                 fetchedProfessions: true,
-                professions: action.payload.data.professions,
+                professions: action.payload.data.professions.map(p => p.id),
                 errorProfessions: formatGraphQLError(action.payload)
             };
         case 'INSUREE_PROFESSIONS_ERR':
@@ -323,7 +324,7 @@ function reducer(
                 ...state,
                 fetchingIdentificationTypes: false,
                 fetchedIdentificationTypes: true,
-                identificationTypes: action.payload.data.identificationTypes,
+                identificationTypes: action.payload.data.identificationTypes.map(t => t.code),
                 errorIdentificationTypes: formatGraphQLError(action.payload)
             };
         case 'INSUREE_IDENTIFICATION_TYPES_ERR':
@@ -332,6 +333,12 @@ function reducer(
                 fetchingIdentificationTypes: false,
                 errorIdentificationTypes: formatServerError(action.payload)
             };
+        case 'INSUREE_MUTATION_REQ':
+            return dispatchMutationReq(state, action)
+        case 'INSUREE_MUTATION_ERR':
+            return dispatchMutationErr(state, action);
+        case 'INSUREE_CREATE_FAMILY_RESP':
+            return dispatchMutationResp(state, "createFamily", action);
         default:
             return state;
     }

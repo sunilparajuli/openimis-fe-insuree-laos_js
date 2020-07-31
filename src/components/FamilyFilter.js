@@ -43,7 +43,7 @@ class FamilyFilter extends Component {
         }
     }
 
-    debouncedOnChangeFilter = _debounce(
+    debouncedOnChangeFilters = _debounce(
         this.props.onChangeFilters,
         this.props.modulesManager.getConf("fe-insuree", "debounceTime", 800)
     )
@@ -77,11 +77,11 @@ class FamilyFilter extends Component {
                             module="insuree" label={`Family.${anchor}.chfId`}
                             name={`${anchor}_chfId`}
                             value={this._filterValue(`${anchor}.chfId`)}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: `${anchor}.chfId`,
                                     value: v,
-                                    filter: `${anchor}_ChfId_Istartswith: "${v}"`
+                                    filter: !!v ? `${anchor}_ChfId_Istartswith: "${v}"` : null
                                 }
                             ])}
                         />
@@ -93,11 +93,11 @@ class FamilyFilter extends Component {
                             module="insuree" label={`Family.${anchor}.lastName`}
                             name={`${anchor}_lastName`}
                             value={this._filterValue(`${anchor}.lastName`)}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: `${anchor}.lastName`,
                                     value: v,
-                                    filter: `${anchor}_LastName_Icontains: "${v}"`
+                                    filter: !!v ? `${anchor}_LastName_Icontains: "${v}"` : null
                                 }
                             ])}
                         />
@@ -109,11 +109,11 @@ class FamilyFilter extends Component {
                             module="insuree" label={`Family.${anchor}.otherNames`}
                             name={`${anchor}_givenName`}
                             value={this._filterValue(`${anchor}.givenName`)}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: `${anchor}.givenName`,
                                     value: v,
-                                    filter: `headInsuree_OtherNames_Icontains: "${v}"`
+                                    filter: !!v ? `${anchor}_OtherNames_Icontains: "${v}"` : null
                                 }
                             ])}
                         />
@@ -142,11 +142,11 @@ class FamilyFilter extends Component {
                             module="insuree" label={`Family.${anchor}.phone`}
                             name={`${anchor}_phone`}
                             value={this._filterValue(`${anchor}.phone`)}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: `${anchor}.phone`,
                                     value: v,
-                                    filter: `${anchor}_Phone_Icontains: "${v}"`
+                                    filter: !!v ? `${anchor}_Phone_Icontains: "${v}"` : null
                                 }
                             ])}
                         />
@@ -158,11 +158,11 @@ class FamilyFilter extends Component {
                             module="insuree" label={`Family.${anchor}.email`}
                             name={`${anchor}_email`}
                             value={this._filterValue(`${anchor}.email`)}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: `${anchor}.email`,
                                     value: v,
-                                    filter: `${anchor}_Email_Icontains: "${v}"`
+                                    filter: !!v ? `${anchor}_Email_Icontains: "${v}"` : null
                                 }
                             ])}
                         />
@@ -180,7 +180,7 @@ class FamilyFilter extends Component {
                                         {
                                             id: `${anchor}.dobFrom`,
                                             value: d,
-                                            filter: `${anchor}_Dob_Gte: "${d}"`
+                                            filter: !!d ? `${anchor}_Dob_Gte: "${d}"` : null
                                         }
                                     ])}
                                 />
@@ -194,7 +194,7 @@ class FamilyFilter extends Component {
                                         {
                                             id: `${anchor}.dobTo`,
                                             value: d,
-                                            filter: `${anchor}_Dob_Lte: "${d}"`
+                                            filter: !!d ? `${anchor}_Dob_Lte: "${d}"` : null
                                         }
                                     ])}
                                 />
@@ -246,7 +246,7 @@ class FamilyFilter extends Component {
                             module="insuree" label="Family.confirmationNo"
                             name="confirmationNo"
                             value={this._filterValue('confirmationNo')}
-                            onChange={v => this.debouncedOnChangeFilter([
+                            onChange={v => this.debouncedOnChangeFilters([
                                 {
                                     id: 'confirmationNo',
                                     value: v,

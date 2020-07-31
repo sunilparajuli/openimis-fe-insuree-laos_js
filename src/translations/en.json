@@ -74,6 +74,7 @@
     "insuree.Family.headInsuree.chfId": "Head Ins. No.",
     "insuree.Family.headInsuree.email": "Head Email",
     "insuree.Family.headInsuree.phone": "Head Phone",
+    "insuree.Family.headInsuree.dob": "Head Birth Date",
     "insuree.Family.headInsuree.dobFrom": "Head Birth From",
     "insuree.Family.headInsuree.dobTo": "Head Birth To",
     "insuree.Family.headInsuree.gender": "Head Gender",
@@ -135,8 +136,10 @@
     "insuree.Family.policies": "Policies",
     "insuree.Family.contributions": "Contributions",
     "insuree.Family.payments": "Payments",
+    "insuree.Family.title": "Family/Group {label}",
     "insuree.Insuree.title": "Insuree {label}",
-    "insuree.InsureeDetailPanel.title": "Insuree Details",
+    "insuree.InsureeForm.title": "Insuree Details",
+    "insuree.HeadInsureeForm.title": "Head Insuree Details",
     "insuree.InsureeFirstServicePointPanel.title": "First Service Point",    
     "insuree.insureeSummaries": "{count} Insurees Found",
     "insuree.insureeSummaries.openNewTabButton.tooltip": "Open in new tab",
@@ -158,5 +161,7 @@
     "insuree.PhotoStatus": "Photo status",
     "insuree.PhotoStatus.null": "Any",
     "insuree.PhotoStatus.with": "With",
-    "insuree.PhotoStatus.without": "Without"
+    "insuree.PhotoStatus.without": "Without",
+    "insuree.CreateFamily.mutationLabel": "Create Family - {label}",
+    "insuree.UpdateFamily.mutationLabel": "Update Family - {label}"
 }

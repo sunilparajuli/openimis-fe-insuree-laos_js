@@ -20,7 +20,7 @@ class InsureeMainMenu extends Component {
         {
           text: "Add Family/Group",
           icon: <GroupAdd />,
-          route: "/" + modulesManager.getRef("insuree.route.newFamily"),
+          route: "/" + modulesManager.getRef("insuree.route.family"),
           withDivider: true
         }
       )

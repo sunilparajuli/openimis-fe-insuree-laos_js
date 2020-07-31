@@ -131,7 +131,7 @@ class FamilySearcher extends Component {
                 this.props.intl,
                 family.validityTo),
             family => (
-                <Tooltip title={formatMessage(this.props.intl, "insuree", "familiesSummaries.openNewTabButton.tooltip")}>
+                <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.openNewTabButton.tooltip")}>
                     <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >
                 </Tooltip>
             )

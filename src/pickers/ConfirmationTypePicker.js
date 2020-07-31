@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
-import { formatMessage, AutoSuggestion, withModulesManager } from "@openimis/fe-core";
+import { formatMessage, SelectInput, withModulesManager } from "@openimis/fe-core";
 import { fetchConfirmationTypes } from "../actions";
 import _debounce from "lodash/debounce";
 import _ from "lodash";
@@ -34,22 +34,24 @@ class ConfirmationTypePicker extends Component {
     onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 
     render() {
-        const { intl, confirmationTypes, withLabel = true, label, withPlaceholder = false, placeholder, value, reset,
+        const { intl, confirmationTypes, module="insuree", withLabel = true, label = "ConfirmationTypePicker.label", withPlaceholder = false, placeholder, value, reset,
             readOnly = false, required = false,
             withNull = false, nullLabel = null
         } = this.props;
-        return <AutoSuggestion
-            module="medical"
-            items={confirmationTypes}
-            label={!!withLabel && (label || formatMessage(intl, "insuree", "ConfirmationTypePicker.label"))}
+        let options = !!confirmationTypes ? confirmationTypes.map(v => ({ value: v, label: this.formatSuggestion(v) })) : []
+        if (withNull) {
+            options.unshift({ value: null, label: this.formatSuggestion(null) })
+        }
+        return <SelectInput
+            module={module}
+            options={options}
+            label={!!withLabel ? label : null}
             placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "ConfirmationTypePicker.placehoder")) : null}
-            getSuggestionValue={this.formatSuggestion}
-            onSuggestionSelected={this.onSuggestionSelected}
+            onChange={this.onSuggestionSelected}
             value={value}
             reset={reset}
             readOnly={readOnly}
             required={required}
-            selectThreshold={this.selectThreshold}
             withNull={withNull}
             nullLabel={this.nullDisplay}
         />

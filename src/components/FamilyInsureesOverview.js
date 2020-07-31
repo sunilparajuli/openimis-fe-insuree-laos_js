@@ -34,7 +34,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
     }
 
     componentDidMount() {
-        this.setState({ orderBy: "chfId" }, e => this.onChangeRowsPerPage(this.defaultPageSize))
+        this.setState({ orderBy: null }, e => this.onChangeRowsPerPage(this.defaultPageSize))
     }
 
     familyChanged = (prevProps) => (!prevProps.family && !!this.props.family) ||
@@ -51,11 +51,13 @@ class FamilyInsureesOverview extends PagedDataHandler {
     }
 
     queryPrms = () => {
+        let prms = [];
+        if (!!this.state.orderBy) {
+            prms.push(`orderBy: "${this.state.orderBy}"`)
+        }
         if (!!this.props.family && !!this.props.family.uuid) {
-            return [
-                `familyUuid:"${this.props.family.uuid}"`,
-                `orderBy: "${this.state.orderBy}"`
-            ];
+            prms.push(`familyUuid:"${this.props.family.uuid}"`);
+            return prms;
         }
         return null;
     }

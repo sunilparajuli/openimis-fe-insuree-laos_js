@@ -9,7 +9,7 @@ const styles = theme => ({
     item: theme.paper.item,
 });
 
-class InsureeDetailPanel extends Component {
+class InsureeFirstServicePointPanel extends Component {
 
     panel = () => {
         const { classes, edited } = this.props;
@@ -51,5 +51,5 @@ class InsureeDetailPanel extends Component {
 }
 
 export default withTheme(
-    withStyles(styles)(InsureeDetailPanel)
+    withStyles(styles)(InsureeFirstServicePointPanel)
 );

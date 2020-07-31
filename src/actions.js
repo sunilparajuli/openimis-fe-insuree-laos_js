@@ -1,4 +1,7 @@
-import { graphql, formatQuery, formatPageQuery, formatPageQueryWithCount } from "@openimis/fe-core";
+import {
+  graphql, formatQuery, formatPageQuery, formatPageQueryWithCount,
+  formatJsonField, decodeId, formatMutation
+} from "@openimis/fe-core";
 
 const FAMILY_FULL_PROJECTION = mm => [
   "id", "uuid", "poverty", "confirmationNo", "confirmationType{code}", "familyType{code}", "address",
@@ -109,8 +112,13 @@ export function newFamily() {
   }
 }
 
-export function fetchFamily(mm, familyUuid) {
-  let filters = [`uuid: "${familyUuid}"`, "showHistory: true"]
+export function fetchFamily(mm, familyUuid, headInsureeChfId) {
+  let filters = []
+  if (!!familyUuid) {
+    filters.push(`uuid: "${familyUuid}"`, "showHistory: true")
+  } else {
+    filters.push(`headInsuree_ChfId: "${headInsureeChfId}"`)
+  }
   const payload = formatPageQueryWithCount("families",
     filters,
     FAMILY_FULL_PROJECTION(mm)
@@ -153,4 +161,63 @@ export function fetchInsureeSummaries(mm, filters) {
     projections
   );
   return graphql(payload, 'INSUREE_INSUREES');
+}
+
+export function formatInsureeGQL(mm, insuree) {
+  return `
+    ${insuree.uuid !== undefined && insuree.uuid !== null ? `uuid: "${insuree.uuid}"` : ''}
+    ${!!insuree.chfId ? `chfId: "${insuree.chfId}"` : ""}
+    ${!!insuree.lastName ? `lastName: "${insuree.lastName}"` : ""}
+    ${!!insuree.otherNames ? `otherNames: "${insuree.otherNames}"` : ""}
+    ${!!insuree.genderCode ? `genderCode: "${insuree.genderCode}"` : ""}
+    ${!!insuree.dob ? `dob: "${insuree.dob}"` : ''}
+    head: ${!!insuree.head}
+    ${!!insuree.marital ? `marital: "${insuree.marital}"` : ""}
+    ${!!insuree.passport ? `passport: "${insuree.passport}"` : ""}
+    ${!!insuree.phone ? `phone: "${insuree.phone}"` : ""}
+    ${!!insuree.email ? `email: "${insuree.email}"` : ""}
+    ${!!insuree.currentAddress ? `currentAddress: "${insuree.currentAddress}"` : ""}
+    ${!!insuree.currentVillageId ? `currentVillageId: ${decodeId(insuree.currentVillageId)}` : ""}
+    ${!!insuree.photoId ? `photoId: ${decodeId(insuree.photoId)}` : ""}
+    ${!!insuree.photoDate ? `photoDate: "${insuree.photoDate}"` : ""}
+    cardIssued:${!!insuree.cardIssued}
+    ${!!insuree.professionId ? `professionId: ${decodeId(insuree.professionId)}` : ""}
+    ${!!insuree.educationId ? `educationId: ${decodeId(insuree.educationId)}` : ""}
+    ${!!insuree.typeOfIdCode ? `typeOfIdCode: "${insuree.typeOfIdCode}"` : ""}
+    ${!!insuree.healthFacilityId ? `healthFacilityId: ${decodeId(insuree.healthFacilityId)}` : ""}
+    ${!!insuree.jsonExt ? `jsonExt: ${formatJsonField(insuree.jsonExt)}` : ""}
+  `
+}
+
+export function formatFamilyGQL(mm, family) {
+  return `  
+    ${family.uuid !== undefined && family.uuid !== null ? `uuid: "${family.uuid}"` : ''}
+    headInsuree: {
+      ${formatInsureeGQL(mm, family.headInsuree)}
+    }
+    ${!!family.locationId ? `locationId: ${decodeId(family.locationId)}` : ""}
+    poverty: ${!!family.poverty}
+    ${!!family.familyTypeId ? `familyTypeId: ${decodeId(family.familyTypeId)}` : ""}
+    ${!!family.address ? `address: "${family.address}"` : ""}
+    ${!!family.confirmationTypeId ? `confirmationTypeId: ${decodeId(family.confirmationTypeId)}` : ""}
+    ${!!family.confirmationNo ? `confirmationNo: "${family.confirmationTypeNo}"` : ""}
+    ${!!family.jsonExt ? `jsonExt: ${formatJsonField(family.jsonExt)}` : ""}
+  `
+}
+
+export function createFamily(mm, family, clientMutationLabel) {
+  let mutation = formatMutation("createFamily", formatFamilyGQL(mm, family), clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_CREATE_FAMILY_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime
+    }
+  )
+}
+
+export function updateFamily(mm, family, clientMutationLabel) {
 }

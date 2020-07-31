@@ -1,6 +1,7 @@
 import InsureeMainMenu from "./menus/InsureeMainMenu";
 import FamiliesPage from "./pages/FamiliesPage";
 import InsureePage from "./pages/InsureePage";
+import FamilyPage from "./pages/FamilyPage";
 import { CappedItemServicePage } from "./pages/CappedItemServicePage";
 import InsureesPage from "./pages/InsureesPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -27,7 +28,7 @@ import InsureeFirstServicePointPanel from "./components/InsureeFirstServicePoint
 import InsureeAddress from "./components/InsureeAddress";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
-import InsureeDetailPanel from "./components/InsureeDetailPanel";
+import InsureeForm from "./components/InsureeForm";
 
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
@@ -35,7 +36,7 @@ const ROUTE_INSUREE_INSUREE = "insuree/insuree";
 const ROUTE_INSUREE_FIND_INSUREE = "insuree/insurees";
 const ROUTE_INSUREE_FIND_FAMILY = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
-const ROUTE_INSUREE_NEW_FAMILY = "insuree/newFamily";
+const ROUTE_INSUREE_FAMILY = "insuree/family";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
@@ -56,7 +57,7 @@ const DEFAULT_CONFIG = {
 
     { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FIND_FAMILY },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
-    { key: "insuree.route.newFamily", ref: ROUTE_INSUREE_NEW_FAMILY },
+    { key: "insuree.route.family", ref: ROUTE_INSUREE_FAMILY },
     { key: "insuree.route.findInsuree", ref: ROUTE_INSUREE_FIND_INSUREE },
     { key: "insuree.route.insuree", ref: ROUTE_INSUREE_INSUREE },
 
@@ -71,7 +72,7 @@ const DEFAULT_CONFIG = {
   ],
   "core.Router": [
     { path: ROUTE_INSUREE_FAMILIES, component: FamiliesPage },
-    { path: ROUTE_INSUREE_NEW_FAMILY, component: FamilyOverviewPage },
+    { path: ROUTE_INSUREE_FAMILY + "/:family_uuid?", component: FamilyPage },
     { path: ROUTE_INSUREE_FAMILY_OVERVIEW + "/:family_uuid", component: FamilyOverviewPage },
     { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid/:family_uuid?", component: InsureePage },
     { path: "insuree/insurees", component: InsureesPage },
@@ -82,7 +83,7 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
   "insuree.InsureeSummaryExt": [InsureeFirstServicePointCondensed],
-  "insuree.InsureePage.panels": [InsureeDetailPanel, InsureeFirstServicePointPanel],
+  "insuree.InsureePage.panels": [InsureeForm, InsureeFirstServicePointPanel],
 }
 
 export const InsureeModule = (cfg) => {
