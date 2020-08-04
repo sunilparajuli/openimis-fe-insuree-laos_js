@@ -59,7 +59,7 @@ class InsureeForm extends Component {
         } else {
             historyPush(modulesManager,
                 history,
-                "insuree.route.findInsuree"
+                "insuree.route.insurees"
             );
         }
     }

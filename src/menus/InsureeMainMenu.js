@@ -30,7 +30,7 @@ class InsureeMainMenu extends Component {
         {
           text: formatMessage(this.props.intl, "insuree", "menu.familiesOrGroups"),
           icon: <People />,
-          route: "/" + modulesManager.getRef("insuree.route.findFamily")
+          route: "/" + modulesManager.getRef("insuree.route.families")
         }
       )
     }
@@ -39,7 +39,7 @@ class InsureeMainMenu extends Component {
         {
           text: formatMessage(this.props.intl, "insuree", "menu.insurees"),
           icon: <PersonPin />,
-          route: "/" + modulesManager.getRef("insuree.route.findInsuree")
+          route: "/" + modulesManager.getRef("insuree.route.insurees")
         }
       )
     }

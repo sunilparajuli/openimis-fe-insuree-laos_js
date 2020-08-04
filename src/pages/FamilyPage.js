@@ -17,7 +17,7 @@ const styles = theme => ({
 class FamilyPage extends Component {
 
     add = () => {
-        historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyEdit")
+        historyPush(this.props.modulesManager, this.props.history, "insuree.route.family")
     }
 
     save = (family) => {

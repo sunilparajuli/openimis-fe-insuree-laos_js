@@ -17,7 +17,7 @@ const styles = theme => ({
 class InsureePage extends Component {
 
     add = () => {
-        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insureeEdit")
+        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree")
     }
 
     save = (insuree) => {

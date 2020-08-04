@@ -54,10 +54,10 @@ const DEFAULT_CONFIG = {
     { key: "insuree.FamilyTypePicker", ref: FamilyTypePicker },
     { key: "insuree.PhotoStatusPicker", ref: PhotoStatusPicker },
 
-    { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FAMILIES },
+    { key: "insuree.route.families", ref: ROUTE_INSUREE_FAMILIES },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
     { key: "insuree.route.family", ref: ROUTE_INSUREE_FAMILY },
-    { key: "insuree.route.findInsuree", ref: ROUTE_INSUREE_INSUREES },
+    { key: "insuree.route.insurees", ref: ROUTE_INSUREE_INSUREES },
     { key: "insuree.route.insuree", ref: ROUTE_INSUREE_INSUREE },
 
     { key: "insuree.Avatar", ref: InsureeAvatar },
