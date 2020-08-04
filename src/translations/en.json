@@ -138,8 +138,8 @@
     "insuree.Family.payments": "Payments",
     "insuree.Family.title": "Family/Group {label}",
     "insuree.Insuree.title": "Insuree {label}",
-    "insuree.InsureeForm.title": "Insuree Details",
-    "insuree.HeadInsureeForm.title": "Head Insuree Details",
+    "insuree.InsureeMasterPanel.title": "Insuree Details",
+    "insuree.HeadInsureeMasterPanel.title": "Head Insuree Details",
     "insuree.InsureeFirstServicePointPanel.title": "First Service Point",    
     "insuree.insureeSummaries": "{count} Insurees Found",
     "insuree.insureeSummaries.openNewTabButton.tooltip": "Open in new tab",
@@ -163,5 +163,7 @@
     "insuree.PhotoStatus.with": "With",
     "insuree.PhotoStatus.without": "Without",
     "insuree.CreateFamily.mutationLabel": "Create Family - {label}",
-    "insuree.UpdateFamily.mutationLabel": "Update Family - {label}"
+    "insuree.UpdateFamily.mutationLabel": "Update Family - {label}",
+    "insuree.CreateInsuree.mutationLabel": "Create Insuree - {label}",
+    "insuree.UpdateInsuree.mutationLabel": "Update Insuree - {label}"
 }

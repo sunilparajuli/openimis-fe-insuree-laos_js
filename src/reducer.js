@@ -339,6 +339,8 @@ function reducer(
             return dispatchMutationErr(state, action);
         case 'INSUREE_CREATE_FAMILY_RESP':
             return dispatchMutationResp(state, "createFamily", action);
+        case 'INSUREE_CREATE_INSUREE_RESP':
+            return dispatchMutationResp(state, "createInsuree", action);
         default:
             return state;
     }

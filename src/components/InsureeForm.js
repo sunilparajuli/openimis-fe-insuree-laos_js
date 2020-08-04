@@ -1,190 +1,173 @@
 import React, { Component, Fragment } from "react";
+import { injectIntl } from 'react-intl';
+import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Paper, Grid, Typography, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
 import {
-    formatMessage,
-    FormattedMessage, PublishedComponent,
-    TextInput
+    formatMessageWithValues, withModulesManager, withHistory, historyPush, journalize,
+    Form, ProgressOrError
 } from "@openimis/fe-core";
+import { RIGHT_INSUREE } from "../constants";
+import FamilyDisplayPanel from "./FamilyDisplayPanel";
+import InsureeMasterPanel from "../components/InsureeMasterPanel";
+
+
+import { fetchInsureeFull } from "../actions";
+import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
-    paper: theme.paper.paper,
-    tableTitle: theme.table.title,
-    item: theme.paper.item,
+    page: theme.page,
 });
 
-class InsureeForm extends Component {
-    render() {
-        const {
-            intl, classes, edited,
-            title = "insuree.InsureeForm.title", titleParams = {},
-            readOnly = true, updateAttribute
-        } = this.props;
-        return (
-            <Grid container>
-                <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                        <Typography className={classes.tableTitle}>
-                            <FormattedMessage module="insuree" id={title} values={titleParams} />
-                        </Typography>
-                        <Divider />
-                        <Grid container className={classes.item}>
-                            <Grid item xs={4} className={classes.item}>
-                                <TextInput
-                                    module="insuree"
-                                    label="Insuree.chfId"
-                                    required={true}
-                                    readOnly={readOnly}
-                                    value={!!edited && !!edited.chfId ? edited.chfId : ""}
-                                    onChange={v => updateAttribute('chfId', v)}
-                                />
-                            </Grid>
-                            <Grid item xs={4} className={classes.item}>
-                                <TextInput
-                                    module="insuree"
-                                    label="Insuree.lastName"
-                                    required={true}
-                                    readOnly={readOnly}
-                                    value={!!edited && !!edited.lastName ? edited.lastName : ""}
-                                    onChange={v => updateAttribute('lastName', v)}
-                                />
-                            </Grid>
-                            <Grid item xs={4} className={classes.item}>
-                                <TextInput
-                                    module="insuree"
-                                    label="Insuree.otherNames"
-                                    required={true}
-                                    readOnly={readOnly}
-                                    value={!!edited && !!edited.otherNames ? edited.otherNames : ""}
-                                    onChange={v => updateAttribute('otherNames', v)}
-                                />
-                            </Grid>
-                            <Grid item xs={8}>
-                                <Grid container>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="core.DatePicker"
-                                            value={!!edited ? edited.dob : null}
-                                            module="insuree"
-                                            label="Insuree.dob"
-                                            readOnly={readOnly}
-                                            required={true}
-                                            onChange={v => updateAttribute('dob', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="insuree.InsureeGenderPicker"
-                                            value={!!edited && !!edited.gender ? edited.gender.code : ""}
-                                            module="insuree"
-                                            readOnly={readOnly}
-                                            withNull={true}
-                                            nullLabel={formatMessage(intl, "insuree", "InsureeGender.none")}
-                                            onChange={v => updateAttribute('gender', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="insuree.InsureeMaritalStatusPicker"
-                                            value={!!edited && !!edited.marital ? edited.marital : ""}
-                                            module="insuree"
-                                            readOnly={readOnly}
-                                            withNull={true}
-                                            nullLabel="InsureeMaritalStatus.N"
-                                            onChange={v => updateAttribute('marital', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <FormControlLabel
-                                            control={<Checkbox
-                                                color="primary"
-                                                checked={!!edited && !!edited.card_issued}
-                                                disabled={readOnly}
-                                                onChange={v => updateAttribute('card_issued', !edited || !edited.card_issued)}
-                                            />}
-                                            label={formatMessage(intl, "insuree", "Insuree.cardIssued")}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <PublishedComponent pubRef="insuree.InsureeAddress"
-                                            value={edited}
-                                            module="insuree"
-                                            readOnly={readOnly}
-                                            onChangeLocation={v => updateAttribute('location', v)}
-                                            onChangeAddress={v => updateAttribute('address', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} className={classes.item}>
-                                        <TextInput
-                                            module="insuree"
-                                            label="Insuree.phone"
-                                            readOnly={readOnly}
-                                            value={!!edited && !!edited.phone ? edited.phone : ""}
-                                            onChange={v => updateAttribute('phone', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} className={classes.item}>
-                                        <TextInput
-                                            module="insuree"
-                                            label="Insuree.email"
-                                            readOnly={readOnly}
-                                            value={!!edited && !!edited.email ? edited.email : ""}
-                                            onChange={v => updateAttribute('email', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="insuree.ProfessionPicker"
-                                            module="insuree"
-                                            value={!!edited && !!edited.profession ? edited.profession.id : null}
-                                            readOnly={readOnly}
-                                            withNull={true}
-                                            nullLabel={formatMessage(intl, "insuree", "Profession.none")}
-                                            onChange={v => updateAttribute('profession', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="insuree.EducationPicker"
-                                            module="insuree"
-                                            value={!!edited && !!edited.education ? edited.education.id : ""}
-                                            readOnly={readOnly}
-                                            withNull={true}
-                                            nullLabel={formatMessage(intl, "insuree", "insuree.Education.none")}
-                                            onChange={v => updateAttribute('education', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <PublishedComponent pubRef="insuree.IdentificationTypePicker"
-                                            module="insuree"
-                                            value={!!edited && !!edited.typeOfId ? edited.typeOfId : ""}
-                                            readOnly={readOnly}
-                                            withNull={true}
-                                            nullLabel={formatMessage(intl, "insuree", "IdentificationType.none")}
-                                            onChange={v => updateAttribute('typeOfId', v)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={3} className={classes.item}>
-                                        <TextInput
-                                            module="insuree"
-                                            label="Insuree.passport"
-                                            readOnly={readOnly}
-                                            value={!!edited && !!edited.passport ? edited.passport : ""}
-                                            onChange={v => updateAttribute('passport', !!v ? v : null)}
-                                        />
-                                    </Grid>
+const INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.Insuree.panels"
 
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={4} className={classes.item}>
-                                <PublishedComponent pubRef="insuree.Avatar"
-                                    insuree={edited}
-                                    readOnly={readOnly}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
-            </Grid>
+class InsureeForm extends Component {
+
+    state = {
+        lockNew: false,
+        reset: 0,
+        insuree: this._newInsuree(),
+        newInsuree: true,
+    }
+
+    _newInsuree() {
+        let insuree = {};
+        insuree.jsonExt = {};
+        return insuree;
+    }
+
+    componentDidMount() {
+        document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: "" })
+        if (this.props.insuree_uuid) {
+            this.setState(
+                (state, props) => ({ insuree_uuid: props.insuree_uuid }),
+                e => this.props.fetchInsureeFull(
+                    this.props.modulesManager,
+                    this.props.insuree_uuid
+                )
+            )
+        }
+    }
+
+    back = e => {
+        const { modulesManager, history, family_uuid, insuree_uuid } = this.props;
+        if (family_uuid) {
+            historyPush(modulesManager,
+                history,
+                "insuree.route.familyOverview",
+                [family_uuid]
+            );
+        } else {
+            historyPush(modulesManager,
+                history,
+                "insuree.route.findInsuree"
+            );
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if ((prevState.insuree && prevState.insuree.chfId)
+            !== (this.state.insuree && this.state.insuree.chfId)) {
+            document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: insureeLabel(this.state.insuree) })
+        }
+        if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
+            var insuree = this.props.insuree;
+            insuree.ext = !!insuree.jsonExt ? JSON.parse(insuree.jsonExt) : {};
+            this.setState(
+                { insuree, insuree_uuid: insuree.uuid, lockNew: false, newInsuree: false });
+        } else if (prevProps.insuree_uuid && !this.props.insuree_uuid) {
+            document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: insureeLabel(this.state.insuree) })
+            this.setState({ insuree: this._newInsuree(), newInsuree: true, lockNew: false, insuree_uuid: null });
+        } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
+            this.props.journalize(this.props.mutation);
+            this.setState({ reset: this.state.reset + 1 });
+        }
+    }
+
+    _add = () => {
+        this.setState((state) => ({
+            insuree: this._newInsuree(),
+            newInsuree: true,
+            lockNew: false,
+            reset: state.reset + 1,
+        }),
+            e => {
+                this.props.add();
+                this.forceUpdate();
+            }
+        )
+    }
+
+    reload = () => {
+        this.props.fetchInsuree(
+            this.props.modulesManager,
+            this.state.insuree_uuid
         );
+    }
+
+    canSave = () => {
+        if (!this.state.insuree.chfId) return false;
+        if (!this.state.insuree.lastName) return false;
+        if (!this.state.insuree.otherNames) return false;
+        if (!this.state.insuree.dob) return false;
+        return true;
+    }
+
+    _save = (insuree) => {
+        this.setState(
+            { lockNew: !insuree.uuid }, // avoid duplicates
+            e => this.props.save(insuree))
+    }
+
+    onEditedChanged = insuree => {
+        this.setState({ insuree, newInsuree: false })
+    }
+
+    render() {
+        const { rights,
+            insuree_uuid, fetchingInsuree, fetchedInsuree, errorInsuree,
+            readOnly = false, 
+            add, save,
+        } = this.props;
+        const { insuree } = this.state;
+        if (!rights.includes(RIGHT_INSUREE)) return null;
+        return (
+            <Fragment>
+                <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
+                {((!!fetchedInsuree && !!insuree && insuree.uuid === insuree_uuid) || !insuree_uuid) && (
+                    <Form
+                        module="insuree"
+                        title="Insuree.title"
+                        titleParams={{ label: insureeLabel(this.state.insuree) }}
+                        edited_id={insuree_uuid}
+                        edited={this.state.insuree}
+                        reset={this.state.reset}
+                        back={this.back}
+                        add={!!add && !this.state.newInsuree ? this._add : null}
+                        readOnly={readOnly}
+                        HeadPanel={FamilyDisplayPanel}
+                        Panels={[InsureeMasterPanel]}
+                        contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
+                        insuree={this.state.insuree}
+                        onEditedChanged={this.onEditedChanged}
+                        canSave={this.canSave}
+                        save={!!save ? this._save : null}
+                    />
+                )}
+            </Fragment>
+        )
     }
 }
 
-export default withTheme(
-    withStyles(styles)(InsureeForm)
-);
+const mapStateToProps = (state, props) => ({
+    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+    fetchingInsuree: state.insuree.fetchingInsuree,
+    errorInsuree: state.insuree.errorInsuree,
+    fetchedInsuree: state.insuree.fetchedInsuree,
+    insuree: state.insuree.insuree,
+    submittingMutation: state.insuree.submittingMutation,
+    mutation: state.insuree.mutation,
+})
+
+export default withHistory(withModulesManager(connect(mapStateToProps, { fetchInsureeFull, journalize })(
+    injectIntl(withTheme(withStyles(styles)(InsureeForm))
+    ))));

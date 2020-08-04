@@ -1,100 +1,63 @@
 import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush,
-    Form, ProgressOrError
 } from "@openimis/fe-core";
-import { RIGHT_INSUREE } from "../constants";
-import FamilyDisplayPanel from "../components/FamilyDisplayPanel";
-
-
-import { fetchInsureeFull } from "../actions";
+import InsureeForm from "../components/InsureeForm";
+import { createInsuree, updateInsuree } from "../actions";
+import { RIGHT_INSUREE_ADD, RIGHT_INSUREE_EDIT } from "../constants";
 
 const styles = theme => ({
     page: theme.page,
 });
 
-const INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.InsureePage.panels"
-
 class InsureePage extends Component {
 
-    state = {
-        reset: 0,
-        insuree: {}
+    add = () => {
+        historyPush(this.props.modulesManager, this.props.history, "insuree.route.insureeEdit")
     }
 
-    componentDidMount() {
-        document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: "" })
-        if (this.props.insuree_uuid) {
-            this.setState(
-                (state, props) => ({ insuree_uuid: props.insuree_uuid }),
-                e => this.props.fetchInsureeFull(
-                    this.props.modulesManager,
-                    this.props.insuree_uuid
+    save = (insuree) => {
+        if (!insuree.uuid) {
+            this.props.createInsuree(
+                this.props.modulesManager,
+                insuree,
+                formatMessageWithValues(
+                    this.props.intl,
+                    "insuree",
+                    "CreateInsuree.mutationLabel",
+                    { label: !!insuree.chfId ? insuree.chfId : "" }
                 )
-            )
-        }
-    }
-
-    back = e => {
-        const { modulesManager, history, family_uuid, insuree_uuid } = this.props;
-        if (family_uuid) {
-            historyPush(modulesManager,
-                history,
-                "insuree.route.familyOverview",
-                [family_uuid]
             );
         } else {
-            historyPush(modulesManager,
-                history,
-                "insuree.route.findInsuree"
-            );
-        }
-    }
-
-    label = () => !!this.state.insuree ? `${this.state.insuree.lastName} ${this.state.insuree.otherNames} (${this.state.insuree.chfId})` : ""
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.insuree.chfId !== this.state.insuree.chfId) {
-            document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: this.label() })
-        }
-        if (prevProps.insuree_uuid !== this.props.insuree_uuid) {
-            this.setState(
-                (state, props) => ({ insuree_uuid: props.insuree_uuid }),
-                e => this.props.fetchInsureeFull(
-                    this.props.modulesManager,
-                    this.props.insuree_uuid
+            this.props.updateInsuree(
+                this.props.modulesManager,
+                insuree,
+                formatMessageWithValues(
+                    this.props.intl,
+                    "insuree",
+                    "UpdateInsuree.mutationLabel",
+                    { label: !!insuree.chfId ? insuree.chfId : "" }
                 )
-            )
-        } else if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
-            var insuree = { ...this.props.insuree };
-            insuree.ext = !!insuree.jsonExt ? JSON.parse(insuree.jsonExt) : {};
-            this.setState({ insuree, insuree_uuid: insuree.uuid, reset: this.state.reset + 1 });
+            );
+
         }
     }
 
     render() {
-        const { intl, classes, rights, insuree_uuid, insuree, fetchingInsuree, errorInsuree } = this.props;
-        if (!rights.includes(RIGHT_INSUREE)) return null;
+        const { classes, modulesManager, history, rights, insuree_uuid, overview } = this.props;
+        if (!rights.includes(RIGHT_INSUREE_EDIT)) return null;
         return (
             <div className={classes.page}>
-                <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
-                {!!insuree && (
-                    <Form
-                        module="insuree"
-                        title="Insuree.title"
-                        titleParams={{ label: this.label() }}
-                        edited_id={insuree_uuid}
-                        edited={this.state.insuree}
-                        reset={this.state.reset}
-                        HeadPanel={FamilyDisplayPanel}
-                        contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
-                        insuree={this.state.insuree}
-                        back={this.back}
-                    />
-                )}
+                <InsureeForm
+                    insuree_uuid={insuree_uuid}
+                    back={e => historyPush(modulesManager, history, "insuree.route.insurees")}
+                    add={rights.includes(RIGHT_INSUREE_ADD) ? this.add : null}
+                    save={rights.includes(RIGHT_INSUREE_EDIT) ? this.save : null}
+                />
             </div>
         )
     }
@@ -102,14 +65,13 @@ class InsureePage extends Component {
 
 const mapStateToProps = (state, props) => ({
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-    family_uuid: props.match.params.family_uuid,
     insuree_uuid: props.match.params.insuree_uuid,
-    fetchingInsuree: state.insuree.fetchingInsuree,
-    errorInsuree: state.insuree.errorInsuree,
-    fetchedInsuree: state.insuree.fetchedInsuree,
-    insuree: state.insuree.insuree,
 })
 
-export default withHistory(withModulesManager(connect(mapStateToProps, { fetchInsureeFull })(
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({ createInsuree, updateInsuree }, dispatch);
+};
+
+export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
     injectIntl(withTheme(withStyles(styles)(InsureePage))
     ))));

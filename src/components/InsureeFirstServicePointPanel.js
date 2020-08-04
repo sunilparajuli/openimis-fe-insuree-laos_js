@@ -12,8 +12,8 @@ const styles = theme => ({
 class InsureeFirstServicePointPanel extends Component {
 
     panel = () => {
-        const { classes, edited } = this.props;
-        if (!edited || !edited.healthFacility) return (
+        const { classes, edited, readOnly } = this.props;
+        if (!!readOnly && !edited.healthFacility) return (
             <div className={classes.msg}>
                 <FormattedMessage module="insuree" id="insuree.noFSP" />
             </div>
@@ -22,12 +22,13 @@ class InsureeFirstServicePointPanel extends Component {
             <PublishedComponent
                 pubRef="location.DetailedHealthFacility"
                 value={edited.healthFacility}
+                readOnly={readOnly}
             />
         );
     }
 
     render() {
-        const { intl, classes, edited } = this.props;
+        const { intl, classes } = this.props;
         return (
             <Grid container>
                 <Grid item xs={12}>

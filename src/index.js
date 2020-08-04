@@ -23,20 +23,19 @@ import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
 import InsureeProfileLink from "./components/InsureeProfileLink";
 import InsureeSummary from "./components/InsureeSummary";
-import InsureeFirstServicePointCondensed from "./components/InsureeFirstServicePointCondensed";
+import InsureeFirstServicePointDisplay from "./components/InsureeFirstServicePointDisplay";
 import InsureeFirstServicePointPanel from "./components/InsureeFirstServicePointPanel";
 import InsureeAddress from "./components/InsureeAddress";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
-import InsureeForm from "./components/InsureeForm";
+import InsureeMasterPanel from "./components/InsureeMasterPanel";
 
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
-const ROUTE_INSUREE_INSUREE = "insuree/insuree";
-const ROUTE_INSUREE_FIND_INSUREE = "insuree/insurees";
-const ROUTE_INSUREE_FIND_FAMILY = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
 const ROUTE_INSUREE_FAMILY = "insuree/family";
+const ROUTE_INSUREE_INSUREES = "insuree/insurees";
+const ROUTE_INSUREE_INSUREE = "insuree/insuree";
 
 const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
@@ -55,15 +54,15 @@ const DEFAULT_CONFIG = {
     { key: "insuree.FamilyTypePicker", ref: FamilyTypePicker },
     { key: "insuree.PhotoStatusPicker", ref: PhotoStatusPicker },
 
-    { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FIND_FAMILY },
+    { key: "insuree.route.findFamily", ref: ROUTE_INSUREE_FAMILIES },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
     { key: "insuree.route.family", ref: ROUTE_INSUREE_FAMILY },
-    { key: "insuree.route.findInsuree", ref: ROUTE_INSUREE_FIND_INSUREE },
+    { key: "insuree.route.findInsuree", ref: ROUTE_INSUREE_INSUREES },
     { key: "insuree.route.insuree", ref: ROUTE_INSUREE_INSUREE },
 
     { key: "insuree.Avatar", ref: InsureeAvatar },
     { key: "insuree.Summary", ref: InsureeSummary },
-    { key: "insuree.InsureeFirstServicePointCondensed", ref: InsureeFirstServicePointCondensed },
+    { key: "insuree.InsureeFirstServicePointDisplay", ref: InsureeFirstServicePointDisplay },
     { key: "insuree.InsureeFirstServicePointPanel", ref: InsureeFirstServicePointPanel },
     { key: "insuree.FamilySummary", ref: InsureeFamilySummary },
     { key: "insuree.InsureeAddress", ref: InsureeAddress },
@@ -74,16 +73,18 @@ const DEFAULT_CONFIG = {
     { path: ROUTE_INSUREE_FAMILIES, component: FamiliesPage },
     { path: ROUTE_INSUREE_FAMILY + "/:family_uuid?", component: FamilyPage },
     { path: ROUTE_INSUREE_FAMILY_OVERVIEW + "/:family_uuid", component: FamilyOverviewPage },
-    { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid/:family_uuid?", component: InsureePage },
-    { path: "insuree/insurees", component: InsureesPage },
+    { path: ROUTE_INSUREE_INSUREES, component: InsureesPage },
+    { path: ROUTE_INSUREE_INSUREE + "/:insuree_uuid?/:family_uuid?", component: InsureePage },
     { path: "insuree/cappedItemService", component: CappedItemServicePage },
     { path: "insuree/profile", component: ProfilePage },
   ],
   "core.AppBar": [Enquiry],
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
-  "insuree.InsureeSummaryExt": [InsureeFirstServicePointCondensed],
-  "insuree.InsureePage.panels": [InsureeForm, InsureeFirstServicePointPanel],
+  "insuree.InsureeSummaryExt": [InsureeFirstServicePointDisplay],
+  "insuree.InsureePage.panels": [InsureeMasterPanel, InsureeFirstServicePointPanel],
+  "insuree.Family.panels": [InsureeFirstServicePointPanel],
+  "insuree.Insuree.panels": [InsureeFirstServicePointPanel],
 }
 
 export const InsureeModule = (cfg) => {

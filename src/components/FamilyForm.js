@@ -13,8 +13,9 @@ import FamilyMasterPanel from "./FamilyMasterPanel";
 
 import { fetchFamily, newFamily, createFamily } from "../actions";
 import FamilyInsureesOverview from "./FamilyInsureesOverview";
-import HeadInsureeForm from "./HeadInsureeForm";
+import HeadInsureeMasterPanel from "./HeadInsureeMasterPanel";
 
+import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
 });
@@ -50,12 +51,10 @@ class FamilyForm extends Component {
         }
     }
 
-    label = () => !!this.state.family && !!this.state.family.headInsuree ? `${this.state.family.headInsuree.lastName} ${this.state.family.headInsuree.otherNames} (${this.state.family.headInsuree.chfId})` : ""
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         if ((prevState.family && prevState.family.headInsuree && prevState.family.headInsuree.chfId)
             !== (this.state.family && this.state.family.headInsuree && this.state.family.headInsuree.chfId)) {
-            document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: this.label() })
+            document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: insureeLabel(this.state.family.headInsuree) })
         }
         if (prevProps.fetchedFamily !== this.props.fetchedFamily && !!this.props.fetchedFamily) {
             var family = this.props.family;
@@ -63,16 +62,8 @@ class FamilyForm extends Component {
             this.setState(
                 { family, family_uuid: family.uuid, lockNew: false, newFamily: false });
         } else if (prevProps.family_uuid && !this.props.family_uuid) {
-            document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: this.label() })            
+            document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: insureeLabel(this.state.family.headInsuree) })
             this.setState({ family: this._newFamily(), newFamily: true, lockNew: false, family_uuid: null });
-        // } else if ((prevProps.family_uuid !== this.props.family_uuid) && !!this.props.family_uuid) {
-        //     this.setState(
-        //         (state, props) => ({ family_uuid: props.family_uuid, family: null }),
-        //         e => this.props.fetchFamily(
-        //             this.props.modulesManager,
-        //             this.props.family_uuid
-        //         )
-        //     )
         } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
             this.props.journalize(this.props.mutation);
             this.setState({ reset: this.state.reset + 1 });
@@ -81,11 +72,11 @@ class FamilyForm extends Component {
 
     _add = () => {
         this.setState((state) => ({
-                family: this._newFamily(),
-                newFamily: true,
-                lockNew: false,
-                reset: state.reset + 1,
-            }),
+            family: this._newFamily(),
+            newFamily: true,
+            lockNew: false,
+            reset: state.reset + 1,
+        }),
             e => {
                 this.props.add();
                 this.forceUpdate();
@@ -97,7 +88,7 @@ class FamilyForm extends Component {
         this.props.fetchFamily(
             this.props.modulesManager,
             this.state.family_uuid,
-            !!this.state.family.headInsuree ? this.state.family.headInsuree.chfId: null
+            !!this.state.family.headInsuree ? this.state.family.headInsuree.chfId : null
         );
     }
 
@@ -121,7 +112,7 @@ class FamilyForm extends Component {
     }
 
     render() {
-        const { modulesManager, history, rights, 
+        const { rights,
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
             overview = false, openFamilyButton, readOnly = false,
             add, save, back } = this.props;
@@ -138,19 +129,19 @@ class FamilyForm extends Component {
                 {((!!fetchedFamily && !!family && family.uuid === family_uuid) || !family_uuid) && (
                     <Form
                         module="insuree"
+                        title="FamilyOverview.title"
+                        titleParams={{ label: insureeLabel(this.state.family.headInsuree) }}
                         edited_id={family_uuid}
                         edited={family}
                         reset={this.state.reset}
-                        title="FamilyOverview.title"
-                        titleParams={{ label: this.label() }}
                         back={back}
                         add={!!add && !this.state.newFamily ? this._add : null}
                         readOnly={readOnly}
                         actions={actions}
                         openFamilyButton={openFamilyButton}
                         overview={overview}
-                        HeadPanel={overview ? FamilyMasterPanel : FamilyMasterPanel}
-                        Panels={overview ? [FamilyInsureesOverview] : [HeadInsureeForm]}
+                        HeadPanel={FamilyMasterPanel}
+                        Panels={overview ? [FamilyInsureesOverview] : [HeadInsureeMasterPanel]}
                         contributedPanelsKey={overview ? INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY : INSUREE_FAMILY_PANELS_CONTRIBUTION_KEY}
                         family={family}
                         insuree={insuree}

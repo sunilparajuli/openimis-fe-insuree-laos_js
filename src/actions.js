@@ -220,4 +220,23 @@ export function createFamily(mm, family, clientMutationLabel) {
 }
 
 export function updateFamily(mm, family, clientMutationLabel) {
+  //TODO
+}
+
+export function createInsuree(mm, insuree, clientMutationLabel) {
+  let mutation = formatMutation("createInsuree", formatInsureeGQL(mm, insuree), clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_CREATE_INSUREE_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime
+    }
+  )
+}
+
+export function updateInsuree(mm, family, clientMutationLabel) {
+  //TODO
 }
