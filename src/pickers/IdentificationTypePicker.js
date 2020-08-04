@@ -2,20 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
-import { formatMessage, AutoSuggestion, withModulesManager } from "@openimis/fe-core";
+import { formatMessage, withModulesManager, SelectInput } from "@openimis/fe-core";
 import { fetchIdentificationTypes } from "../actions";
 import _debounce from "lodash/debounce";
 import _ from "lodash";
 
 class IdentificationTypePicker extends Component {
 
-    constructor(props) {
-        super(props);
-        this.selectThreshold = props.modulesManager.getConf("fe-insuree", "IdentificationTypePicker.selectThreshold", 10);
-    }
-
     componentDidMount() {
-        if (!this.props.IdentificationTypes) {
+        if (!this.props.identificationTypes) {
             // prevent loading multiple times the cache when component is
             // several times on a page
             setTimeout(
@@ -34,17 +29,20 @@ class IdentificationTypePicker extends Component {
     onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 
     render() {
-        const { intl, identificationTypes, withLabel = true, label, withPlaceholder = false, placeholder, value, reset,
+        const { intl, identificationTypes, withLabel = true, label = "IdentificationTypePicker.label", withPlaceholder = false, placeholder, value, reset,
             readOnly = false, required = false,
             withNull = false, nullLabel = null
         } = this.props;
-        return <AutoSuggestion
+        let options = !!identificationTypes ? identificationTypes.map(v => ({ value: v, label: this.formatSuggestion(v) })) : []
+        if (withNull) {
+            options.unshift({ value: null, label: this.formatSuggestion(null) })
+        }
+        return <SelectInput
             module="insuree"
-            items={identificationTypes}
-            label={!!withLabel && (label || formatMessage(intl, "insuree", "IdentificationTypePicker.label"))}
-            placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "IdentificationTypePicker.placehoder")) : null}
-            getSuggestionValue={this.formatSuggestion}
-            onSuggestionSelected={this.onSuggestionSelected}
+            options={options}
+            label={!!withLabel ? label : null}
+            placehoder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "IdentificationTypePicker.placehoder")) : null}
+            onChange={this.onSuggestionSelected}
             value={value}
             reset={reset}
             readOnly={readOnly}

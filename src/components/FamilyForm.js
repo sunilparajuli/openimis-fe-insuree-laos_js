@@ -147,7 +147,7 @@ class FamilyForm extends Component {
                         insuree={insuree}
                         onEditedChanged={this.onEditedChanged}
                         canSave={this.canSave}
-                        save={!overview && !!save ? this._save : null}
+                        save={!!save ? this._save : null}
                     />
                 )}
             </Fragment>

@@ -116,8 +116,8 @@ class FamilyMasterPanel extends FormPanel {
                             withNull={true}
                             readOnly={readOnly}
                             nullLabel={formatMessage(intl, "insuree", "Family.FamilyType.null")}
-                            value={!edited ? "" : edited.familyType}
-                            onChange={v => this.updateAttribute('familyType', v)}
+                            value={!!edited && !!edited.familyType ? edited.familyType.code : null}
+                            onChange={v => this.updateAttribute('familyType', { code: v })}
                         />
                     </Grid>
                     <Grid item xs={2} className={classes.item}>
@@ -126,8 +126,8 @@ class FamilyMasterPanel extends FormPanel {
                             withNull={true}
                             readOnly={readOnly}
                             nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}
-                            value={!edited ? "" : edited.confirmationType}
-                            onChange={v => this.updateAttribute('confirmationType', v)}
+                            value={!!edited && !!edited.confirmationType ? edited.confirmationType.code : null}
+                            onChange={v => this.updateAttribute('confirmationType', { code: v })}
                         />
                     </Grid>
                     <Grid item xs={3} className={classes.item}>
@@ -153,7 +153,7 @@ class FamilyMasterPanel extends FormPanel {
                     <Grid item xs={1} className={classes.item}>
                         <FormControlLabel
                             control={
-                                <Checkbox 
+                                <Checkbox
                                     color="primary"
                                     checked={!!edited && !!edited.poverty}
                                     disabled={readOnly}

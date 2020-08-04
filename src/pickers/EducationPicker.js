@@ -15,7 +15,7 @@ class EducationPicker extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.Educations) {
+        if (!this.props.educations) {
             // prevent loading multiple times the cache when component is
             // several times on a page
             setTimeout(

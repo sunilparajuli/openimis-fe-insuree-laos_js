@@ -15,7 +15,7 @@ class ProfessionPicker extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.Professions) {
+        if (!this.props.professions) {
             // prevent loading multiple times the cache when component is
             // several times on a page
             setTimeout(

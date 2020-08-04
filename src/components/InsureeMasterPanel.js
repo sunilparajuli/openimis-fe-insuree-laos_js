@@ -78,7 +78,7 @@ class InsureeMasterPanel extends FormPanel {
                                             readOnly={readOnly}
                                             withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "InsureeGender.none")}
-                                            onChange={v => this.updateAttribute('gender', v)}
+                                            onChange={v => this.updateAttribute('gender', { code: v })}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
@@ -136,7 +136,7 @@ class InsureeMasterPanel extends FormPanel {
                                             readOnly={readOnly}
                                             withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "Profession.none")}
-                                            onChange={v => this.updateAttribute('profession', v)}
+                                            onChange={v => this.updateAttribute('profession', { id: v })}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
@@ -146,17 +146,17 @@ class InsureeMasterPanel extends FormPanel {
                                             readOnly={readOnly}
                                             withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "insuree.Education.none")}
-                                            onChange={v => this.updateAttribute('education', v)}
+                                            onChange={v => this.updateAttribute('education', { id: v })}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>
                                         <PublishedComponent pubRef="insuree.IdentificationTypePicker"
                                             module="insuree"
-                                            value={!!edited && !!edited.typeOfId ? edited.typeOfId : ""}
+                                            value={!!edited && !!edited.typeOfId ? edited.typeOfId.code : null}
                                             readOnly={readOnly}
                                             withNull={true}
                                             nullLabel={formatMessage(intl, "insuree", "IdentificationType.none")}
-                                            onChange={v => this.updateAttribute('typeOfId', v)}
+                                            onChange={v => this.updateAttribute('typeOfId', { code: v })}
                                         />
                                     </Grid>
                                     <Grid item xs={3} className={classes.item}>

@@ -169,7 +169,7 @@ export function formatInsureeGQL(mm, insuree) {
     ${!!insuree.chfId ? `chfId: "${insuree.chfId}"` : ""}
     ${!!insuree.lastName ? `lastName: "${insuree.lastName}"` : ""}
     ${!!insuree.otherNames ? `otherNames: "${insuree.otherNames}"` : ""}
-    ${!!insuree.genderCode ? `genderCode: "${insuree.genderCode}"` : ""}
+    ${!!insuree.gender && !!insuree.gender.code ? `genderId: "${insuree.gender.code}"` : ""}
     ${!!insuree.dob ? `dob: "${insuree.dob}"` : ''}
     head: ${!!insuree.head}
     ${!!insuree.marital ? `marital: "${insuree.marital}"` : ""}
@@ -177,14 +177,14 @@ export function formatInsureeGQL(mm, insuree) {
     ${!!insuree.phone ? `phone: "${insuree.phone}"` : ""}
     ${!!insuree.email ? `email: "${insuree.email}"` : ""}
     ${!!insuree.currentAddress ? `currentAddress: "${insuree.currentAddress}"` : ""}
-    ${!!insuree.currentVillageId ? `currentVillageId: ${decodeId(insuree.currentVillageId)}` : ""}
-    ${!!insuree.photoId ? `photoId: ${decodeId(insuree.photoId)}` : ""}
+    ${!!insuree.currentVillage && !!insuree.currentVillage.id ? `currentVillageId: ${decodeId(insuree.currentVillage.id)}` : ""}
+    ${!!insuree.photo && !!insuree.photo.id ? `photoId: ${decodeId(insuree.photo.id)}` : ""}
     ${!!insuree.photoDate ? `photoDate: "${insuree.photoDate}"` : ""}
     cardIssued:${!!insuree.cardIssued}
-    ${!!insuree.professionId ? `professionId: ${decodeId(insuree.professionId)}` : ""}
-    ${!!insuree.educationId ? `educationId: ${decodeId(insuree.educationId)}` : ""}
-    ${!!insuree.typeOfIdCode ? `typeOfIdCode: "${insuree.typeOfIdCode}"` : ""}
-    ${!!insuree.healthFacilityId ? `healthFacilityId: ${decodeId(insuree.healthFacilityId)}` : ""}
+    ${!!insuree.profession && !!insuree.profession.id ? `professionId: ${insuree.profession.id}` : ""}
+    ${!!insuree.education && !!insuree.education.id ? `educationId: ${insuree.education.id}` : ""}
+    ${!!insuree.typeOfId && !!insuree.typeOfId.code ? `typeOfIdId: "${insuree.typeOfId.code}"` : ""}
+    ${!!insuree.healthFacility && !!insuree.healthFacility.id ? `healthFacilityId: ${decodeId(insuree.healthFacility.id)}` : ""}
     ${!!insuree.jsonExt ? `jsonExt: ${formatJsonField(insuree.jsonExt)}` : ""}
   `
 }
@@ -195,12 +195,12 @@ export function formatFamilyGQL(mm, family) {
     headInsuree: {
       ${formatInsureeGQL(mm, family.headInsuree)}
     }
-    ${!!family.locationId ? `locationId: ${decodeId(family.locationId)}` : ""}
+    ${!!family.location ? `locationId: ${decodeId(family.location.id)}` : ""}
     poverty: ${!!family.poverty}
-    ${!!family.familyTypeId ? `familyTypeId: ${decodeId(family.familyTypeId)}` : ""}
+    ${!!family.familyType && !!family.familyType.code ? `familyTypeId: "${family.familyType.code}"` : ""}
     ${!!family.address ? `address: "${family.address}"` : ""}
-    ${!!family.confirmationTypeId ? `confirmationTypeId: ${decodeId(family.confirmationTypeId)}` : ""}
-    ${!!family.confirmationNo ? `confirmationNo: "${family.confirmationTypeNo}"` : ""}
+    ${!!family.confirmationType && !!family.confirmationType.code ? `confirmationTypeId: "${family.confirmationType.code}"` : ""}
+    ${!!family.confirmationNo ? `confirmationNo: "${family.confirmationNo}"` : ""}
     ${!!family.jsonExt ? `jsonExt: ${formatJsonField(family.jsonExt)}` : ""}
   `
 }
@@ -220,7 +220,17 @@ export function createFamily(mm, family, clientMutationLabel) {
 }
 
 export function updateFamily(mm, family, clientMutationLabel) {
-  //TODO
+  let mutation = formatMutation("updateFamily", formatFamilyGQL(mm, family), clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_UPDATE_FAMILY_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime
+    }
+  )
 }
 
 export function createInsuree(mm, insuree, clientMutationLabel) {
@@ -237,6 +247,16 @@ export function createInsuree(mm, insuree, clientMutationLabel) {
   )
 }
 
-export function updateInsuree(mm, family, clientMutationLabel) {
-  //TODO
+export function updateInsuree(mm, insuree, clientMutationLabel) {
+  let mutation = formatMutation("updateInsuree", formatInsureeGQL(mm, insuree), clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_UPDATE_INSUREE_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime
+    }
+  )
 }

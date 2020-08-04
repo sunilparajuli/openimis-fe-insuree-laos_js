@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
+import ReplayIcon from "@material-ui/icons/Replay";
 import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush, journalize,
     Form, ProgressOrError
@@ -98,7 +99,7 @@ class InsureeForm extends Component {
     }
 
     reload = () => {
-        this.props.fetchInsuree(
+        this.props.fetchInsureeFull(
             this.props.modulesManager,
             this.state.insuree_uuid
         );
@@ -125,11 +126,16 @@ class InsureeForm extends Component {
     render() {
         const { rights,
             insuree_uuid, fetchingInsuree, fetchedInsuree, errorInsuree,
-            readOnly = false, 
+            readOnly = false,
             add, save,
         } = this.props;
         const { insuree } = this.state;
         if (!rights.includes(RIGHT_INSUREE)) return null;
+        let actions = [{
+            doIt: this.reload,
+            icon: <ReplayIcon />,
+            onlyIfDirty: !readOnly
+        }];
         return (
             <Fragment>
                 <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
@@ -144,6 +150,7 @@ class InsureeForm extends Component {
                         back={this.back}
                         add={!!add && !this.state.newInsuree ? this._add : null}
                         readOnly={readOnly}
+                        actions={actions}
                         HeadPanel={FamilyDisplayPanel}
                         Panels={[InsureeMasterPanel]}
                         contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}

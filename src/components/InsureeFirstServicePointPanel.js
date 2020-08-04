@@ -1,7 +1,7 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Paper, Grid, Typography, Divider } from "@material-ui/core";
-import { FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { FormattedMessage, PublishedComponent, FormPanel } from "@openimis/fe-core";
 
 const styles = theme => ({
     paper: theme.paper.paper,
@@ -9,7 +9,7 @@ const styles = theme => ({
     item: theme.paper.item,
 });
 
-class InsureeFirstServicePointPanel extends Component {
+class InsureeFirstServicePointPanel extends FormPanel {
 
     panel = () => {
         const { classes, edited, readOnly } = this.props;
@@ -23,6 +23,7 @@ class InsureeFirstServicePointPanel extends Component {
                 pubRef="location.DetailedHealthFacility"
                 value={edited.healthFacility}
                 readOnly={readOnly}
+                onChange={hf => this.updateAttribute('healthFacility', hf)}
             />
         );
     }
