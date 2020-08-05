@@ -11,6 +11,9 @@ const styles = theme => ({
     paper: theme.paper.paper,
     tableTitle: theme.table.title,
     item: theme.paper.item,
+    fullHeight: {
+        height: "100%"
+    },
 });
 
 class InsureeMasterPanel extends FormPanel {
@@ -24,9 +27,24 @@ class InsureeMasterPanel extends FormPanel {
             <Grid container>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
-                        <Typography className={classes.tableTitle}>
-                            <FormattedMessage module="insuree" id={title} values={titleParams} />
-                        </Typography>
+                        <Grid container className={classes.tableTitle}>
+                            <Grid item xs={3} className={classes.tableTitle}>
+                                <Typography>
+                                    <FormattedMessage module="insuree" id={title} values={titleParams} />
+                                </Typography>
+                            </Grid>
+                            {!!edited && !!edited.family && !!edited.family.headInsuree && edited.family.headInsuree.id !== edited.id && (
+                                <Grid item xs={3} >
+                                    <PublishedComponent
+                                        pubRef="insuree.RelationPicker"
+                                        required={true}
+                                        readOnly={readOnly}
+                                        value={!!edited && !!edited.relationship ? edited.relationship.id : ""}
+                                        onChange={v => this.updateAttribute('relationship', { id: v })}
+                                    />
+                                </Grid>
+                            )}
+                        </Grid>
                         <Divider />
                         <Grid container className={classes.item}>
                             <Grid item xs={4} className={classes.item}>

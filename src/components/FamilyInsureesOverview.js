@@ -13,8 +13,8 @@ import {
     Table, PagedDataHandler
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-import { fetchFamilyMembers, selectFamilyMember } from "../actions";
-
+import { fetchFamilyMembers, selectFamilyMember, deleteInsurees } from "../actions";
+import { RIGHT_INSUREE_DELETE } from "../constants";
 
 const styles = theme => ({
     paper: theme.paper.paper,
@@ -111,8 +111,15 @@ class FamilyInsureesOverview extends PagedDataHandler {
         i => <Checkbox color="primary" readOnly={true} disabled={true} checked={i.cardIssued} />,
     ];
 
+    onDeleteInsuree = (idx) => {
+        this.props.deleteInsurees(
+            this.props.modulesManager,
+            [this.props.familyMembers[idx].uuid],
+            formatMessageWithValues(this.props.intl, "insuree", "DeleteInsurees.mutationLabel", { label: `[${this.props.familyMembers[idx].chfId}]` }))
+    }
+
     render() {
-        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers } = this.props;
+        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, rights } = this.props;
         return (
             <Paper className={classes.paper}>
                 <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} />
@@ -128,7 +135,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     onDoubleClick={this.onDoubleClick}
                     withSelection={"single"}
                     onChangeSelection={this.onChangeSelection}
-                    onDelete={idx => alert("Not implemented yet...")}
+                    onDelete={!!rights.includes(RIGHT_INSUREE_DELETE) ? this.onDeleteInsuree : null}
                     withPagination={true}
                     rowsPerPageOptions={this.rowsPerPageOptions}
                     defaultPageSize={this.defaultPageSize}
@@ -144,6 +151,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
 }
 
 const mapStateToProps = state => ({
+    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
     family: state.insuree.family,
     fetchingFamilyMembers: state.insuree.fetchingFamilyMembers,
     fetchedFamilyMembers: state.insuree.fetchedFamilyMembers,
@@ -153,7 +161,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember }, dispatch);
+    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees }, dispatch);
 };
 
 

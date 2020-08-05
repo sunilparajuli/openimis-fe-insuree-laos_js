@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { IconButton, Tooltip } from "@material-ui/core";
 import { Search as SearchIcon, People as PeopleIcon, Tab as TabIcon } from '@material-ui/icons';
 import {
-    withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage, 
+    withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
     withHistory, historyPush,
     Searcher,
     PublishedComponent
@@ -158,11 +158,14 @@ class InsureeSearcher extends Component {
                 this.props.modulesManager,
                 this.props.intl,
                 insuree.validityTo),
-            insuree => (
-                <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
-                    <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [insuree.family.uuid])}><PeopleIcon /></IconButton >
-                </Tooltip>
-            ),
+            insuree => {
+                if (!insuree.family) return null
+                return (
+                    <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
+                        <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [insuree.family.uuid])}><PeopleIcon /></IconButton >
+                    </Tooltip>
+                )
+            },
             insuree => (
                 <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openNewTabButton.tooltip")}>
                     <IconButton onClick={e => this.props.onDoubleClick(insuree, true)}><TabIcon /></IconButton >

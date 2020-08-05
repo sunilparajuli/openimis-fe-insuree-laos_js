@@ -39,6 +39,10 @@ function reducer(
         fetchedProfessions: false,
         professions: null,
         errorProfessions: null,
+        fetchingRelations: false,
+        fetchedRelations: false,
+        relations: null,
+        errorRelations: null,
         fetchingIdentificationTypes: false,
         fetchedIdentificationTypes: false,
         identificationTypes: null,
@@ -311,6 +315,28 @@ function reducer(
                 fetchingProfessions: false,
                 errorProfessions: formatServerError(action.payload)
             };
+        case 'INSUREE_RELATIONS_REQ':
+            return {
+                ...state,
+                fetchingRelations: true,
+                fetchedRelations: false,
+                relations: null,
+                errorRelations: null,
+            };
+        case 'INSUREE_RELATIONS_RESP':
+            return {
+                ...state,
+                fetchingRelations: false,
+                fetchedRelations: true,
+                relations: action.payload.data.relations.map(p => p.id),
+                errorRelations: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_RELATIONS_ERR':
+            return {
+                ...state,
+                fetchingRelations: false,
+                errorRelations: formatServerError(action.payload)
+            };
         case 'INSUREE_IDENTIFICATION_TYPES_REQ':
             return {
                 ...state,
@@ -345,6 +371,9 @@ function reducer(
             return dispatchMutationResp(state, "createInsuree", action);
         case 'INSUREE_UPDATE_INSUREE_RESP':
             return dispatchMutationResp(state, "updateInsuree", action);
+        case 'INSUREE_DELETE_INSUREES_RESP':
+            return dispatchMutationResp(state, "deleteInsurees", action);
+
         default:
             return state;
     }

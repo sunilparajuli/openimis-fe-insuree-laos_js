@@ -90,7 +90,7 @@ class FamilyMasterPanel extends FormPanel {
                             </Grid>
                         </Grid>
                     </Grid>
-                    {!!openFamilyButton && !!overview && (
+                    {!!openFamilyButton && !!overview && !!edited.uuid && (
                         <Grid item>
                             <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
                                 <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [edited.uuid])}><PeopleIcon /></IconButton >
