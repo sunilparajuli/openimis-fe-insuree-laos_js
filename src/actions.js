@@ -69,7 +69,8 @@ export function fetchFamilySummaries(mm, filters) {
   let projections = [
     "id", "uuid", "poverty", "confirmationNo", "validityFrom", "validityTo",
     "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
-    "location" + mm.getProjection("location.Location.FlatProjection")]
+    "location" + mm.getProjection("location.Location.FlatProjection"),
+    "clientMutationId"]
   const payload = formatPageQueryWithCount("families",
     filters,
     projections
@@ -165,7 +166,8 @@ export function fetchInsureeSummaries(mm, filters) {
     "id", "uuid", "validityFrom", "validityTo",
     "chfId", "otherNames", "lastName", "phone", "gender{code}", "dob", "marital",
     "family{uuid}",
-    "currentVillage" + mm.getProjection("location.Location.FlatProjection")]
+    "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
+    "clientMutationId"]
   const payload = formatPageQueryWithCount("insurees",
     filters,
     projections

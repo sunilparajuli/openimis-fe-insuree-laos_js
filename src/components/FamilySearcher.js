@@ -140,6 +140,7 @@ class FamilySearcher extends Component {
     }
 
     rowDisabled = (selection, i) => !!i.validityTo
+    rowLocked = (selection, i) => !!i.clientMutationId
 
     render() {
         const { intl,
@@ -172,6 +173,7 @@ class FamilySearcher extends Component {
                 itemFormatters={this.itemFormatters}
                 sorts={this.sorts}
                 rowDisabled={this.rowDisabled}
+                rowLocked={this.rowLocked}
                 onDoubleClick={onDoubleClick}
             />
         )
