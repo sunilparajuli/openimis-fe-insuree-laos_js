@@ -39,7 +39,7 @@ export function fetchInsureeFull(mm, uuid) {
     [`uuid:"${uuid}"`],
     ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
       `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
-      "photo{folder,filename}",
+      `photo{date,folder,filename,officerId}`,
       "gender{code}",
       "education{id}",
       "profession{id}",
@@ -49,7 +49,7 @@ export function fetchInsureeFull(mm, uuid) {
       "relationship{id}",
       "head",
       "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")],
-      "clientMutationId"
+    "clientMutationId"
   );
   return graphql(payload, 'INSUREE_INSUREE');
 }
@@ -110,6 +110,14 @@ export function newFamily() {
   return dispatch => {
     dispatch({ type: 'INSUREE_FAMILY_NEW' })
   }
+}
+
+export function fetchInsureeOfficers(mm) {
+  const payload = formatPageQuery("insureeOfficers",
+    null,
+    mm.getRef("insuree.InsureeOfficerPicker.projection")
+  );
+  return graphql(payload, 'INSUREE_INSUREE_OFFICERS');
 }
 
 export function fetchFamily(mm, familyUuid, headInsureeChfId) {
@@ -315,6 +323,38 @@ export function setFamilyHead(mm, family_uuid, insuree_uuid, clientMutationLabel
       clientMutationLabel,
       requestedDateTime,
       familyUuid: family_uuid,
+    }
+  )
+}
+
+export function formatInsureePhoto(attach) {
+  return `
+    ${!!attach.id ? `id: "${decodeId(attach.id)}"` : ""}
+    ${!!attach.claimUuid ? `claimUuid: "${attach.claimUuid}"` : ""}
+    ${!!attach.type ? `type: "${attach.type}"` : ""}
+    ${!!attach.title ? `title: "${attach.title}"` : ""}
+    ${!!attach.date ? `date: "${attach.date}"` : ""}
+    ${!!attach.mime ? `mime: "${attach.mime}"` : ""}
+    ${!!attach.filename ? `filename: "${attach.filename}"` : ""}
+    ${!!attach.document ? `document: "${attach.document}"` : ""}
+  `
+}
+
+export function createOtUpdateInsureePhoto(insuree_uuid, fileName, photo, clientMutationLabel) {
+  let payload = `
+      insureeUuid: "${insuree_uuid}"
+      fileName: "${fileName}"
+      photo: "${photo}"
+    `
+  let mutation = formatMutation("setInsureePhoto", payload, clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_SET_INSUREE_PHOTO_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime
     }
   )
 }

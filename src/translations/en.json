@@ -31,6 +31,9 @@
     "insuree.Insuree.dobFrom": "Birth Date From",
     "insuree.Insuree.dobTo": "Birth Date To",
     "insuree.Insuree.phone": "Phone",
+    "insuree.Insuree.photoDate": "Photo Date",
+    "insuree.Insuree.photoOfficer": "Officer",
+    "insuree.Insuree.photoFilename": "File Name",
     "insuree.Insuree.email": "Email",
     "insuree.Insuree.passport": "Identification No.",
     "insuree.Insuree.cardIssued": "Beneficiary Card",
@@ -43,6 +46,9 @@
     "insuree.InsureeGender.M": "Male",
     "insuree.InsureeGender.F": "Female",
     "insuree.InsureeGender.O": "Other",
+    "insuree.InsureeOfficerPicker.label": "Officer",
+    "insuree.InsureeOfficer.null": "Any",
+    "insuree.InsureeOfficer.none": "None",
     "insuree.InsureeMaritalStatus": "Marital Status",
     "insuree.InsureeMaritalStatus.null": "Any",
     "insuree.InsureeMaritalStatus.none": "None",
@@ -184,5 +190,7 @@
     "insuree.familyRemoveInsuree.tooltip": "Remove insuree from family",
     "insuree.familyDeleteInsuree.tooltip": "Delete insuree",
     "insuree.familyAddExsistingInsuree.tooltip": "Add (move) existing insuree into family",
-    "insuree.familyAddNewInsuree.tooltip": "Add new insuree to family"
+    "insuree.familyAddNewInsuree.tooltip": "Add new insuree to family",
+    "insuree.InsureePhotoDialog.title": "Select photo for insuree {label}",
+    "insuree.setInsureePhoto.mutationLabel": "Add/update photo to insuree {insuree}"
 }

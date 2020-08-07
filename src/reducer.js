@@ -22,6 +22,9 @@ function reducer(
         fetchedInsurees: false,
         errorInsurees: null,
         insurees: [],
+        fetchedInsureeOfficers: false,
+        errorInsureeOfficers: null,
+        insureeOfficers: null,
         insureesPageInfo: { totalCount: 0 },
         fetchingFamilies: false,
         fetchedFamilies: false,
@@ -134,6 +137,28 @@ function reducer(
             return {
                 ...state,
                 insuree: action.payload,
+            };
+        case 'INSUREE_INSUREE_OFFICERS_REQ':
+            return {
+                ...state,
+                fetchingInsureeOfficers: true,
+                fetchedInsureeOfficers: false,
+                insureeOfficers: null,
+                errorInsureeOfficers: null,
+            };
+        case 'INSUREE_INSUREE_OFFICERS_RESP':
+            return {
+                ...state,
+                fetchingInsureeOfficers: false,
+                fetchedInsureeOfficers: true,
+                insureeOfficers: parseData(action.payload.data.insureeOfficers),
+                errorInsureeOfficers: formatGraphQLError(action.payload)
+            };
+        case 'INSUREE_INSUREE_OFFICERS_ERR':
+            return {
+                ...state,
+                fetchingInsureeOfficers: false,
+                errorInsureeOfficers: formatServerError(action.payload)
             };
         case 'INSUREE_GENDERS_REQ':
             return {

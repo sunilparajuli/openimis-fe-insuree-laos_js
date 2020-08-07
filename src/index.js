@@ -7,6 +7,7 @@ import InsureesPage from "./pages/InsureesPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import FamilyOverviewPage from "./pages/FamilyOverviewPage";
 import Enquiry from "./components/Enquiry";
+import InsureeOfficerPicker from "./pickers/InsureeOfficerPicker";
 import InsureePicker from "./pickers/InsureePicker";
 import InsureeChfIdPicker from "./pickers/InsureeChfIdPicker";
 import InsureeGenderPicker from "./pickers/InsureeGenderPicker";
@@ -41,6 +42,8 @@ const DEFAULT_CONFIG = {
   "translations": [{ key: 'en', messages: messages_en }],
   "reducers": [{ key: 'insuree', reducer }],
   "refs": [
+    { key: "insuree.InsureeOfficerPicker", ref: InsureeOfficerPicker },
+    { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
     { key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
