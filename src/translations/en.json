@@ -173,9 +173,16 @@
     "insuree.PhotoStatus.null": "Any",
     "insuree.PhotoStatus.with": "With",
     "insuree.PhotoStatus.without": "Without",
-    "insuree.CreateFamily.mutationLabel": "Create Family - {label}",
-    "insuree.UpdateFamily.mutationLabel": "Update Family - {label}",
-    "insuree.CreateInsuree.mutationLabel": "Create Insuree - {label}",
-    "insuree.UpdateInsuree.mutationLabel": "Update Insuree - {label}",
-    "insuree.DeleteInsurees.mutationLabel": "Delete Insurees - {label}"
+    "insuree.CreateFamily.mutationLabel": "Create family - {label}",
+    "insuree.UpdateFamily.mutationLabel": "Update family - {label}",
+    "insuree.CreateInsuree.mutationLabel": "Create insuree - {label}",
+    "insuree.UpdateInsuree.mutationLabel": "Update insuree - {label}",
+    "insuree.RemoveInsurees.mutationLabel": "Remove insurees - {label} from family {family}",
+    "insuree.DeleteInsurees.mutationLabel": "Delete insurees - {label}",
+    "insuree.SetFamilyHead.mutationLabel": "Set (change) Family head - {label}",
+    "insuree.familySetHeadInsuree.tooltip": "Set as family head",
+    "insuree.familyRemoveInsuree.tooltip": "Remove insuree from family",
+    "insuree.familyDeleteInsuree.tooltip": "Delete insuree",
+    "insuree.familyAddExsistingInsuree.tooltip": "Add (move) existing insuree into family",
+    "insuree.familyAddNewInsuree.tooltip": "Add new insuree to family"
 }

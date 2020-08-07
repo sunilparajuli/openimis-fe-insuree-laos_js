@@ -4,20 +4,32 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import _ from "lodash";
-import { Checkbox, Paper, IconButton } from "@material-ui/core";
-import SearchIcon from '@material-ui/icons/Search';
+import { Checkbox, Paper, IconButton, Grid, Divider, Typography, Tooltip } from "@material-ui/core";
+import { 
+    Search as SearchIcon,
+    Add as AddIcon,
+    PersonAdd as AddExistingIcon,
+    PersonPin as SetHeadIcon,
+    Delete as DeleteIcon,
+    Clear as RemoveIcon,
+} from '@material-ui/icons';
 import {
     formatMessage, formatMessageWithValues,
     withModulesManager, formatDateFromISO, historyPush,
+    FormattedMessage,
     formatSorter, sort,
     Table, PagedDataHandler
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-import { fetchFamilyMembers, selectFamilyMember, deleteInsurees } from "../actions";
+import { fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead } from "../actions";
 import { RIGHT_INSUREE_DELETE } from "../constants";
+import { insureeLabel, familyLabel } from "../utils/utils";
 
 const styles = theme => ({
     paper: theme.paper.paper,
+    paperHeader: theme.paper.header,
+    paperHeaderAction: theme.paper.action,
+    tableTitle: theme.table.title,
 });
 
 class FamilyInsureesOverview extends PagedDataHandler {
@@ -77,6 +89,9 @@ class FamilyInsureesOverview extends PagedDataHandler {
         "Insuree.gender",
         "Insuree.dob",
         "Insuree.cardIssued",
+        "",
+        "",
+        "",
     ];
 
     sorter = (attr, asc = true) => [
@@ -102,6 +117,41 @@ class FamilyInsureesOverview extends PagedDataHandler {
 
     handleClose = () => { this.setState({ open: false, chfid: null }) }
 
+    setHeadInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySetHeadInsuree.tooltip")}>
+            <IconButton onClick={e => this.props.setFamilyHead(
+                this.props.modulesManager,
+                this.props.family.uuid,
+                i.uuid,
+                formatMessageWithValues(this.props.intl, "insuree", "SetFamilyHead.mutationLabel", { label: insureeLabel(i) }))
+            }><SetHeadIcon /></IconButton>
+        </Tooltip>
+    )
+
+    removeInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyRemoveInsuree.tooltip")}>
+            <IconButton onClick={e => this.props.removeInsurees(
+                this.props.modulesManager,
+                this.props.family.uuid,
+                [i.uuid],
+                formatMessageWithValues(this.props.intl, "insuree", "RemoveInsurees.mutationLabel", { label: `[${i.chfId}]`, family: familyLabel(this.props.family) }))
+            }><RemoveIcon /></IconButton>
+        </Tooltip>
+    )
+
+    deleteInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyDeleteInsuree.tooltip")}>
+            <IconButton onClick={e => this.props.deleteInsurees(
+                this.props.modulesManager,
+                this.props.family.uuid,
+                [i.uuid],
+                formatMessageWithValues(this.props.intl, "insuree", "DeleteInsurees.mutationLabel", { label: `[${i.chfId}]` }))
+            }><DeleteIcon /></IconButton>
+        </Tooltip>
+    )
+
+    isHead = (f, i) => i.chfId === (!!f.headInsuree && f.headInsuree.chfId)
+
     formatters = [
         i => this.adornedChfId(i.chfId),
         i => i.lastName || "",
@@ -109,23 +159,57 @@ class FamilyInsureesOverview extends PagedDataHandler {
         i => (i.gender && i.gender.code) ? formatMessage(this.props.intl, "insuree", `InsureeGender.${i.gender.code}`) : "",
         i => formatDateFromISO(this.props.modulesManager, this.props.intl, i.dob),
         i => <Checkbox color="primary" readOnly={true} disabled={true} checked={i.cardIssued} />,
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.setHeadInsureeAction(i),
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.removeInsureeAction(i),
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.deleteInsureeAction(i),
     ];
 
-    onDeleteInsuree = (idx) => {
-        this.props.deleteInsurees(
-            this.props.modulesManager,
-            [this.props.familyMembers[idx].uuid],
-            formatMessageWithValues(this.props.intl, "insuree", "DeleteInsurees.mutationLabel", { label: `[${this.props.familyMembers[idx].chfId}]` }))
-    }
+
+    addNewInsuree = () => { console.log("TODO...")}
+    addExistingInsuree = () => { console.log("TODO...")}
 
     render() {
-        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, rights } = this.props;
+        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, rights, readOnly } = this.props;
+        let actions = !!readOnly ? [] : [
+            {
+                doIt: this.addExistingInsuree,
+                icon: <AddExistingIcon />,
+                tooltip: formatMessage(intl, "insuree", "familyAddExsistingInsuree.tooltip")
+            },
+            {
+                doIt: this.addNewInsuree,
+                icon: <AddIcon />,
+                tooltip: formatMessage(intl, "insuree", "familyAddNewInsuree.tooltip")
+            },
+        ];
         return (
             <Paper className={classes.paper}>
                 <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} />
+                <Grid container alignItems="center" direction="row" className={classes.paperHeader}>
+                    <Grid item xs={8}>
+                        <Typography className={classes.tableTitle}><FormattedMessage module="insuree" id="Family.insurees" values={{ count: pageInfo.totalCount }} /></Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Grid container justify="flex-end">
+                            {actions.map((a, idx) => {
+                                return (
+                                    <Grid item key={`form-action-${idx}`} className={classes.paperHeaderAction}>
+                                        <Tooltip title={a.tooltip}>
+                                            <IconButton onClick={a.doIt}>
+                                                {a.icon}
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Divider />
+                    </Grid>
+                </Grid>
                 <Table
                     module="insuree"
-                    header={formatMessageWithValues(intl, "insuree", "Family.insurees", { count: pageInfo.totalCount })}
                     headers={this.headers}
                     headerActions={this.headerActions}
                     itemFormatters={this.formatters}
@@ -135,7 +219,6 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     onDoubleClick={this.onDoubleClick}
                     withSelection={"single"}
                     onChangeSelection={this.onChangeSelection}
-                    onDelete={!!rights.includes(RIGHT_INSUREE_DELETE) ? this.onDeleteInsuree : null}
                     withPagination={true}
                     rowsPerPageOptions={this.rowsPerPageOptions}
                     defaultPageSize={this.defaultPageSize}
@@ -161,7 +244,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees }, dispatch);
+    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead }, dispatch);
 };
 
 

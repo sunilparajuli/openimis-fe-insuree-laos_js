@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
-import { AssignmentInd, GroupAdd, People, PersonPin } from "@material-ui/icons";
+import { AssignmentInd, GroupAdd, People, Person } from "@material-ui/icons";
 import { formatMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   RIGHT_FAMILY,
@@ -38,7 +38,7 @@ class InsureeMainMenu extends Component {
       entries.push(
         {
           text: formatMessage(this.props.intl, "insuree", "menu.insurees"),
-          icon: <PersonPin />,
+          icon: <Person />,
           route: "/" + modulesManager.getRef("insuree.route.insurees")
         }
       )

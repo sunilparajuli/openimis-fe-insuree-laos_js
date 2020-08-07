@@ -3,11 +3,14 @@ import {
   formatJsonField, decodeId, formatMutation
 } from "@openimis/fe-core";
 
+const FAMILY_HEAD_PROJECTION = "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob,gender{code}}";
+
 const FAMILY_FULL_PROJECTION = mm => [
   "id", "uuid", "poverty", "confirmationNo", "confirmationType{code}", "familyType{code}", "address",
   "validityFrom", "validityTo",
-  "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
-  "location" + mm.getProjection("location.Location.FlatProjection")
+  FAMILY_HEAD_PROJECTION,
+  "location" + mm.getProjection("location.Location.FlatProjection"),
+  "clientMutationId"
 ];
 
 export function fetchInsureeGenders() {
@@ -22,6 +25,7 @@ export function fetchInsuree(mm, chfid) {
   let payload = formatPageQuery("insurees",
     [`chfId:"${chfid}"`],
     ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
+      "gender{code}",
       `family{id}`,
       "photo{folder,filename}",
       "gender{code, gender, altLanguage}",
@@ -36,7 +40,7 @@ export function fetchInsureeFull(mm, uuid) {
     ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
       `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
       "photo{folder,filename}",
-      "gender{code, gender, altLanguage}",
+      "gender{code}",
       "education{id}",
       "profession{id}",
       "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
@@ -44,7 +48,8 @@ export function fetchInsureeFull(mm, uuid) {
       "typeOfId{code}", "passport",
       "relationship{id}",
       "head",
-      "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")]
+      "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")],
+      "clientMutationId"
   );
   return graphql(payload, 'INSUREE_INSUREE');
 }
@@ -57,18 +62,10 @@ export function fetchInsureesForPicker(mm, filters) {
   return graphql(payload, 'INSUREE_INSUREES');
 }
 
-export function fetchInsureeFamily(mm, chfid) {
-  let payload = formatQuery("insureeFamilyMembers",
-    [`chfId:"${chfid}"`],
-    ["chfId", "otherNames", "lastName", "head", "phone"]
-  );
-  return graphql(payload, 'INSUREE_FAMILY');
-}
-
 export function fetchFamilySummaries(mm, filters) {
   let projections = [
     "id", "uuid", "poverty", "confirmationNo", "validityFrom", "validityTo",
-    "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob}",
+    FAMILY_HEAD_PROJECTION,
     "location" + mm.getProjection("location.Location.FlatProjection"),
     "clientMutationId"]
   const payload = formatPageQueryWithCount("families",
@@ -243,7 +240,8 @@ export function updateFamily(mm, family, clientMutationLabel) {
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
-      requestedDateTime
+      requestedDateTime,
+      familyUuid: family.uuid,
     }
   )
 }
@@ -276,8 +274,23 @@ export function updateInsuree(mm, insuree, clientMutationLabel) {
   )
 }
 
-export function deleteInsurees(mm, uuids, clientMutationLabel) {
-  let mutation = formatMutation("deleteInsurees", `uuids: ["${uuids.join('","')}"]`, clientMutationLabel);
+export function removeInsurees(mm, family_uuid, uuids, clientMutationLabel) {
+  let mutation = formatMutation("removeInsurees", `uuid: "${family_uuid}", uuids: ["${uuids.join('","')}"]`, clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_REMOVE_INSUREES_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      familyUuid: family_uuid,
+    }
+  )
+}
+
+export function deleteInsurees(mm, family_uuid, uuids, clientMutationLabel) {
+  let mutation = formatMutation("deleteInsurees", `uuid: "${family_uuid}", uuids: ["${uuids.join('","')}"]`, clientMutationLabel);
   var requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -285,7 +298,23 @@ export function deleteInsurees(mm, uuids, clientMutationLabel) {
     {
       clientMutationId: mutation.clientMutationId,
       clientMutationLabel,
-      requestedDateTime
+      requestedDateTime,
+      familyUuid: family_uuid,
+    }
+  )
+}
+
+export function setFamilyHead(mm, family_uuid, insuree_uuid, clientMutationLabel) {
+  let mutation = formatMutation("setFamilyHead", `uuid: "${family_uuid}", insureeUuid: "${insuree_uuid}"`, clientMutationLabel);
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_SET_FAMILY_HEAD_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      familyUuid: family_uuid,
     }
   )
 }

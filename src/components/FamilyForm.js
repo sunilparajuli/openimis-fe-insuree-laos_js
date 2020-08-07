@@ -18,6 +18,7 @@ import HeadInsureeMasterPanel from "./HeadInsureeMasterPanel";
 import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
+    lockedPage: theme.page.locked
 });
 
 const INSUREE_FAMILY_PANELS_CONTRIBUTION_KEY = "insuree.Family.panels"
@@ -112,19 +113,21 @@ class FamilyForm extends Component {
     }
 
     render() {
-        const { rights,
+        const { classes, rights,
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
             overview = false, openFamilyButton, readOnly = false,
-            add, save, back } = this.props;
+            add, save, back, mutation } = this.props;
         const { family } = this.state;
         if (!rights.includes(RIGHT_FAMILY)) return null;
+        let runningMutation = (!!mutation && !!mutation.familyUuid && mutation.familyUuid === family_uuid && (!mutation.status || mutation.status === 0)) ||
+            (!!family && !!family.clientMutationId)
         let actions = [{
             doIt: this.reload,
             icon: <ReplayIcon />,
-            onlyIfDirty: !readOnly
+            onlyIfDirty: !readOnly && !runningMutation
         }];
         return (
-            <Fragment>
+            <div className={!!runningMutation ? classes.lockedPage : null}>
                 <ProgressOrError progress={fetchingFamily} error={errorFamily} />
                 {((!!fetchedFamily && !!family && family.uuid === family_uuid) || !family_uuid) && (
                     <Form
@@ -136,7 +139,7 @@ class FamilyForm extends Component {
                         reset={this.state.reset}
                         back={back}
                         add={!!add && !this.state.newFamily ? this._add : null}
-                        readOnly={readOnly}
+                        readOnly={readOnly || runningMutation}
                         actions={actions}
                         openFamilyButton={openFamilyButton}
                         overview={overview}
@@ -150,7 +153,7 @@ class FamilyForm extends Component {
                         save={!!save ? this._save : null}
                     />
                 )}
-            </Fragment>
+            </div>
         )
     }
 }

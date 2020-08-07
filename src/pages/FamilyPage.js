@@ -9,6 +9,7 @@ import {
 import FamilyForm from "../components/FamilyForm";
 import { createFamily, updateFamily } from "../actions";
 import { RIGHT_FAMILY_ADD, RIGHT_FAMILY_EDIT } from "../constants";
+import { familyLabel } from "../utils/utils";
 
 const styles = theme => ({
     page: theme.page,
@@ -29,7 +30,7 @@ class FamilyPage extends Component {
                     this.props.intl,
                     "insuree",
                     "CreateFamily.mutationLabel",
-                    { label: !!family.headInsuree && !!family.headInsuree.chfId ? family.headInsuree.chfId : "" }
+                    { label: familyLabel(family) }
                 )
             );
         } else {
@@ -40,7 +41,7 @@ class FamilyPage extends Component {
                     this.props.intl,
                     "insuree",
                     "UpdateFamily.mutationLabel",
-                    { label: !!family.headInsuree && !!family.headInsuree.chfId ? family.headInsuree.chfId : "" }
+                    { label: familyLabel(family) }
                 )
             );
 

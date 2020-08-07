@@ -57,7 +57,7 @@ class FamilyMasterPanel extends FormPanel {
                 </Grid>
                 <Grid item xs={2} className={classes.item}>
                     <PublishedComponent pubRef="core.DatePicker"
-                        value={!edited ? null : edited.dob}
+                        value={!edited || !edited.headInsuree ? null : edited.headInsuree.dob}
                         module="insuree"
                         label="Family.headInsuree.dob"
                         readOnly={true}
@@ -65,7 +65,7 @@ class FamilyMasterPanel extends FormPanel {
                 </Grid>
                 <Grid item xs={1} className={classes.item}>
                     <PublishedComponent pubRef="insuree.InsureeGenderPicker"
-                        value={!!edited.gender ? edited.gender.code : ""}
+                        value={!edited || !edited.headInsuree || !edited.headInsuree.gender ? null : edited.headInsuree.gender.code}
                         module="insuree"
                         label="Family.headInsuree.gender"
                         readOnly={true}

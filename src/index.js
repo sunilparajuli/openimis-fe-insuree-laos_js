@@ -20,7 +20,6 @@ import FamilyTypePicker from "./pickers/FamilyTypePicker";
 import PhotoStatusPicker from "./pickers/PhotoStatusPicker";
 import RelationPicker from "./pickers/RelationPicker";
 import InsureeAvatar from "./components/InsureeAvatar";
-import InsureeFamilySummary from "./components/InsureeFamilySummary";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
 import InsureeProfileLink from "./components/InsureeProfileLink";
 import InsureeSummary from "./components/InsureeSummary";
@@ -66,7 +65,6 @@ const DEFAULT_CONFIG = {
     { key: "insuree.Summary", ref: InsureeSummary },
     { key: "insuree.InsureeFirstServicePointDisplay", ref: InsureeFirstServicePointDisplay },
     { key: "insuree.InsureeFirstServicePointPanel", ref: InsureeFirstServicePointPanel },
-    { key: "insuree.FamilySummary", ref: InsureeFamilySummary },
     { key: "insuree.InsureeAddress", ref: InsureeAddress },
     { key: "insuree.ProfileLink", ref: InsureeProfileLink },
     { key: "insuree.CappedItemServiceLink", ref: InsureeCappedItemServiceLink },
