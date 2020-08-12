@@ -6,6 +6,7 @@ import {
     FormattedMessage, PublishedComponent, FormPanel,
     TextInput
 } from "@openimis/fe-core";
+import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
     paper: theme.paper.paper,
@@ -186,13 +187,15 @@ class InsureeMasterPanel extends FormPanel {
                                             onChange={v => this.updateAttribute('passport', !!v ? v : null)}
                                         />
                                     </Grid>
-
                                 </Grid>
                             </Grid>
                             <Grid item xs={4} className={classes.item}>
                                 <PublishedComponent pubRef="insuree.Avatar"
-                                    insuree={edited}
+                                    title={insureeLabel(edited)}
+                                    photo={!!edited ? edited.photo : null}
                                     readOnly={readOnly}
+                                    withMeta={true}
+                                    onChange={v => this.updateAttribute('photo', !!v ? v : null)}
                                 />
                             </Grid>
                         </Grid>

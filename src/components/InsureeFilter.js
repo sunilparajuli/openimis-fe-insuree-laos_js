@@ -235,7 +235,7 @@ class InsureeFilter extends Component {
                                         {
                                             id: 'photoStatus',
                                             value: s,
-                                            filter: `photo_Isnull: ${s === "with"}`
+                                            filter: `photo_Isnull: ${s === "without"}`
                                         }
                                     ])}
                                 />

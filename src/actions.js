@@ -39,7 +39,7 @@ export function fetchInsureeFull(mm, uuid) {
     [`uuid:"${uuid}"`],
     ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
       `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
-      `photo{date,folder,filename,officerId}`,
+      `photo{id,uuid,date,folder,filename,officerId,photo}`,
       "gender{code}",
       "education{id}",
       "profession{id}",
@@ -180,6 +180,18 @@ export function fetchInsureeSummaries(mm, filters) {
   return graphql(payload, 'INSUREE_INSUREES');
 }
 
+function formatInsureePhoto(photo) {
+  return `{
+    ${!!photo.id ? `id: ${decodeId(photo.id)}` : ""}
+    ${!!photo.uuid ? `uuid: "${photo.uuid}"` : ""}
+    ${!!photo.officerId ? `officerId: ${decodeId(photo.officerId)}` : ""}
+    ${!!photo.date ? `date: "${photo.date}"` : ""}
+    ${!!photo.photo ? `photo: "${photo.photo}"` : ""}
+    ${!!photo.folder ? `folder: "${photo.folder}"` : ""}
+    ${!!photo.folder ? `filename: "${photo.filename}"` : ""}
+  }`
+}
+
 export function formatInsureeGQL(mm, insuree) {
   return `
     ${insuree.uuid !== undefined && insuree.uuid !== null ? `uuid: "${insuree.uuid}"` : ''}
@@ -195,8 +207,7 @@ export function formatInsureeGQL(mm, insuree) {
     ${!!insuree.email ? `email: "${insuree.email}"` : ""}
     ${!!insuree.currentAddress ? `currentAddress: "${insuree.currentAddress}"` : ""}
     ${!!insuree.currentVillage && !!insuree.currentVillage.id ? `currentVillageId: ${decodeId(insuree.currentVillage.id)}` : ""}
-    ${!!insuree.photo && !!insuree.photo.id ? `photoId: ${decodeId(insuree.photo.id)}` : ""}
-    ${!!insuree.photoDate ? `photoDate: "${insuree.photoDate}"` : ""}
+    ${!!insuree.photo ? `photo:${formatInsureePhoto(insuree.photo)}` : ""}
     cardIssued:${!!insuree.cardIssued}
     ${!!insuree.profession && !!insuree.profession.id ? `professionId: ${insuree.profession.id}` : ""}
     ${!!insuree.education && !!insuree.education.id ? `educationId: ${insuree.education.id}` : ""}
@@ -323,38 +334,6 @@ export function setFamilyHead(mm, family_uuid, insuree_uuid, clientMutationLabel
       clientMutationLabel,
       requestedDateTime,
       familyUuid: family_uuid,
-    }
-  )
-}
-
-export function formatInsureePhoto(attach) {
-  return `
-    ${!!attach.id ? `id: "${decodeId(attach.id)}"` : ""}
-    ${!!attach.claimUuid ? `claimUuid: "${attach.claimUuid}"` : ""}
-    ${!!attach.type ? `type: "${attach.type}"` : ""}
-    ${!!attach.title ? `title: "${attach.title}"` : ""}
-    ${!!attach.date ? `date: "${attach.date}"` : ""}
-    ${!!attach.mime ? `mime: "${attach.mime}"` : ""}
-    ${!!attach.filename ? `filename: "${attach.filename}"` : ""}
-    ${!!attach.document ? `document: "${attach.document}"` : ""}
-  `
-}
-
-export function createOtUpdateInsureePhoto(insuree_uuid, fileName, photo, clientMutationLabel) {
-  let payload = `
-      insureeUuid: "${insuree_uuid}"
-      fileName: "${fileName}"
-      photo: "${photo}"
-    `
-  let mutation = formatMutation("setInsureePhoto", payload, clientMutationLabel);
-  var requestedDateTime = new Date();
-  return graphql(
-    mutation.payload,
-    ['INSUREE_MUTATION_REQ', 'INSUREE_SET_INSUREE_PHOTO_RESP', 'INSUREE_MUTATION_ERR'],
-    {
-      clientMutationId: mutation.clientMutationId,
-      clientMutationLabel,
-      requestedDateTime
     }
   )
 }
