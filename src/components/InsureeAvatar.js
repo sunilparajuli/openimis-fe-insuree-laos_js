@@ -30,6 +30,7 @@ class InsureeAvatar extends Component {
         }
     }
 
+    withPhoto = () => !!this.state.photo && (!!this.state.photo.photo || !!this.state.photo.filename)
 
     url = () => {
         if (!!this.state.photo && !!this.state.photo.photo) {
@@ -73,7 +74,7 @@ class InsureeAvatar extends Component {
                                     module="insuree"
                                     label="Insuree.photoDate"
                                     readOnly={readOnly}
-                                    required={true}
+                                    required={this.withPhoto()}
                                     onChange={v => this.updateAttribute('date', v)}
                                 />
                             </Grid>
@@ -83,7 +84,7 @@ class InsureeAvatar extends Component {
                                     module="insuree"
                                     label={formatMessage(intl, "insuree", "Insuree.photoOfficer")}
                                     readOnly={readOnly}
-                                    required={true}
+                                    required={this.withPhoto()}
                                     onChange={v => this.updateAttribute('officerId', v.id)}
                                 />
                             </Grid>
