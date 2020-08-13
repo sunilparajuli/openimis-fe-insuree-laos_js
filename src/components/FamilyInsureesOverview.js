@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import _ from "lodash";
 import { Checkbox, Paper, IconButton, Grid, Divider, Typography, Tooltip } from "@material-ui/core";
-import { 
+import {
     Search as SearchIcon,
     Add as AddIcon,
     PersonAdd as AddExistingIcon,
@@ -15,13 +15,13 @@ import {
 } from '@material-ui/icons';
 import {
     formatMessage, formatMessageWithValues,
-    withModulesManager, formatDateFromISO, historyPush,
+    withModulesManager, formatDateFromISO, historyPush, withTooltip,
     FormattedMessage,
     formatSorter, sort,
-    Table, PagedDataHandler
+    Table, PagedDataHandler, PublishedComponent
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-import { fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead } from "../actions";
+import { fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead, changeFamily } from "../actions";
 import { RIGHT_INSUREE_DELETE } from "../constants";
 import { insureeLabel, familyLabel } from "../utils/utils";
 
@@ -35,7 +35,7 @@ const styles = theme => ({
 class FamilyInsureesOverview extends PagedDataHandler {
 
     state = {
-        open: false,
+        enquiryOpen: false,
         chfid: null,
     }
 
@@ -110,12 +110,10 @@ class FamilyInsureesOverview extends PagedDataHandler {
 
     adornedChfId = (chfid) => (
         <Fragment>
-            <IconButton size="small" onClick={e => this.setState({ open: true, chfid })}><SearchIcon /></IconButton>
+            <IconButton size="small" onClick={e => this.setState({ enquiryOpen: true, chfid })}><SearchIcon /></IconButton>
             {chfid}
         </Fragment>
     )
-
-    handleClose = () => { this.setState({ open: false, chfid: null }) }
 
     setHeadInsureeAction = (i) => (
         <Tooltip title={formatMessage(this.props.intl, "insuree", "familySetHeadInsuree.tooltip")}>
@@ -165,26 +163,31 @@ class FamilyInsureesOverview extends PagedDataHandler {
     ];
 
 
-    addNewInsuree = () => { console.log("TODO...")}
-    addExistingInsuree = () => { console.log("TODO...")}
+    addNewInsuree = () => historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", ['_NEW_', this.props.family.uuid]);
 
     render() {
         const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, rights, readOnly } = this.props;
         let actions = !!readOnly ? [] : [
             {
-                doIt: this.addExistingInsuree,
-                icon: <AddExistingIcon />,
+                button: <div><PublishedComponent //div needed for the tooltip style!!
+                    pubRef="insuree.InsureePicker"
+                    IconRender={AddExistingIcon}
+                    onChange={i => this.props.changeFamily(
+                        this.props.modulesManager,
+                        this.props.family.uuid,
+                        i.uuid,
+                        formatMessageWithValues(intl, "insuree", "insureeChangeFamily.mutationLabel", { family: familyLabel(this.props.family), insuree: insureeLabel(i) })
+                    )} /></div>,
                 tooltip: formatMessage(intl, "insuree", "familyAddExsistingInsuree.tooltip")
             },
             {
-                doIt: this.addNewInsuree,
-                icon: <AddIcon />,
+                button: <IconButton onClick={this.addNewInsuree}><AddIcon /></IconButton>,
                 tooltip: formatMessage(intl, "insuree", "familyAddNewInsuree.tooltip")
             },
         ];
         return (
             <Paper className={classes.paper}>
-                <EnquiryDialog open={this.state.open} chfid={this.state.chfid} onClose={this.handleClose} />
+                <EnquiryDialog open={this.state.enquiryOpen} chfid={this.state.chfid} onClose={() => { this.setState({ enquiryOpen: false, chfid: null }) }} />
                 <Grid container alignItems="center" direction="row" className={classes.paperHeader}>
                     <Grid item xs={8}>
                         <Typography className={classes.tableTitle}><FormattedMessage module="insuree" id="Family.insurees" values={{ count: pageInfo.totalCount }} /></Typography>
@@ -192,13 +195,10 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     <Grid item xs={4}>
                         <Grid container justify="flex-end">
                             {actions.map((a, idx) => {
+                                console.log(a.tooltip)
                                 return (
                                     <Grid item key={`form-action-${idx}`} className={classes.paperHeaderAction}>
-                                        <Tooltip title={a.tooltip}>
-                                            <IconButton onClick={a.doIt}>
-                                                {a.icon}
-                                            </IconButton>
-                                        </Tooltip>
+                                        {withTooltip(a.button, a.tooltip)}
                                     </Grid>
                                 )
                             })}
@@ -244,7 +244,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead }, dispatch);
+    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead, changeFamily }, dispatch);
 };
 
 

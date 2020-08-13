@@ -402,6 +402,8 @@ function reducer(
             return dispatchMutationResp(state, "removeInsurees", action);
         case 'INSUREE_SET_FAMILY_HEAD_RESP':
             return dispatchMutationResp(state, "setFamilyHead", action);
+        case 'INSUREE_CHANGE_FAMILY_HEAD_RESP':
+            return dispatchMutationResp(state, "changeInsureeFamily", action);
         default:
             return state;
     }

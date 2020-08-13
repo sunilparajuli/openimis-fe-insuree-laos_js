@@ -12,7 +12,7 @@ import FamilyDisplayPanel from "./FamilyDisplayPanel";
 import InsureeMasterPanel from "../components/InsureeMasterPanel";
 
 
-import { fetchInsureeFull } from "../actions";
+import { fetchInsureeFull, fetchFamily } from "../actions";
 import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
@@ -38,7 +38,7 @@ class InsureeForm extends Component {
 
     componentDidMount() {
         document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: "" })
-        if (this.props.insuree_uuid) {
+        if (!!this.props.insuree_uuid) {
             this.setState(
                 (state, props) => ({ insuree_uuid: props.insuree_uuid }),
                 e => this.props.fetchInsureeFull(
@@ -46,6 +46,12 @@ class InsureeForm extends Component {
                     this.props.insuree_uuid
                 )
             )
+        } else if (!!this.props.family_uuid && (!this.props.family || this.props.family.uuid !== this.props.family_uuid)) {
+            this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid)
+        } else if (!!this.props.family_uuid) {
+            let insuree = { ...this.state.insuree }
+            insuree.family = { ...this.props.family }
+            this.setState({ insuree })
         }
     }
 
@@ -71,7 +77,7 @@ class InsureeForm extends Component {
             document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: insureeLabel(this.state.insuree) })
         }
         if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
-            var insuree = this.props.insuree;
+            var insuree = this.props.insuree || {};
             insuree.ext = !!insuree.jsonExt ? JSON.parse(insuree.jsonExt) : {};
             this.setState(
                 { insuree, insuree_uuid: insuree.uuid, lockNew: false, newInsuree: false });
@@ -127,6 +133,7 @@ class InsureeForm extends Component {
     render() {
         const { rights,
             insuree_uuid, fetchingInsuree, fetchedInsuree, errorInsuree,
+            family, family_uuid, fetchingFamily, fetchedFamily, errorFamily,
             readOnly = false,
             add, save,
         } = this.props;
@@ -140,27 +147,30 @@ class InsureeForm extends Component {
         return (
             <Fragment>
                 <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
-                {((!!fetchedInsuree && !!insuree && insuree.uuid === insuree_uuid) || !insuree_uuid) && (
-                    <Form
-                        module="insuree"
-                        title="Insuree.title"
-                        titleParams={{ label: insureeLabel(this.state.insuree) }}
-                        edited_id={insuree_uuid}
-                        edited={this.state.insuree}
-                        reset={this.state.reset}
-                        back={this.back}
-                        add={!!add && !this.state.newInsuree ? this._add : null}
-                        readOnly={readOnly}
-                        actions={actions}
-                        HeadPanel={FamilyDisplayPanel}
-                        Panels={[InsureeMasterPanel]}
-                        contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
-                        insuree={this.state.insuree}
-                        onEditedChanged={this.onEditedChanged}
-                        canSave={this.canSave}
-                        save={!!save ? this._save : null}
-                    />
-                )}
+                <ProgressOrError progress={fetchingFamily} error={errorFamily} />
+                {((!!fetchedInsuree && !!insuree && insuree.uuid === insuree_uuid) || !insuree_uuid) &&
+                    ((!!fetchedFamily && !!family && family.uuid === family_uuid) || !family_uuid) &&
+                    (
+                        <Form
+                            module="insuree"
+                            title="Insuree.title"
+                            titleParams={{ label: insureeLabel(this.state.insuree) }}
+                            edited_id={insuree_uuid}
+                            edited={this.state.insuree}
+                            reset={this.state.reset}
+                            back={this.back}
+                            add={!!add && !this.state.newInsuree ? this._add : null}
+                            readOnly={readOnly}
+                            actions={actions}
+                            HeadPanel={FamilyDisplayPanel}
+                            Panels={[InsureeMasterPanel]}
+                            contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
+                            insuree={this.state.insuree}
+                            onEditedChanged={this.onEditedChanged}
+                            canSave={this.canSave}
+                            save={!!save ? this._save : null}
+                        />
+                    )}
             </Fragment>
         )
     }
@@ -172,10 +182,14 @@ const mapStateToProps = (state, props) => ({
     errorInsuree: state.insuree.errorInsuree,
     fetchedInsuree: state.insuree.fetchedInsuree,
     insuree: state.insuree.insuree,
+    fetchingFamily: state.insuree.fetchingFamily,
+    errorFamily: state.insuree.errorFamily,
+    fetchedFamily: state.insuree.fetchedFamily,
+    family: state.insuree.family,
     submittingMutation: state.insuree.submittingMutation,
     mutation: state.insuree.mutation,
 })
 
-export default withHistory(withModulesManager(connect(mapStateToProps, { fetchInsureeFull, journalize })(
+export default withHistory(withModulesManager(connect(mapStateToProps, { fetchInsureeFull, fetchFamily, journalize })(
     injectIntl(withTheme(withStyles(styles)(InsureeForm))
     ))));

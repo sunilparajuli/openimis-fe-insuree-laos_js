@@ -5,10 +5,8 @@ import { Contributions } from "@openimis/fe-core";
 const INSUREE_HEAD_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.HeadInsuree.panels"
 
 class HeadInsureeMasterPanel extends Component {
-    updateAttribute = (a, v) => {
+    onEditedChanged = (head) => {
         let edited = { ...this.props.edited }
-        let head = edited["headInsuree"] || {};
-        head[a] = v;
         edited["headInsuree"] = head;
         this.props.onEditedChanged(edited);
     }
@@ -20,10 +18,10 @@ class HeadInsureeMasterPanel extends Component {
                 <InsureeMasterPanel
                     {...this.props}
                     edited={!!edited ? edited.headInsuree : null}
-                    updateAttribute={this.updateAttribute}
+                    onEditedChanged={this.onEditedChanged}
                     title="insuree.HeadInsureeMasterPanel.title"
                 />
-                <Contributions {...this.props}  updateAttribute={this.updateAttribute} contributionKey={INSUREE_HEAD_INSUREE_PANELS_CONTRIBUTION_KEY} />
+                <Contributions {...this.props} updateAttribute={this.updateAttribute} contributionKey={INSUREE_HEAD_INSUREE_PANELS_CONTRIBUTION_KEY} />
             </Fragment>
         )
     }

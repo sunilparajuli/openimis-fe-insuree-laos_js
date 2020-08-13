@@ -38,7 +38,6 @@ class InsureeMasterPanel extends FormPanel {
                                 <Grid item xs={3} >
                                     <PublishedComponent
                                         pubRef="insuree.RelationPicker"
-                                        required={true}
                                         readOnly={readOnly}
                                         value={!!edited && !!edited.relationship ? edited.relationship.id : ""}
                                         onChange={v => this.updateAttribute('relationship', { id: v })}
@@ -126,8 +125,8 @@ class InsureeMasterPanel extends FormPanel {
                                             value={edited}
                                             module="insuree"
                                             readOnly={readOnly}
-                                            onChangeLocation={v => this.updateAttribute('location', v)}
-                                            onChangeAddress={v => this.updateAttribute('address', v)}
+                                            onChangeLocation={v => this.updateAttribute('currentVillage', v)}
+                                            onChangeAddress={v => this.updateAttribute('currentAddress', v)}
                                         />
                                     </Grid>
                                     <Grid item xs={6} className={classes.item}>
@@ -191,7 +190,6 @@ class InsureeMasterPanel extends FormPanel {
                             </Grid>
                             <Grid item xs={4} className={classes.item}>
                                 <PublishedComponent pubRef="insuree.Avatar"
-                                    title={insureeLabel(edited)}
                                     photo={!!edited ? edited.photo : null}
                                     readOnly={readOnly}
                                     withMeta={true}

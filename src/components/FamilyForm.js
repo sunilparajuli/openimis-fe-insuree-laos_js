@@ -99,6 +99,7 @@ class FamilyForm extends Component {
         if (!this.state.family.headInsuree.lastName) return false;
         if (!this.state.family.headInsuree.otherNames) return false;
         if (!this.state.family.headInsuree.dob) return false;
+        if (!!this.state.family.headInsuree.photo && (!this.state.family.headInsuree.photo.date || !this.state.family.headInsuree.photo.officerId)) return false;
         return true;
     }
 

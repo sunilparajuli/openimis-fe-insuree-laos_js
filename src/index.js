@@ -46,7 +46,7 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
-    { key: "insuree.InsureePicker.projection", ref: ["id", "chfId", "lastName", "otherNames"] },
+    { key: "insuree.InsureePicker.projection", ref: ["id", "uuid", "chfId", "lastName", "otherNames"] },
     { key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
     { key: "insuree.InsureeMaritalStatusPicker", ref: InsureeMaritalStatusPicker },
     { key: "insuree.EducationPicker", ref: EducationPicker },

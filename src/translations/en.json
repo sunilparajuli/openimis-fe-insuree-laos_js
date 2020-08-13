@@ -186,11 +186,12 @@
     "insuree.RemoveInsurees.mutationLabel": "Remove insurees - {label} from family {family}",
     "insuree.DeleteInsurees.mutationLabel": "Delete insurees - {label}",
     "insuree.SetFamilyHead.mutationLabel": "Set (change) Family head - {label}",
+    "insuree.insureeChangeFamily.mutationLabel": "Move {insuree} to family {family}",
     "insuree.familySetHeadInsuree.tooltip": "Set as family head",
     "insuree.familyRemoveInsuree.tooltip": "Remove insuree from family",
     "insuree.familyDeleteInsuree.tooltip": "Delete insuree",
     "insuree.familyAddExsistingInsuree.tooltip": "Add (move) existing insuree into family",
-    "insuree.familyAddNewInsuree.tooltip": "Add new insuree to family",
+    "insuree.familyAddNewInsuree.tooltip": "Create new insuree in family",
     "insuree.InsureePhotoDialog.title": "Select photo for insuree {label}",
     "insuree.setInsureePhoto.mutationLabel": "Add/update photo to insuree {insuree}"
 }

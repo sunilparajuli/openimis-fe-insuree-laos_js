@@ -127,7 +127,7 @@ class InsureePicker extends Component {
 
     getSuggestions = (filters) => {
         this.setState(
-            { filters: filters },
+            { filters },
             e => this.props.fetchInsureesForPicker(this.props.modulesManager, this.filtersToQueryParams())
         );
     }
@@ -179,12 +179,14 @@ class InsureePicker extends Component {
     }
 
     render() {
-        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true, IconRender = null, title } = this.props;
         return (
             <Picker
                 module="insuree"
                 label={!!withLabel ? "Insuree.label" : null}
+                title={title}
                 dialogTitle="Insuree.picker.dialog.title"
+                IconRender={IconRender}
                 filter={<Filter onChange={this.debouncedGetSuggestion} />}
                 suggestions={insurees}
                 suggestionFormatter={this.formatSuggestion}
