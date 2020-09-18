@@ -265,6 +265,22 @@ export function updateFamily(mm, family, clientMutationLabel) {
   )
 }
 
+export function deleteFamily(mm, family, deleteMembers, clientMutationLabel) {
+  let mutation = formatMutation("deleteFamilies", `uuids: ["${family.uuid}"], deleteMembers: ${deleteMembers}`, clientMutationLabel);
+  family.clientMutationId = mutation.clientMutationId;
+  var requestedDateTime = new Date();
+  return graphql(
+    mutation.payload,
+    ['INSUREE_MUTATION_REQ', 'INSUREE_DELETE_FAMILY_RESP', 'INSUREE_MUTATION_ERR'],
+    {
+      clientMutationId: mutation.clientMutationId,
+      clientMutationLabel,
+      requestedDateTime,
+      familyUuid: family.uuid,
+    }
+  )
+}
+
 export function createInsuree(mm, insuree, clientMutationLabel) {
   let mutation = formatMutation("createInsuree", formatInsureeGQL(mm, insuree), clientMutationLabel);
   var requestedDateTime = new Date();
@@ -293,8 +309,9 @@ export function updateInsuree(mm, insuree, clientMutationLabel) {
   )
 }
 
-export function removeInsurees(mm, family_uuid, uuids, clientMutationLabel) {
-  let mutation = formatMutation("removeInsurees", `uuid: "${family_uuid}", uuids: ["${uuids.join('","')}"]`, clientMutationLabel);
+export function removeInsuree(mm, family_uuid, insuree, clientMutationLabel) {
+  let mutation = formatMutation("removeInsurees", `uuid: "${family_uuid}", uuids: ["${insuree.uuid}"]`, clientMutationLabel);
+  insuree.clientMutationId = mutation.clientMutationId;
   var requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -308,8 +325,9 @@ export function removeInsurees(mm, family_uuid, uuids, clientMutationLabel) {
   )
 }
 
-export function deleteInsurees(mm, family_uuid, uuids, clientMutationLabel) {
-  let mutation = formatMutation("deleteInsurees", `uuid: "${family_uuid}", uuids: ["${uuids.join('","')}"]`, clientMutationLabel);
+export function deleteInsuree(mm, family_uuid, insuree, clientMutationLabel) {
+  let mutation = formatMutation("deleteInsurees", `${!!family_uuid ? `uuid: "${family_uuid}",` : ""} uuids: ["${insuree.uuid}"]`, clientMutationLabel);
+  insuree.clientMutationId = mutation.clientMutationId;
   var requestedDateTime = new Date();
   return graphql(
     mutation.payload,

@@ -21,7 +21,7 @@ import {
     Table, PagedDataHandler, PublishedComponent
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-import { fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead, changeFamily } from "../actions";
+import { fetchFamilyMembers, selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily } from "../actions";
 import { RIGHT_INSUREE_DELETE } from "../constants";
 import { insureeLabel, familyLabel } from "../utils/utils";
 
@@ -37,6 +37,8 @@ class FamilyInsureesOverview extends PagedDataHandler {
     state = {
         enquiryOpen: false,
         chfid: null,
+        confirmedAction: null,
+        reset: 0,
     }
 
     constructor(props) {
@@ -108,10 +110,10 @@ class FamilyInsureesOverview extends PagedDataHandler {
         this.sorter("cardIssued"),
     ];
 
-    adornedChfId = (chfid) => (
+    adornedChfId = (i) => (
         <Fragment>
-            <IconButton size="small" onClick={e => this.setState({ enquiryOpen: true, chfid })}><SearchIcon /></IconButton>
-            {chfid}
+            <IconButton size="small" onClick={e => !i.clientMutationId && this.setState({ enquiryOpen: true, chfid: i.chfId })}><SearchIcon /></IconButton>
+            {i.chfId}
         </Fragment>
     )
 
@@ -126,47 +128,79 @@ class FamilyInsureesOverview extends PagedDataHandler {
         </Tooltip>
     )
 
-    removeInsureeAction = (i) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyRemoveInsuree.tooltip")}>
-            <IconButton onClick={e => this.props.removeInsurees(
+    confirmRemoveInsuree = (i) => {
+        let confirmedAction = () => {
+            this.props.removeInsuree(
                 this.props.modulesManager,
                 this.props.family.uuid,
-                [i.uuid],
-                formatMessageWithValues(this.props.intl, "insuree", "RemoveInsurees.mutationLabel", { label: `[${i.chfId}]`, family: familyLabel(this.props.family) }))
-            }><RemoveIcon /></IconButton>
+                i,
+                formatMessageWithValues(
+                    this.props.intl, "insuree", "RemoveInsuree.mutationLabel",
+                    {
+                        label: insureeLabel(i),
+                        family: familyLabel(this.props.family)
+                    }),
+            );
+        }
+        this.props.onActionToConfirm(
+            formatMessageWithValues(this.props.intl, "insuree", "removeInsureeDialog.title", { label: insureeLabel(i) }),
+            formatMessageWithValues(this.props.intl, "insuree", "removeInsureeDialog.message",
+                {
+                    label: insureeLabel(i),
+                }),
+            confirmedAction)
+    }
+
+    removeInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyRemoveInsuree.tooltip")}>
+            <IconButton onClick={e => this.confirmRemoveInsuree(i)}><RemoveIcon /></IconButton>
         </Tooltip>
     )
 
-    deleteInsureeAction = (i) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyDeleteInsuree.tooltip")}>
-            <IconButton onClick={e => this.props.deleteInsurees(
+    confirmDeleteInsuree = (i) => {
+        let confirmedAction = () => {
+            this.props.deleteInsuree(
                 this.props.modulesManager,
                 this.props.family.uuid,
-                [i.uuid],
-                formatMessageWithValues(this.props.intl, "insuree", "DeleteInsurees.mutationLabel", { label: `[${i.chfId}]` }))
-            }><DeleteIcon /></IconButton>
+                i,
+                formatMessageWithValues(this.props.intl, "insuree", "DeleteInsuree.mutationLabel", { label: insureeLabel(i) }),
+            );
+        }
+        this.props.onActionToConfirm(
+            formatMessageWithValues(this.props.intl, "insuree", "deleteInsureeDialog.title", { label: insureeLabel(i) }),
+            formatMessageWithValues(this.props.intl, "insuree", "deleteInsureeDialog.message",
+                {
+                    label: insureeLabel(i),
+                }),
+            confirmedAction)
+    }
+
+    deleteInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familyDeleteInsuree.tooltip")}>
+            <IconButton onClick={e => this.confirmDeleteInsuree(i)}><DeleteIcon /></IconButton>
         </Tooltip>
     )
 
     isHead = (f, i) => i.chfId === (!!f.headInsuree && f.headInsuree.chfId)
 
     formatters = [
-        i => this.adornedChfId(i.chfId),
+        i => this.adornedChfId(i),
         i => i.lastName || "",
         i => i.otherNames || "",
         i => (i.gender && i.gender.code) ? formatMessage(this.props.intl, "insuree", `InsureeGender.${i.gender.code}`) : "",
         i => formatDateFromISO(this.props.modulesManager, this.props.intl, i.dob),
         i => <Checkbox color="primary" readOnly={true} disabled={true} checked={i.cardIssued} />,
-        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.setHeadInsureeAction(i),
-        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.removeInsureeAction(i),
-        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) ? null : this.deleteInsureeAction(i),
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) || !!i.clientMutationId ? null : this.setHeadInsureeAction(i),
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) || !!i.clientMutationId ? null : this.removeInsureeAction(i),
+        i => !!this.props.readOnly || !this.props.rights.includes(RIGHT_INSUREE_DELETE) || this.isHead(this.props.family, i) || !!i.clientMutationId ? null : this.deleteInsureeAction(i),
     ];
 
 
     addNewInsuree = () => historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", ['_NEW_', this.props.family.uuid]);
+    rowLocked = (i) => !!i.clientMutationId
 
     render() {
-        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, rights, readOnly } = this.props;
+        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, readOnly } = this.props;
         let actions = !!readOnly ? [] : [
             {
                 button: <div><PublishedComponent //div needed for the tooltip style!!
@@ -195,7 +229,6 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     <Grid item xs={4}>
                         <Grid container justify="flex-end">
                             {actions.map((a, idx) => {
-                                console.log(a.tooltip)
                                 return (
                                     <Grid item key={`form-action-${idx}`} className={classes.paperHeaderAction}>
                                         {withTooltip(a.button, a.tooltip)}
@@ -227,6 +260,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
                     count={pageInfo.totalCount}
                     onChangePage={this.onChangePage}
                     onChangeRowsPerPage={this.onChangeRowsPerPage}
+                    rowLocked={this.rowLocked}
                 />
             </Paper>
         )
@@ -241,10 +275,15 @@ const mapStateToProps = state => ({
     familyMembers: state.insuree.familyMembers,
     pageInfo: state.insuree.familyMembersPageInfo,
     errorFamilyMembers: state.insuree.errorFamilyMembers,
+    submittingMutation: state.insuree.submittingMutation,
+    mutation: state.insuree.mutation,
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetch: fetchFamilyMembers, selectFamilyMember, deleteInsurees, removeInsurees, setFamilyHead, changeFamily }, dispatch);
+    return bindActionCreators({
+        fetch: fetchFamilyMembers,
+        selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily,
+    }, dispatch);
 };
 
 

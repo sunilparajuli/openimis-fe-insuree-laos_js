@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
@@ -6,22 +6,39 @@ import { Checkbox, IconButton, Tooltip } from "@material-ui/core";
 import TabIcon from "@material-ui/icons/Tab";
 import {
     withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
-    Searcher
+    Searcher, journalize
 } from "@openimis/fe-core";
 
-import { fetchFamilySummaries } from "../actions";
-
+import { fetchFamilySummaries, deleteFamily } from "../actions";
+import {
+    Delete as DeleteIcon,
+} from '@material-ui/icons';
 import FamilyFilter from "./FamilyFilter";
+import { RIGHT_FAMILY_DELETE } from "../constants";
+import { familyLabel } from "../utils/utils";
+import DeleteFamilyDialog from "./DeleteFamilyDialog";
 
 const FAMILY_SEARCHER_CONTRIBUTION_KEY = "insuree.FamilySearcher";
 
 class FamilySearcher extends Component {
+
+    state = {
+        deleteFamily: null,
+        reset: 0,
+    }
 
     constructor(props) {
         super(props);
         this.rowsPerPageOptions = props.modulesManager.getConf("fe-insuree", "familyFilter.rowsPerPageOptions", [10, 20, 50, 100]);
         this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "familyFilter.defaultPageSize", 10);
         this.locationLevels = this.props.modulesManager.getConf("fe-location", "location.Location.MaxLevels", 4);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.submittingMutation && !this.props.submittingMutation) {
+            this.props.journalize(this.props.mutation);
+            this.setState({ reset: this.state.reset + 1 });
+        }
     }
 
     fetch = (prms) => {
@@ -69,6 +86,9 @@ class FamilySearcher extends Component {
             "insuree.familySummaries.validityTo",
             "insuree.familySummaries.openNewTab"
         );
+        if (!!this.props.rights.includes(RIGHT_FAMILY_DELETE)) {
+            h.push("insuree.familySummaries.delete")
+        }
         return h;
     }
 
@@ -99,6 +119,25 @@ class FamilySearcher extends Component {
             loc = loc.parent
         }
         return !!loc ? loc.name : "";
+    }
+
+    deleteFamilyAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.deleteFamily.tooltip")}>
+            <IconButton onClick={e => !i.clientMutationId && this.setState({ deleteFamily: i })}><DeleteIcon /></IconButton>
+        </Tooltip>
+    )
+
+    deleteFamily = (deleteMembers) => {
+        let family = this.state.deleteFamily;
+        this.setState(
+            { deleteFamily: null },
+            (e) => {
+                this.props.deleteFamily(
+                    this.props.modulesManager,
+                    family,
+                    deleteMembers,
+                    formatMessageWithValues(this.props.intl, "insuree", "deleteFamily.mutationLabel", { label: familyLabel(family) }))
+            })
     }
 
     itemFormatters = (filters) => {
@@ -132,10 +171,13 @@ class FamilySearcher extends Component {
                 family.validityTo),
             family => (
                 <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.openNewTabButton.tooltip")}>
-                    <IconButton onClick={e => this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >
+                    <IconButton onClick={e => !family.clientMutationId && this.props.onDoubleClick(family, true)} > <TabIcon /></IconButton >
                 </Tooltip>
             )
         )
+        if (!!this.props.rights.includes(RIGHT_FAMILY_DELETE)) {
+            formatters.push(this.deleteFamilyAction)
+        }
         return formatters;
     }
 
@@ -147,51 +189,60 @@ class FamilySearcher extends Component {
             families, familiesPageInfo, fetchingFamilies, fetchedFamilies, errorFamilies,
             defaultFilters, filterPaneContributionsKey, cacheFiltersKey, onDoubleClick
         } = this.props;
-
         let count = familiesPageInfo.totalCount;
 
         return (
-            <Searcher
-                module="insuree"
-                cacheFiltersKey={cacheFiltersKey}
-                FilterPane={FamilyFilter}
-                filterPaneContributionsKey={filterPaneContributionsKey}
-                items={families}
-                itemsPageInfo={familiesPageInfo}
-                fetchingItems={fetchingFamilies}
-                fetchedItems={fetchedFamilies}
-                errorItems={errorFamilies}
-                contributionKey={FAMILY_SEARCHER_CONTRIBUTION_KEY}
-                tableTitle={formatMessageWithValues(intl, "insuree", "familySummaries", { count })}
-                rowsPerPageOptions={this.rowsPerPageOptions}
-                defaultPageSize={this.defaultPageSize}
-                fetch={this.fetch}
-                rowIdentifier={this.rowIdentifier}
-                filtersToQueryParams={this.filtersToQueryParams}
-                defaultOrderBy="headInsuree__chfId"
-                headers={this.headers}
-                itemFormatters={this.itemFormatters}
-                sorts={this.sorts}
-                rowDisabled={this.rowDisabled}
-                rowLocked={this.rowLocked}
-                onDoubleClick={onDoubleClick}
-            />
+            <Fragment>
+                <DeleteFamilyDialog
+                    family={this.state.deleteFamily}
+                    onConfirm={this.deleteFamily}
+                    onCancel={e => this.setState({ deleteFamily: null })} />
+                <Searcher
+                    module="insuree"
+                    cacheFiltersKey={cacheFiltersKey}
+                    FilterPane={FamilyFilter}
+                    filterPaneContributionsKey={filterPaneContributionsKey}
+                    items={families}
+                    itemsPageInfo={familiesPageInfo}
+                    fetchingItems={fetchingFamilies}
+                    fetchedItems={fetchedFamilies}
+                    errorItems={errorFamilies}
+                    contributionKey={FAMILY_SEARCHER_CONTRIBUTION_KEY}
+                    tableTitle={formatMessageWithValues(intl, "insuree", "familySummaries", { count })}
+                    rowsPerPageOptions={this.rowsPerPageOptions}
+                    defaultPageSize={this.defaultPageSize}
+                    fetch={this.fetch}
+                    rowIdentifier={this.rowIdentifier}
+                    filtersToQueryParams={this.filtersToQueryParams}
+                    defaultOrderBy="headInsuree__chfId"
+                    headers={this.headers}
+                    itemFormatters={this.itemFormatters}
+                    sorts={this.sorts}
+                    rowDisabled={this.rowDisabled}
+                    rowLocked={this.rowLocked}
+                    onDoubleClick={f => !f.clientMutationId && onDoubleClick(f)}
+                    reset={this.state.reset}
+                />
+            </Fragment>
         )
     }
 }
 
 const mapStateToProps = state => ({
+    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
     families: state.insuree.families,
     familiesPageInfo: state.insuree.familiesPageInfo,
     fetchingFamilies: state.insuree.fetchingFamilies,
     fetchedFamilies: state.insuree.fetchedFamilies,
     errorFamilies: state.insuree.errorFamilies,
+    submittingMutation: state.insuree.submittingMutation,
+    mutation: state.insuree.mutation,
 });
 
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchFamilySummaries },
+        { fetchFamilySummaries, deleteFamily, journalize },
         dispatch);
 };
 

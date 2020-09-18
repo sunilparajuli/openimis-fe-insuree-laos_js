@@ -6,7 +6,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import ReplayIcon from "@material-ui/icons/Replay"
 import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush,
-    Form, ProgressOrError, journalize
+    Form, ProgressOrError, journalize, coreConfirm
 } from "@openimis/fe-core";
 import { RIGHT_FAMILY, RIGHT_FAMILY_EDIT } from "../constants";
 import FamilyMasterPanel from "./FamilyMasterPanel";
@@ -31,6 +31,7 @@ class FamilyForm extends Component {
         reset: 0,
         family: this._newFamily(),
         newFamily: true,
+        consirmedAction: null,
     }
 
     _newFamily() {
@@ -68,6 +69,8 @@ class FamilyForm extends Component {
         } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
             this.props.journalize(this.props.mutation);
             this.setState({ reset: this.state.reset + 1 });
+        } else if (prevProps.confirmed !== this.props.confirmed && !!this.props.confirmed && !!this.state.confirmedAction) {
+            this.state.confirmedAction();
         }
     }
 
@@ -113,6 +116,16 @@ class FamilyForm extends Component {
         this.setState({ family, newFamily: false })
     }
 
+    onActionToConfirm = (title, message, confirmedAction) => {
+        this.setState(
+            { confirmedAction },
+            this.props.coreConfirm(
+                title,
+                message
+            )
+        )
+    }
+
     render() {
         const { classes, rights,
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
@@ -152,6 +165,7 @@ class FamilyForm extends Component {
                         onEditedChanged={this.onEditedChanged}
                         canSave={this.canSave}
                         save={!!save ? this._save : null}
+                        onActionToConfirm={this.onActionToConfirm}
                     />
                 )}
             </div>
@@ -168,10 +182,11 @@ const mapStateToProps = (state, props) => ({
     submittingMutation: state.insuree.submittingMutation,
     mutation: state.insuree.mutation,
     insuree: state.insuree.insuree,
+    confirmed: state.core.confirmed,
 })
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchFamily, newFamily, createFamily, journalize }, dispatch);
+    return bindActionCreators({ fetchFamily, newFamily, createFamily, journalize, coreConfirm }, dispatch);
 };
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

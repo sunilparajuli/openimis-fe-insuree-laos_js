@@ -3,18 +3,20 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from 'react-intl';
 import { IconButton, Tooltip } from "@material-ui/core";
-import { Search as SearchIcon, People as PeopleIcon, Tab as TabIcon } from '@material-ui/icons';
+import {
+    Search as SearchIcon, People as PeopleIcon, Tab as TabIcon, Delete as DeleteIcon
+} from '@material-ui/icons';
 import {
     withModulesManager, formatMessageWithValues, formatDateFromISO, formatMessage,
-    withHistory, historyPush,
-    Searcher,
-    PublishedComponent
+    withHistory, historyPush, coreConfirm, journalize,
+    Searcher, PublishedComponent
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-
-import { fetchInsureeSummaries } from "../actions";
+import { RIGHT_INSUREE_DELETE } from "../constants";
+import { fetchInsureeSummaries, deleteInsuree } from "../actions";
 
 import InsureeFilter from "./InsureeFilter";
+import { insureeLabel } from "../utils/utils";
 
 const INSUREE_SEARCHER_CONTRIBUTION_KEY = "insuree.InsureeSearcher";
 
@@ -23,6 +25,8 @@ class InsureeSearcher extends Component {
     state = {
         open: false,
         chfid: null,
+        confirmedAction: null,
+        reset: 0,
     }
 
     constructor(props) {
@@ -30,6 +34,15 @@ class InsureeSearcher extends Component {
         this.rowsPerPageOptions = props.modulesManager.getConf("fe-insuree", "insureeFilter.rowsPerPageOptions", [10, 20, 50, 100]);
         this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "insureeFilter.defaultPageSize", 10);
         this.locationLevels = this.props.modulesManager.getConf("fe-location", "location.Location.MaxLevels", 4);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.submittingMutation && !this.props.submittingMutation) {
+            this.props.journalize(this.props.mutation);
+            this.setState({ reset: this.state.reset + 1 });
+        } else if (!prevProps.confirmed && this.props.confirmed) {
+            this.state.confirmedAction();
+        }
     }
 
     fetch = (prms) => {
@@ -78,6 +91,9 @@ class InsureeSearcher extends Component {
             "insuree.insureeSummaries.openFamily",
             "insuree.insureeSummaries.openNewTab"
         )
+        if (!!this.props.rights.includes(RIGHT_INSUREE_DELETE)) {
+            h.push("insuree.insureeSummaries.delete")
+        }
         return h;
     }
 
@@ -110,18 +126,44 @@ class InsureeSearcher extends Component {
         return !!loc ? loc.name : "";
     }
 
-    adornedChfId = (chfid) => (
+    adornedChfId = (i) => (
         <Fragment>
-            <IconButton size="small" onClick={e => this.setState({ open: true, chfid })}><SearchIcon /></IconButton>
-            {chfid}
+            <IconButton size="small" onClick={e => !i.clientMutationId && this.setState({ open: true, chfid: i.chfId })}><SearchIcon /></IconButton>
+            {i.chfId}
         </Fragment>
     )
 
     handleClose = () => { this.setState({ open: false, chfid: null }) }
 
+    confirmDelete = (i) => {
+        let confirmedAction = () => this.props.deleteInsuree(
+            this.props.modulesManager,
+            !!i.family ? i.family.uuid : null,
+            i,
+            formatMessageWithValues(this.props.intl, "insuree", "DeleteInsuree.mutationLabel", { label: insureeLabel(i) }),
+        );
+        let confirm = e => this.props.coreConfirm(
+            formatMessageWithValues(this.props.intl, "insuree", "deleteInsureeDialog.title", { label: insureeLabel(i) }),
+            formatMessageWithValues(this.props.intl, "insuree", "deleteInsureeDialog.message",
+                {
+                    label: insureeLabel(i),
+                }),
+        );
+        this.setState(
+            { confirmedAction },
+            confirm
+        )
+    }
+
+    deleteInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.deleteFamily.tooltip")}>
+            <IconButton onClick={e => !i.clientMutationId && this.confirmDelete(i)}><DeleteIcon /></IconButton>
+        </Tooltip>
+    )
+
     itemFormatters = (filters) => {
         var formatters = [
-            insuree => this.adornedChfId(insuree.chfId),
+            insuree => this.adornedChfId(insuree),
             insuree => insuree.lastName,
             insuree => insuree.otherNames,
             insuree => <PublishedComponent
@@ -162,16 +204,19 @@ class InsureeSearcher extends Component {
                 if (!insuree.family) return null
                 return (
                     <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
-                        <IconButton onClick={e => historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [insuree.family.uuid])}><PeopleIcon /></IconButton >
+                        <IconButton onClick={e => !insuree.clientMutationId && historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [insuree.family.uuid])}><PeopleIcon /></IconButton >
                     </Tooltip>
                 )
             },
             insuree => (
                 <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openNewTabButton.tooltip")}>
-                    <IconButton onClick={e => this.props.onDoubleClick(insuree, true)}><TabIcon /></IconButton >
+                    <IconButton onClick={e => !insuree.clientMutationId && this.props.onDoubleClick(insuree, true)}><TabIcon /></IconButton >
                 </Tooltip>
             )
         )
+        if (!!this.props.rights.includes(RIGHT_INSUREE_DELETE)) {
+            formatters.push(this.deleteInsureeAction)
+        }
         return formatters;
     }
 
@@ -212,7 +257,8 @@ class InsureeSearcher extends Component {
                     sorts={this.sorts}
                     rowDisabled={this.rowDisabled}
                     rowLocked={this.rowLocked}
-                    onDoubleClick={onDoubleClick}
+                    onDoubleClick={(i) => !i.clientMutationId && onDoubleClick(i)}
+                    reset={this.state.reset}
                 />
             </Fragment>
         )
@@ -220,17 +266,21 @@ class InsureeSearcher extends Component {
 }
 
 const mapStateToProps = state => ({
+    rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
     insurees: state.insuree.insurees,
     insureesPageInfo: state.insuree.insureesPageInfo,
     fetchingInsurees: state.insuree.fetchingInsurees,
     fetchedInsurees: state.insuree.fetchedInsurees,
     errorInsurees: state.insuree.errorInsurees,
+    submittingMutation: state.insuree.submittingMutation,
+    mutation: state.insuree.mutation,
+    confirmed: state.core.confirmed,
 });
 
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchInsureeSummaries },
+        { fetchInsureeSummaries, deleteInsuree, journalize, coreConfirm },
         dispatch);
 };
 

@@ -392,6 +392,8 @@ function reducer(
             return dispatchMutationResp(state, "createFamily", action);
         case 'INSUREE_UPDATE_FAMILY_RESP':
             return dispatchMutationResp(state, "updateFamily", action);
+        case 'INSUREE_DELETE_FAMILY_RESP':
+            return dispatchMutationResp(state, "deleteFamilies", action);
         case 'INSUREE_CREATE_INSUREE_RESP':
             return dispatchMutationResp(state, "createInsuree", action);
         case 'INSUREE_UPDATE_INSUREE_RESP':
