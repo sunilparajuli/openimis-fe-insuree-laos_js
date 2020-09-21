@@ -107,6 +107,7 @@ class FamilyMasterPanel extends FormPanel {
                             readOnly={readOnly}
                             value={!edited ? null : edited.location}
                             onChange={v => this.updateAttribute('location', v)}
+                            filterLabels={false}
                         />
                     </Grid>
                     {!!overview && (this.headSummary())}

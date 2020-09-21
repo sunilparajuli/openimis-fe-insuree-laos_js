@@ -47,6 +47,7 @@ class InsureeAddress extends Component {
                 split={true}
                 readOnly={readOnly}
                 onChange={onChangeLocation}
+                filterLabels={false}
             />
         )
     }

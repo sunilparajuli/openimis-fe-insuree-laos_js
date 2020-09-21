@@ -187,8 +187,8 @@ function formatInsureePhoto(photo) {
     ${!!photo.officerId ? `officerId: ${decodeId(photo.officerId)}` : ""}
     ${!!photo.date ? `date: "${photo.date}"` : ""}
     ${!!photo.photo ? `photo: "${photo.photo}"` : ""}
-    ${!!photo.folder ? `folder: "${photo.folder}"` : ""}
-    ${!!photo.folder ? `filename: "${photo.filename}"` : ""}
+    ${!!photo.folder ? `folder: ${JSON.stringify(photo.folder)}` : ""}
+    ${!!photo.folder ? `filename: ${JSON.stringify(photo.filename)}` : ""}
   }`
 }
 
