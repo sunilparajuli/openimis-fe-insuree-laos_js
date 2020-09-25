@@ -208,5 +208,7 @@
     "insuree.deleteInsureeDialog.title": "Delete insuree - {label}",
     "insuree.deleteInsureeDialog.message": "Are you sure you want to delete insuree {label}?",
     "insuree.removeInsureeDialog.title": "Remove insuree - {label}",
-    "insuree.removeInsureeDialog.message": "Are you sure you want to remove insuree {label} from family?"
+    "insuree.removeInsureeDialog.message": "Are you sure you want to remove insuree {label} from family?",
+    "insuree.setHeadInsureeDialog.title": "Change family head",
+    "insuree.setHeadInsureeDialog.message": "Are you sure you want to change the family head from {current} to {new}?"
 }

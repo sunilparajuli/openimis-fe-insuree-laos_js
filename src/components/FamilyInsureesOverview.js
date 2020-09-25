@@ -117,14 +117,27 @@ class FamilyInsureesOverview extends PagedDataHandler {
         </Fragment>
     )
 
-    setHeadInsureeAction = (i) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySetHeadInsuree.tooltip")}>
-            <IconButton onClick={e => this.props.setFamilyHead(
+    confirmSetHeadInsuree = (i) => {
+        let confirmedAction = () => {
+            this.props.setFamilyHead(
                 this.props.modulesManager,
                 this.props.family.uuid,
                 i.uuid,
                 formatMessageWithValues(this.props.intl, "insuree", "SetFamilyHead.mutationLabel", { label: insureeLabel(i) }))
-            }><SetHeadIcon /></IconButton>
+        }
+        this.props.onActionToConfirm(
+            formatMessageWithValues(this.props.intl, "insuree", "setHeadInsureeDialog.title", { label: insureeLabel(i) }),
+            formatMessageWithValues(this.props.intl, "insuree", "setHeadInsureeDialog.message",
+                {
+                    current: insureeLabel(i),
+                    new: insureeLabel(this.props.family.headInsuree)
+                }),
+            confirmedAction)
+    }
+
+    setHeadInsureeAction = (i) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySetHeadInsuree.tooltip")}>
+            <IconButton onClick={e => this.confirmSetHeadInsuree(i)}><SetHeadIcon /></IconButton>
         </Tooltip>
     )
 
