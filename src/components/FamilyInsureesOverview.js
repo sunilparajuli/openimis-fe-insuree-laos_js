@@ -24,6 +24,8 @@ import EnquiryDialog from "./EnquiryDialog";
 import { fetchFamilyMembers, selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily } from "../actions";
 import { RIGHT_INSUREE_DELETE } from "../constants";
 import { insureeLabel, familyLabel } from "../utils/utils";
+import ChangeInsureeFamilyDialog from "./ChangeInsureeFamilyDialog";
+import RemoveInsureeFromFamilyDialog from "./RemoveInsureeFromFamilyDialog";
 
 const styles = theme => ({
     paper: theme.paper.paper,
@@ -38,6 +40,8 @@ class FamilyInsureesOverview extends PagedDataHandler {
         enquiryOpen: false,
         chfid: null,
         confirmedAction: null,
+        removeInsuree: null,
+        changeInsureeFamily: null,
         reset: 0,
     }
 
@@ -141,32 +145,29 @@ class FamilyInsureesOverview extends PagedDataHandler {
         </Tooltip>
     )
 
-    confirmRemoveInsuree = (i) => {
-        let confirmedAction = () => {
-            this.props.removeInsuree(
-                this.props.modulesManager,
-                this.props.family.uuid,
-                i,
-                formatMessageWithValues(
-                    this.props.intl, "insuree", "RemoveInsuree.mutationLabel",
-                    {
-                        label: insureeLabel(i),
-                        family: familyLabel(this.props.family)
-                    }),
-            );
-        }
-        this.props.onActionToConfirm(
-            formatMessageWithValues(this.props.intl, "insuree", "removeInsureeDialog.title", { label: insureeLabel(i) }),
-            formatMessageWithValues(this.props.intl, "insuree", "removeInsureeDialog.message",
-                {
-                    label: insureeLabel(i),
-                }),
-            confirmedAction)
+    removeInsuree = (cancelPolicies) => {
+        let insuree = this.state.removeInsuree;
+        this.setState(
+            { removeInsuree: null },
+            e => {
+                this.props.removeInsuree(
+                    this.props.modulesManager,
+                    this.props.family.uuid,
+                    insuree,
+                    cancelPolicies,
+                    formatMessageWithValues(
+                        this.props.intl, "insuree", `RemoveInsuree.${cancelPolicies ? "cancelPolicies" : "keepPolicies"}.mutationLabel`,
+                        {
+                            label: insureeLabel(insuree),
+                            family: familyLabel(this.props.family)
+                        })
+                )
+            })
     }
 
-    removeInsureeAction = (i) => (
+    removeInsureeAction = (removeInsuree) => (
         <Tooltip title={formatMessage(this.props.intl, "insuree", "familyRemoveInsuree.tooltip")}>
-            <IconButton onClick={e => this.confirmRemoveInsuree(i)}><RemoveIcon /></IconButton>
+            <IconButton onClick={e => this.setState({ removeInsuree })}><RemoveIcon /></IconButton>
         </Tooltip>
     )
 
@@ -212,6 +213,24 @@ class FamilyInsureesOverview extends PagedDataHandler {
     addNewInsuree = () => historyPush(this.props.modulesManager, this.props.history, "insuree.route.insuree", ['_NEW_', this.props.family.uuid]);
     rowLocked = (i) => !!i.clientMutationId
 
+    changeInsureeFamily = (cancelPolicies) => {
+        let insuree = this.state.changeInsureeFamily;
+        this.setState(
+            { changeInsureeFamily: null },
+            e => {
+                this.props.changeFamily(
+                    this.props.modulesManager,
+                    this.props.family.uuid,
+                    insuree,
+                    cancelPolicies,
+                    formatMessageWithValues(
+                        this.props.intl, "insuree", "insureeChangeFamily.mutationLabel",
+                        { family: familyLabel(this.props.family), insuree: insureeLabel(insuree) }
+                    )
+                )
+            })
+    }
+
     render() {
         const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, readOnly } = this.props;
         let actions = !!readOnly ? [] : [
@@ -219,12 +238,8 @@ class FamilyInsureesOverview extends PagedDataHandler {
                 button: <div><PublishedComponent //div needed for the tooltip style!!
                     pubRef="insuree.InsureePicker"
                     IconRender={AddExistingIcon}
-                    onChange={i => this.props.changeFamily(
-                        this.props.modulesManager,
-                        this.props.family.uuid,
-                        i.uuid,
-                        formatMessageWithValues(intl, "insuree", "insureeChangeFamily.mutationLabel", { family: familyLabel(this.props.family), insuree: insureeLabel(i) })
-                    )} /></div>,
+                    onChange={changeInsureeFamily => this.setState({ changeInsureeFamily })} />
+                </div>,
                 tooltip: formatMessage(intl, "insuree", "familyAddExsistingInsuree.tooltip")
             },
             {
@@ -235,6 +250,18 @@ class FamilyInsureesOverview extends PagedDataHandler {
         return (
             <Paper className={classes.paper}>
                 <EnquiryDialog open={this.state.enquiryOpen} chfid={this.state.chfid} onClose={() => { this.setState({ enquiryOpen: false, chfid: null }) }} />
+                <ChangeInsureeFamilyDialog
+                    family={family}
+                    insuree={this.state.changeInsureeFamily}
+                    onConfirm={this.changeInsureeFamily}
+                    onCancel={e => this.setState({ changeInsureeFamily: null })}
+                />
+                <RemoveInsureeFromFamilyDialog
+                    family={family}
+                    insuree={this.state.removeInsuree}
+                    onConfirm={this.removeInsuree}
+                    onCancel={e => this.setState({ removeInsuree: null })}
+                />
                 <Grid container alignItems="center" direction="row" className={classes.paperHeader}>
                     <Grid item xs={8}>
                         <Typography className={classes.tableTitle}><FormattedMessage module="insuree" id="Family.insurees" values={{ count: pageInfo.totalCount }} /></Typography>

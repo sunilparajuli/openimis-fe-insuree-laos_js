@@ -9,11 +9,6 @@ import _ from "lodash";
 
 class ConfirmationTypePicker extends Component {
 
-    constructor(props) {
-        super(props);
-        this.selectThreshold = props.modulesManager.getConf("fe-insuree", "ConfirmationTypePicker.selectThreshold", 10);
-    }
-
     componentDidMount() {
         if (!this.props.confirmationTypes) {
             // prevent loading multiple times the cache when component is

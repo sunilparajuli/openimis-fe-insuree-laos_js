@@ -309,8 +309,12 @@ export function updateInsuree(mm, insuree, clientMutationLabel) {
   )
 }
 
-export function removeInsuree(mm, family_uuid, insuree, clientMutationLabel) {
-  let mutation = formatMutation("removeInsurees", `uuid: "${family_uuid}", uuids: ["${insuree.uuid}"]`, clientMutationLabel);
+export function removeInsuree(mm, family_uuid, insuree, cancelPolicies, clientMutationLabel) {
+  let mutation = formatMutation(
+    "removeInsurees",
+    `uuid: "${family_uuid}", uuids: ["${insuree.uuid}"], cancelPolicies: ${cancelPolicies}`,
+    clientMutationLabel
+  );
   insuree.clientMutationId = mutation.clientMutationId;
   var requestedDateTime = new Date();
   return graphql(
@@ -356,8 +360,12 @@ export function setFamilyHead(mm, family_uuid, insuree_uuid, clientMutationLabel
   )
 }
 
-export function changeFamily(mm, family_uuid, insuree_uuid, clientMutationLabel) {
-  let mutation = formatMutation("changeInsureeFamily", `familyUuid: "${family_uuid}", insureeUuid: "${insuree_uuid}"`, clientMutationLabel);
+export function changeFamily(mm, family_uuid, insuree, cancelPolicies, clientMutationLabel) {
+  let mutation = formatMutation(
+    "changeInsureeFamily",
+    `familyUuid: "${family_uuid}", insureeUuid: "${insuree.uuid}", cancelPolicies: ${cancelPolicies}`,
+    clientMutationLabel
+  );
   var requestedDateTime = new Date();
   return graphql(
     mutation.payload,
@@ -367,7 +375,7 @@ export function changeFamily(mm, family_uuid, insuree_uuid, clientMutationLabel)
       clientMutationLabel,
       requestedDateTime,
       familyUuid: family_uuid,
-      insureeUuid: insuree_uuid,
+      insureeUuid: insuree.uuid,
     }
   )
 }
