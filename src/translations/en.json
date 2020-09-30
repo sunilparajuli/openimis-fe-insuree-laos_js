@@ -219,5 +219,6 @@
     "insuree.setHeadInsureeDialog.title": "Change family head?",
     "insuree.setHeadInsureeDialog.message": "Are you sure you want to change the family head from {current} to {new}?",
     "insuree.addNewFamilyTooltip": "Create new Family",
-    "insuree.addNewInsureeTooltip": "Create new Insuree"
+    "insuree.addNewInsureeTooltip": "Create new Insuree",
+    "insuree.selectHeadInsuree.tooltip": "Select existing insuree as head"
 }

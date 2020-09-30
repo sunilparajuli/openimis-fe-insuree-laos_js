@@ -2,11 +2,10 @@ import React, { Component, Fragment } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Paper, Grid, Typography, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
 import {
-    formatMessage,
+    formatMessage, withTooltip,
     FormattedMessage, PublishedComponent, FormPanel,
     TextInput
 } from "@openimis/fe-core";
-import { insureeLabel } from "../utils/utils";
 
 const styles = theme => ({
     paper: theme.paper.paper,
@@ -22,7 +21,8 @@ class InsureeMasterPanel extends FormPanel {
         const {
             intl, classes, edited,
             title = "Insuree.title", titleParams = { label: "" },
-            readOnly = true
+            readOnly = true,
+            actions
         } = this.props;
         return (
             <Grid container>
@@ -34,16 +34,27 @@ class InsureeMasterPanel extends FormPanel {
                                     <FormattedMessage module="insuree" id={title} values={titleParams} />
                                 </Typography>
                             </Grid>
-                            {!!edited && !!edited.family && !!edited.family.headInsuree && edited.family.headInsuree.id !== edited.id && (
-                                <Grid item xs={3} >
-                                    <PublishedComponent
-                                        pubRef="insuree.RelationPicker"
-                                        readOnly={readOnly}
-                                        value={!!edited && !!edited.relationship ? edited.relationship.id : ""}
-                                        onChange={v => this.updateAttribute('relationship', { id: v })}
-                                    />
+                            <Grid item xs={9}>
+                                <Grid container justify="flex-end">
+                                    {!!edited && !!edited.family && !!edited.family.headInsuree && edited.family.headInsuree.id !== edited.id && (
+                                        <Grid item xs={3} >
+                                            <PublishedComponent
+                                                pubRef="insuree.RelationPicker"
+                                                readOnly={readOnly}
+                                                value={!!edited && !!edited.relationship ? edited.relationship.id : ""}
+                                                onChange={v => this.updateAttribute('relationship', { id: v })}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {!!actions && (actions.map((a, idx) => {
+                                        return (
+                                            <Grid item key={`form-action-${idx}`} className={classes.paperHeaderAction}>
+                                                {withTooltip(a.button, a.tooltip)}
+                                            </Grid>
+                                        )
+                                    }))}
                                 </Grid>
-                            )}
+                            </Grid>
                         </Grid>
                         <Divider />
                         <Grid container className={classes.item}>

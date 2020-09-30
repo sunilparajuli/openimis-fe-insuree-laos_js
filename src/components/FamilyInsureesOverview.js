@@ -238,6 +238,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
                 button: <div><PublishedComponent //div needed for the tooltip style!!
                     pubRef="insuree.InsureePicker"
                     IconRender={AddExistingIcon}
+                    forcedFilter={["head: false"]}
                     onChange={changeInsureeFamily => this.setState({ changeInsureeFamily })} />
                 </div>,
                 tooltip: formatMessage(intl, "insuree", "familyAddExsistingInsuree.tooltip")

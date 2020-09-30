@@ -13,6 +13,25 @@ const FAMILY_FULL_PROJECTION = mm => [
   "clientMutationId"
 ];
 
+const INSUREE_FULL_PROJECTION = mm => [
+  "id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
+  `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
+  `photo{id,uuid,date,folder,filename,officerId,photo}`,
+  "gender{code}",
+  "education{id}",
+  "profession{id}",
+  "marital",
+  "cardIssued",
+  "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
+  "currentAddress",
+  "typeOfId{code}", "passport",
+  "relationship{id}",
+  "head",
+  "email",
+  "phone",
+  "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")  
+];
+
 export function fetchInsureeGenders() {
   const payload = formatQuery("insureeGenders",
     null,
@@ -37,22 +56,7 @@ export function fetchInsuree(mm, chfid) {
 export function fetchInsureeFull(mm, uuid) {
   let payload = formatPageQuery("insurees",
     [`uuid:"${uuid}"`],
-    ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
-      `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
-      `photo{id,uuid,date,folder,filename,officerId,photo}`,
-      "gender{code}",
-      "education{id}",
-      "profession{id}",
-      "marital",
-      "cardIssued",
-      "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
-      "currentAddress",
-      "typeOfId{code}", "passport",
-      "relationship{id}",
-      "head",
-      "email",
-      "phone",
-      "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")],
+    INSUREE_FULL_PROJECTION(mm),
     "clientMutationId"
   );
   return graphql(payload, 'INSUREE_INSUREE');
@@ -61,7 +65,7 @@ export function fetchInsureeFull(mm, uuid) {
 export function fetchInsureesForPicker(mm, filters) {
   let payload = formatPageQueryWithCount("insurees",
     filters,
-    mm.getRef("insuree.InsureePicker.projection")
+    INSUREE_FULL_PROJECTION(mm),
   );
   return graphql(payload, 'INSUREE_INSUREES');
 }

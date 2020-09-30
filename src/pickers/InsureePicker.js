@@ -114,7 +114,7 @@ class InsureePicker extends Component {
     formatSuggestion = a => !!a ? `${a.lastName} ${a.otherNames} (${a.chfId})` : ""
 
     filtersToQueryParams = () => {
-        let prms = [...this.state.filters];
+        let prms = [...(this.props.forcedFilter || []), ...this.state.filters];
         prms = prms.concat(`first: ${this.state.pageSize}`);
         if (!!this.state.afterCursor) {
             prms = prms.concat(`after: "${this.state.afterCursor}"`)
