@@ -113,9 +113,9 @@ class InsureeMasterPanel extends FormPanel {
                                         <FormControlLabel
                                             control={<Checkbox
                                                 color="primary"
-                                                checked={!!edited && !!edited.card_issued}
+                                                checked={!!edited && !!edited.cardIssued}
                                                 disabled={readOnly}
-                                                onChange={v => this.updateAttribute('card_issued', !edited || !edited.card_issued)}
+                                                onChange={v => this.updateAttribute('cardIssued', !edited || !edited.cardIssued)}
                                             />}
                                             label={formatMessage(intl, "insuree", "Insuree.cardIssued")}
                                         />

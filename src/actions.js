@@ -43,11 +43,15 @@ export function fetchInsureeFull(mm, uuid) {
       "gender{code}",
       "education{id}",
       "profession{id}",
+      "marital",
+      "cardIssued",
       "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
       "currentAddress",
       "typeOfId{code}", "passport",
       "relationship{id}",
       "head",
+      "email",
+      "phone",
       "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")],
     "clientMutationId"
   );

@@ -217,5 +217,7 @@
     "insuree.removeInsureeFromFamilyDialog.cancelPolicies.button": "Remove and cancel Policies",
     "insuree.removeInsureeFromFamilyDialog.keepPolicies.button": "Remove and keep Policies",
     "insuree.setHeadInsureeDialog.title": "Change family head?",
-    "insuree.setHeadInsureeDialog.message": "Are you sure you want to change the family head from {current} to {new}?"
+    "insuree.setHeadInsureeDialog.message": "Are you sure you want to change the family head from {current} to {new}?",
+    "insuree.addNewFamilyTooltip": "Create new Family",
+    "insuree.addNewInsureeTooltip": "Create new Insuree"
 }
