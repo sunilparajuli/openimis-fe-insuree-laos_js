@@ -189,7 +189,9 @@ class InsureeSearcher extends Component {
         for (var i = 0; i < this.locationLevels; i++) {
             // need a fixed variable to refer to as parentLocation argument
             let j = i + 0;
-            formatters.push(insuree => this.parentLocation(insuree.currentVillage, j))
+            formatters.push(insuree => this.parentLocation(
+                insuree.currentVillage || (!!insuree.family && insuree.family.location),
+                j))
         }
         formatters.push(
             insuree => formatDateFromISO(

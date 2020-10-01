@@ -1,6 +1,6 @@
 import {
   graphql, formatQuery, formatPageQuery, formatPageQueryWithCount,
-  formatJsonField, decodeId, formatMutation
+  formatJsonField, decodeId, formatMutation, formatGQLString
 } from "@openimis/fe-core";
 
 const FAMILY_HEAD_PROJECTION = "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob,gender{code}}";
@@ -29,7 +29,7 @@ const INSUREE_FULL_PROJECTION = mm => [
   "head",
   "email",
   "phone",
-  "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")  
+  "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection")
 ];
 
 export function fetchInsureeGenders() {
@@ -178,7 +178,7 @@ export function fetchInsureeSummaries(mm, filters) {
   var projections = [
     "id", "uuid", "validityFrom", "validityTo",
     "chfId", "otherNames", "lastName", "phone", "gender{code}", "dob", "marital",
-    "family{uuid}",
+    "family{uuid,location" + mm.getProjection("location.Location.FlatProjection") + "}",
     "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
     "clientMutationId"]
   const payload = formatPageQueryWithCount("insurees",
@@ -203,17 +203,17 @@ function formatInsureePhoto(photo) {
 export function formatInsureeGQL(mm, insuree) {
   return `
     ${insuree.uuid !== undefined && insuree.uuid !== null ? `uuid: "${insuree.uuid}"` : ''}
-    ${!!insuree.chfId ? `chfId: "${insuree.chfId}"` : ""}
-    ${!!insuree.lastName ? `lastName: "${insuree.lastName}"` : ""}
-    ${!!insuree.otherNames ? `otherNames: "${insuree.otherNames}"` : ""}
+    ${!!insuree.chfId ? `chfId: "${formatGQLString(insuree.chfId)}"` : ""}
+    ${!!insuree.lastName ? `lastName: "${formatGQLString(insuree.lastName)}"` : ""}
+    ${!!insuree.otherNames ? `otherNames: "${formatGQLString(insuree.otherNames)}"` : ""}
     ${!!insuree.gender && !!insuree.gender.code ? `genderId: "${insuree.gender.code}"` : ""}
     ${!!insuree.dob ? `dob: "${insuree.dob}"` : ''}
     head: ${!!insuree.head}
     ${!!insuree.marital ? `marital: "${insuree.marital}"` : ""}
-    ${!!insuree.passport ? `passport: "${insuree.passport}"` : ""}
-    ${!!insuree.phone ? `phone: "${insuree.phone}"` : ""}
-    ${!!insuree.email ? `email: "${insuree.email}"` : ""}
-    ${!!insuree.currentAddress ? `currentAddress: "${insuree.currentAddress}"` : ""}
+    ${!!insuree.passport ? `passport: "${formatGQLString(insuree.passport)}"` : ""}
+    ${!!insuree.phone ? `phone: "${formatGQLString(insuree.phone)}"` : ""}
+    ${!!insuree.email ? `email: "${formatGQLString(insuree.email)}"` : ""}
+    ${!!insuree.currentAddress ? `currentAddress: "${formatGQLString(insuree.currentAddress)}"` : ""}
     ${!!insuree.currentVillage && !!insuree.currentVillage.id ? `currentVillageId: ${decodeId(insuree.currentVillage.id)}` : ""}
     ${!!insuree.photo ? `photo:${formatInsureePhoto(insuree.photo)}` : ""}
     cardIssued:${!!insuree.cardIssued}
@@ -228,18 +228,17 @@ export function formatInsureeGQL(mm, insuree) {
 }
 
 export function formatFamilyGQL(mm, family) {
+  let headInsuree = family.headInsuree;
+  headInsuree["head"] = true;
   return `  
     ${family.uuid !== undefined && family.uuid !== null ? `uuid: "${family.uuid}"` : ''}
-    headInsuree: {
-      ${formatInsureeGQL(mm, family.headInsuree)}
-      head: true
-    }
+    headInsuree: {${formatInsureeGQL(mm, headInsuree)}}
     ${!!family.location ? `locationId: ${decodeId(family.location.id)}` : ""}
     poverty: ${!!family.poverty}
     ${!!family.familyType && !!family.familyType.code ? `familyTypeId: "${family.familyType.code}"` : ""}
-    ${!!family.address ? `address: "${family.address}"` : ""}
+    ${!!family.address ? `address: "${formatGQLString(family.address)}"` : ""}
     ${!!family.confirmationType && !!family.confirmationType.code ? `confirmationTypeId: "${family.confirmationType.code}"` : ""}
-    ${!!family.confirmationNo ? `confirmationNo: "${family.confirmationNo}"` : ""}
+    ${!!family.confirmationNo ? `confirmationNo: "${formatGQLString(family.confirmationNo)}"` : ""}
     ${!!family.jsonExt ? `jsonExt: ${formatJsonField(family.jsonExt)}` : ""}
   `
 }
