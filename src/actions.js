@@ -15,6 +15,7 @@ const FAMILY_FULL_PROJECTION = mm => [
 
 const INSUREE_FULL_PROJECTION = mm => [
   "id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
+  "validityFrom", "validityTo",
   `family{${FAMILY_FULL_PROJECTION(mm).join(",")}}`,
   `photo{id,uuid,date,folder,filename,officerId,photo}`,
   "gender{code}",
@@ -44,6 +45,7 @@ export function fetchInsuree(mm, chfid) {
   let payload = formatPageQuery("insurees",
     [`chfId:"${chfid}"`],
     ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "age",
+      "validityFrom", "validityTo",
       "gender{code}",
       `family{id}`,
       "photo{folder,filename,photo}",

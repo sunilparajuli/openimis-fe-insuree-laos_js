@@ -154,7 +154,7 @@ class FamilyForm extends Component {
                         reset={this.state.reset}
                         back={back}
                         add={!!add && !this.state.newFamily ? this._add : null}
-                        readOnly={readOnly || runningMutation}
+                        readOnly={readOnly || runningMutation || !!family.validityTo}
                         actions={actions}
                         openFamilyButton={openFamilyButton}
                         overview={overview}

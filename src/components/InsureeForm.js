@@ -160,7 +160,7 @@ class InsureeForm extends Component {
                             reset={this.state.reset}
                             back={this.back}
                             add={!!add && !this.state.newInsuree ? this._add : null}
-                            readOnly={readOnly}
+                            readOnly={readOnly || !!insuree.validityTo}
                             actions={actions}
                             HeadPanel={FamilyDisplayPanel}
                             Panels={[InsureeMasterPanel]}
