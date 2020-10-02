@@ -78,8 +78,8 @@ class InsureeSearcher extends Component {
             "insuree.insureeSummaries.otherNames",
             "insuree.insureeSummaries.maritalStatus",
             "insuree.insureeSummaries.gender",
-            "insuree.insureeSummaries.phone",
             "insuree.insureeSummaries.email",
+            "insuree.insureeSummaries.phone",
             "insuree.insureeSummaries.dob",
         ]
         for (var i = 0; i < this.locationLevels; i++) {

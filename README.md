@@ -48,7 +48,7 @@ It is dedicated to be deployed as a module of [openimis-fe_js](https://github.co
 * `insuree.Avatar`, loading insuree Avatar (from legacy openIMIS, via `/photo/:insuree.photo.folder/:insuree.photo.filename` URL). This component is the default contribution to `insuree.InsureeSummaryAvatar`
 * `insuree.Summary`: component displaying an insuree summary (highly extensible via contribution point). Known usage: Enquiry dialog
 * `insuree.InsureeFirstServicePointDisplay`, Grid container displaying (compact readonly version) insuree first service point (insuree primary Health Facility, District and Region). This component is the default contribution to `insuree.InsureeSummaryExt`
-* `insuree.InsureeFirstServicePointPanel`, Grid container displaying (full, editable) insuree first service point (insuree primary Health Facility, District and Region). 
+* `insuree.InsureeFirstServicePointPanel`, Grid container displaying (full, editable) insuree first service point (insuree primary Health Facility, District and Region).
 * `insuree.FamilySummary`, Paper component displaying insuree family information. Can be added to `insuree.InsureeSummary` contribution point (cfr. Nepali 'setup')
 * `insuree.ProfileLink`, Link to legacy insuree Profile page. Can be added to `insuree.InsureeSummary` contribution point (cfr. Nepali 'setup')
 * `insuree.CappedItemServiceLink`, Link to legacy insuree Capped Items and Services page. Can be added to `insuree.InsureeSummary` contribution point (cfr. Nepali 'setup')
@@ -72,11 +72,11 @@ None
 * `canKeepPoliciesOnChangeInsureeFamily`, allow user to keep existing insuree's policies active when changing an insuree from family; default: true
 * `canCancelPoliciesOnRemoveInsureeFromFamily`, allow user to cancel existing insuree's policies when removing an insuree from a family; default: true
 * `canKeepPoliciesOnRemoveInsureeFromFamily`, allow user to keep existing insuree's policies active when removing an insuree from a family; default: true
-* `familyInsureesOverview.rowsPerPageOptions`, available rows per page options in insuree overview within family page; default: [5, 10, 20]
+* `familyInsureesOverview.rowsPerPageOptions`, available rows per page options in insuree overview within family page; default: `[5, 10, 20]`
 * `familyInsureesOverview.defaultPageSize`, opening rows per page displayed in insuree overview within family page, default: 5
-* `familyFilter.rowsPerPageOptions`, available rows per page options in family searcher; default: [10, 20, 50, 100]
+* `familyFilter.rowsPerPageOptions`, available rows per page options in family searcher; default: `[10, 20, 50, 100]`
 * `familyFilter.defaultPageSize`, opening rows per page displayed in family searcher; default: 10
-* `insureeFilter.rowsPerPageOptions`, available rows per page options in insuree searcher; default: [10, 20, 50, 100]
+* `insureeFilter.rowsPerPageOptions`, available rows per page options in insuree searcher; default: `[10, 20, 50, 100]`
 * `insureeFilter.defaultPageSize`, opening rows per page displayed in insuree searcher; default: 10
 * `EducationPicker.selectThreshold`, threshold to switch from combo box to drop down options in eduction picker, default: 10
 * `ProfessionPicker.selectThreshold`, threshold to switch from combo box to drop down options in profession picker, default: 10
