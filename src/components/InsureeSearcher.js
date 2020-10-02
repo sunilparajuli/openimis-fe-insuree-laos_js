@@ -155,11 +155,11 @@ class InsureeSearcher extends Component {
         )
     }
 
-    deleteInsureeAction = (i) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.deleteFamily.tooltip")}>
-            <IconButton onClick={e => !i.clientMutationId && this.confirmDelete(i)}><DeleteIcon /></IconButton>
-        </Tooltip>
-    )
+    deleteInsureeAction = (i) =>
+        !!i.validityTo ? null :
+            <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.deleteFamily.tooltip")}>
+                <IconButton onClick={e => !i.clientMutationId && this.confirmDelete(i)}><DeleteIcon /></IconButton>
+            </Tooltip>
 
     itemFormatters = (filters) => {
         var formatters = [

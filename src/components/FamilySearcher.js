@@ -122,9 +122,10 @@ class FamilySearcher extends Component {
     }
 
     deleteFamilyAction = (i) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.deleteFamily.tooltip")}>
-            <IconButton onClick={e => !i.clientMutationId && this.setState({ deleteFamily: i })}><DeleteIcon /></IconButton>
-        </Tooltip>
+        !!i.validityTo ? null :
+            <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.deleteFamily.tooltip")}>
+                <IconButton onClick={e => !i.clientMutationId && this.setState({ deleteFamily: i })}><DeleteIcon /></IconButton>
+            </Tooltip>
     )
 
     deleteFamily = (deleteMembers) => {
