@@ -77,7 +77,7 @@ class InsureeAddress extends Component {
                 multiline
                 rows={5}
                 readOnly={readOnly}
-                value={!!value.currentAddress ? value.currentAddress : ""}
+                value={!!value && !!value.currentAddress ? value.currentAddress : ""}
                 onChange={onChangeAddress}
             />
         )
