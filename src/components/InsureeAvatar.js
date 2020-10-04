@@ -85,7 +85,7 @@ class InsureeAvatar extends Component {
                                     label={formatMessage(intl, "insuree", "Insuree.photoOfficer")}
                                     readOnly={readOnly}
                                     required={this.withPhoto()}
-                                    onChange={v => this.updateAttribute('officerId', v.id)}
+                                    onChange={v => this.updateAttribute('officerId', v ? v.id : v)}
                                 />
                             </Grid>
                         </Fragment>
