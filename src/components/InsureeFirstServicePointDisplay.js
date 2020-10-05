@@ -5,31 +5,31 @@ import { Grid } from "@material-ui/core";
 import { withModulesManager, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 
 const styles = theme => ({
-    msg: {
+    centered: {
         textAlign: "center",
         position: "relative",
         top: "50%"
     },
-    title: theme.table.title,
-    details: {
-        padding: theme.spacing(1)
-    }
+    aligned: {
+        position: "relative",
+        top: "100%"
+    },
 })
 
-class InsureeFirstServicePoint extends Component {
+class InsureeFirstServicePointDisplay extends Component {
     render() {
         const { classes, insuree } = this.props;
         if (!insuree || !insuree.healthFacility) return (
-            <div className={classes.msg}>
+            <div className={classes.centered}>
                 <FormattedMessage module="insuree" id="insuree.noFSP" />
             </div>
         );
         return (
             <Grid container>
-                <Grid item xs={12} className={classes.title}>
+                <Grid item xs={12}>
                     <FormattedMessage module="insuree" id="FSP.title" />
                 </Grid>
-                <Grid item xs={12} className={classes.details}>
+                <Grid item xs={12} className={classes.aligned}>
                     <PublishedComponent
                         pubRef="location.HealthFacilityFullPath"
                         hfid={insuree.healthFacility.id}
@@ -45,4 +45,4 @@ const mapStateToProps = state => ({
     insuree: state.insuree.insuree,
 });
 
-export default withModulesManager(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeFirstServicePoint))));
+export default withModulesManager(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeFirstServicePointDisplay))));

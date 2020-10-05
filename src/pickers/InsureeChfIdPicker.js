@@ -21,7 +21,7 @@ class InsureeChfIdPicker extends Component {
 
     constructor(props) {
         super(props);
-        this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 9);
+        this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12);
     }
 
     componentDidMount() {
@@ -106,8 +106,8 @@ class InsureeChfIdPicker extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
-    fetching: state.insuree.fetching,
-    error: state.insuree.error,
+    fetching: state.insuree.fetchingInsuree,
+    error: state.insuree.errorInsuree,
     insuree: state.insuree.insuree,
 })
 

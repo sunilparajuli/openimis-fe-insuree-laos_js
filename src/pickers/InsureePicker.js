@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import { injectIntl } from 'react-intl';
-import { fetchInsurees } from "../actions";
+import { fetchInsureesForPicker } from "../actions";
 import { TextInput, Picker, withModulesManager } from "@openimis/fe-core";
 import _ from "lodash";
 
@@ -114,7 +114,7 @@ class InsureePicker extends Component {
     formatSuggestion = a => !!a ? `${a.lastName} ${a.otherNames} (${a.chfId})` : ""
 
     filtersToQueryParams = () => {
-        let prms = [...this.state.filters];
+        let prms = [...(this.props.forcedFilter || []), ...this.state.filters];
         prms = prms.concat(`first: ${this.state.pageSize}`);
         if (!!this.state.afterCursor) {
             prms = prms.concat(`after: "${this.state.afterCursor}"`)
@@ -127,8 +127,8 @@ class InsureePicker extends Component {
 
     getSuggestions = (filters) => {
         this.setState(
-            { filters: filters },
-            e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
+            { filters },
+            e => this.props.fetchInsureesForPicker(this.props.modulesManager, this.filtersToQueryParams())
         );
     }
 
@@ -145,7 +145,7 @@ class InsureePicker extends Component {
                 afterCursor: null,
                 beforeCursor: null,
             },
-            e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
+            e => this.props.fetchInsureesForPicker(this.props.modulesManager, this.filtersToQueryParams())
         )
     }
 
@@ -164,7 +164,7 @@ class InsureePicker extends Component {
                     beforeCursor: null,
                     afterCursor: props.insureesPageInfo.endCursor,
                 }),
-                e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
+                e => this.props.fetchInsureesForPicker(this.props.modulesManager, this.filtersToQueryParams())
             )
         } else if (nbr < this.state.page) {
             this.setState((state, props) =>
@@ -173,18 +173,20 @@ class InsureePicker extends Component {
                     beforeCursor: props.insureesPageInfo.startCursor,
                     afterCursor: null,
                 }),
-                e => this.props.fetchInsurees(this.props.modulesManager, this.filtersToQueryParams())
+                e => this.props.fetchInsureesForPicker(this.props.modulesManager, this.filtersToQueryParams())
             )
         }
     }
 
     render() {
-        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true, IconRender = null, title } = this.props;
         return (
             <Picker
                 module="insuree"
                 label={!!withLabel ? "Insuree.label" : null}
+                title={title}
                 dialogTitle="Insuree.picker.dialog.title"
+                IconRender={IconRender}
                 filter={<Filter onChange={this.debouncedGetSuggestion} />}
                 suggestions={insurees}
                 suggestionFormatter={this.formatSuggestion}
@@ -208,7 +210,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchInsurees }, dispatch);
+    return bindActionCreators({ fetchInsureesForPicker }, dispatch);
 };
 
 export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(injectIntl(withTheme(withStyles(styles)(InsureePicker)))));
