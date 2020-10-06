@@ -19,7 +19,7 @@ const styles = theme => ({
     page: theme.page,
 });
 
-const INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.Insuree.panels"
+const INSUREE_INSUREE_FORM_CONTRIBUTION_KEY = "insuree.InsureeForm"
 
 class InsureeForm extends Component {
 
@@ -164,7 +164,7 @@ class InsureeForm extends Component {
                             actions={actions}
                             HeadPanel={FamilyDisplayPanel}
                             Panels={[InsureeMasterPanel]}
-                            contributedPanelsKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY}
+                            contributedPanelsKey={INSUREE_INSUREE_FORM_CONTRIBUTION_KEY}
                             insuree={this.state.insuree}
                             onEditedChanged={this.onEditedChanged}
                             canSave={this.canSave}

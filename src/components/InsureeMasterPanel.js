@@ -4,7 +4,7 @@ import { Paper, Grid, Typography, Divider, Checkbox, FormControlLabel } from "@m
 import {
     formatMessage, withTooltip,
     FormattedMessage, PublishedComponent, FormPanel,
-    TextInput
+    TextInput, Contributions, withModulesManager
 } from "@openimis/fe-core";
 
 const styles = theme => ({
@@ -16,7 +16,16 @@ const styles = theme => ({
     },
 });
 
+const INSUREE_INSUREE_CONTRIBUTION_KEY = "insuree.Insuree"
+const INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.Insuree.panels"
+
 class InsureeMasterPanel extends FormPanel {
+
+    constructor(props) {
+        super(props);
+        this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12);
+    }
+
     render() {
         const {
             intl, classes, edited,
@@ -66,6 +75,9 @@ class InsureeMasterPanel extends FormPanel {
                                     readOnly={readOnly}
                                     value={!!edited && !!edited.chfId ? edited.chfId : ""}
                                     onChange={v => this.updateAttribute('chfId', v)}
+                                    inputProps={{
+                                        "maxLength": this.chfIdMaxLength,
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={4} className={classes.item}>
@@ -207,14 +219,16 @@ class InsureeMasterPanel extends FormPanel {
                                     onChange={v => this.updateAttribute('photo', !!v ? v : null)}
                                 />
                             </Grid>
+                            <Contributions {...this.props} updateAttribute={this.updateAttribute} contributionKey={INSUREE_INSUREE_CONTRIBUTION_KEY} />
                         </Grid>
                     </Paper>
+                    <Contributions {...this.props} updateAttribute={this.updateAttribute} contributionKey={INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY} />
                 </Grid>
             </Grid>
         );
     }
 }
 
-export default withTheme(
+export default withModulesManager(withTheme(
     withStyles(styles)(InsureeMasterPanel)
-);
+));

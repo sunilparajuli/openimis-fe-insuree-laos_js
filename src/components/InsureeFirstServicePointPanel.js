@@ -21,9 +21,9 @@ class InsureeFirstServicePointPanel extends FormPanel {
         return (
             <PublishedComponent
                 pubRef="location.DetailedHealthFacility"
-                value={edited.healthFacility}
+                value={!!edited ? edited.healthFacility : null}
                 readOnly={readOnly}
-                onChange={hf => this.updateAttribute('healthFacility', hf)}
+                onChange={hf => this.props.updateAttribute('healthFacility', hf)}
             />
         );
     }

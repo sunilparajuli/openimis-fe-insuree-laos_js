@@ -85,8 +85,6 @@ const DEFAULT_CONFIG = {
   "core.MainMenu": [InsureeMainMenu],
   "insuree.InsureeSummaryAvatar": [InsureeAvatar],
   "insuree.InsureeSummaryExt": [InsureeFirstServicePointDisplay],
-  "insuree.InsureePage.panels": [InsureeMasterPanel, InsureeFirstServicePointPanel],
-  "insuree.Family.panels": [InsureeFirstServicePointPanel],
   "insuree.Insuree.panels": [InsureeFirstServicePointPanel],
 }
 
