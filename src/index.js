@@ -8,6 +8,7 @@ import { ProfilePage } from "./pages/ProfilePage";
 import FamilyOverviewPage from "./pages/FamilyOverviewPage";
 import Enquiry from "./components/Enquiry";
 import InsureeOfficerPicker from "./pickers/InsureeOfficerPicker";
+import FamilyPicker from "./pickers/FamilyPicker";
 import InsureePicker from "./pickers/InsureePicker";
 import InsureeChfIdPicker from "./pickers/InsureeChfIdPicker";
 import InsureeGenderPicker from "./pickers/InsureeGenderPicker";
@@ -29,7 +30,6 @@ import InsureeFirstServicePointPanel from "./components/InsureeFirstServicePoint
 import InsureeAddress from "./components/InsureeAddress";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
-import InsureeMasterPanel from "./components/InsureeMasterPanel";
 
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
@@ -47,6 +47,8 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
     { key: "insuree.InsureePicker.projection", ref: ["id", "uuid", "chfId", "lastName", "otherNames"] },
+    { key: "insuree.FamilyPicker", ref: FamilyPicker },
+    { key: "insuree.FamilyPicker.projection", ref: ["id", "uuid", "headInsuree{id chfId uuid lastName otherNames}"] },
     { key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
     { key: "insuree.InsureeMaritalStatusPicker", ref: InsureeMaritalStatusPicker },
     { key: "insuree.EducationPicker", ref: EducationPicker },
