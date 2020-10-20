@@ -137,7 +137,7 @@ export function fetchFamily(mm, familyUuid, headInsureeChfId) {
   } else {
     filters.push(`headInsuree_ChfId: "${headInsureeChfId}"`)
   }
-  const payload = formatPageQueryWithCount("families",
+  const payload = formatPageQuery("families",
     filters,
     FAMILY_FULL_PROJECTION(mm)
   );
