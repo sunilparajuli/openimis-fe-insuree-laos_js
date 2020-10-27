@@ -23,6 +23,7 @@ const styles = theme => ({
 
 const INSUREE_FAMILY_PANELS_CONTRIBUTION_KEY = "insuree.Family.panels"
 const INSUREE_FAMILY_OVERVIEW_PANELS_CONTRIBUTION_KEY = "insuree.FamilyOverview.panels"
+const INSUREE_FAMILY_OVERVIEW_CONTRIBUTED_MUTATIONS_KEY = "insuree.FamilyOverview.mutations"
 
 class FamilyForm extends Component {
 
@@ -128,7 +129,7 @@ class FamilyForm extends Component {
     }
 
     render() {
-        const { classes, rights,
+        const { modulesManager, classes, state, rights,
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
             overview = false, openFamilyButton, readOnly = false,
             add, save, back, mutation } = this.props;
@@ -136,6 +137,10 @@ class FamilyForm extends Component {
         if (!rights.includes(RIGHT_FAMILY)) return null;
         let runningMutation = (!!mutation && !!mutation.familyUuid && mutation.familyUuid === family_uuid && (!mutation.status || mutation.status === 0)) ||
             (!!family && !!family.clientMutationId)
+        let contributedMutations = modulesManager.getContribs(INSUREE_FAMILY_OVERVIEW_CONTRIBUTED_MUTATIONS_KEY);
+        for (let i = 0; i < contributedMutations.length && !runningMutation; i ++) {
+            runningMutation = contributedMutations[i](state)
+        }
         let actions = [{
             doIt: this.reload,
             icon: <ReplayIcon />,
@@ -184,6 +189,7 @@ const mapStateToProps = (state, props) => ({
     mutation: state.insuree.mutation,
     insuree: state.insuree.insuree,
     confirmed: state.core.confirmed,
+    state: state,
 })
 
 const mapDispatchToProps = dispatch => {
