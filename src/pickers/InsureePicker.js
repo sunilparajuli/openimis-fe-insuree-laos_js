@@ -179,7 +179,7 @@ class InsureePicker extends Component {
     }
 
     render() {
-        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true, IconRender = null, title } = this.props;
+        const { insurees, insureesPageInfo, readOnly = false, required = false, withLabel = true, IconRender = null, title, check, checked } = this.props;
         return (
             <Picker
                 module="insuree"
@@ -187,6 +187,8 @@ class InsureePicker extends Component {
                 title={title}
                 dialogTitle="Insuree.picker.dialog.title"
                 IconRender={IconRender}
+                check={check}
+                checked={checked}
                 filter={<Filter onChange={this.debouncedGetSuggestion} />}
                 suggestions={insurees}
                 suggestionFormatter={this.formatSuggestion}

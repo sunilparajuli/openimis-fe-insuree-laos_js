@@ -59,7 +59,7 @@ class FamilyForm extends Component {
             !== (this.state.family && this.state.family.headInsuree && this.state.family.headInsuree.chfId)) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: insureeLabel(this.state.family.headInsuree) })
         }
-        if (prevProps.fetchedFamily !== this.props.fetchedFamily && !!this.props.fetchedFamily) {
+        if (!prevProps.fetchedFamily && !!this.props.fetchedFamily) {
             var family = this.props.family;
             family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
             this.setState(
@@ -69,7 +69,9 @@ class FamilyForm extends Component {
             this.setState({ family: this._newFamily(), newFamily: true, lockNew: false, family_uuid: null });
         } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
             this.props.journalize(this.props.mutation);
-            this.setState({ reset: this.state.reset + 1 });
+            this.setState((state, props) => ({
+                family: { ...state.family, clientMutationId: props.mutation.clientMutationId }
+            }));
         } else if (prevProps.confirmed !== this.props.confirmed && !!this.props.confirmed && !!this.state.confirmedAction) {
             this.state.confirmedAction();
         }
@@ -135,10 +137,9 @@ class FamilyForm extends Component {
             add, save, back, mutation } = this.props;
         const { family } = this.state;
         if (!rights.includes(RIGHT_FAMILY)) return null;
-        let runningMutation = (!!mutation && !!mutation.familyUuid && mutation.familyUuid === family_uuid && (!mutation.status || mutation.status === 0)) ||
-            (!!family && !!family.clientMutationId)
+        let runningMutation = !!family && !!family.clientMutationId
         let contributedMutations = modulesManager.getContribs(INSUREE_FAMILY_OVERVIEW_CONTRIBUTED_MUTATIONS_KEY);
-        for (let i = 0; i < contributedMutations.length && !runningMutation; i ++) {
+        for (let i = 0; i < contributedMutations.length && !runningMutation; i++) {
             runningMutation = contributedMutations[i](state)
         }
         let actions = [{

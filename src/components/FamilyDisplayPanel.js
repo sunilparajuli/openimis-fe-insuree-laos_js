@@ -17,7 +17,7 @@ class FamilyDisplayPanel extends Component {
         if (!!this.props.family_uuid) {
             this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid)
         } else {
-            this.setState({ family: this.props.edited.family })
+            this.setState({ family: this.props.family })
         }
     }
 
@@ -27,7 +27,7 @@ class FamilyDisplayPanel extends Component {
                 { family: null },
                 e => this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid)
             );
-        } else if (prevProps.fetchingFamily && !this.props.fetchingFamily) {
+        } else if (!prevProps.fetchedFamily && !!this.props.fetchedFamily) {
             this.setState({ family: this.props.family })
         }
     }
