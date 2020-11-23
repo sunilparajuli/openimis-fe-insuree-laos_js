@@ -50,6 +50,10 @@ function reducer(
         fetchedIdentificationTypes: false,
         identificationTypes: null,
         errorIdentificationTypes: null,
+        checkingCanAddInsuree: false,
+        checkedCanAddInsuree: false,
+        canAddInsureeWarnings: [],
+        errorCanAddInsuree: null,
         submittingMutation: false,
         mutation: {},
     },
@@ -127,6 +131,29 @@ function reducer(
                 familyMembersPageInfo: pageInfo(action.payload.data.familyMembers),
                 errorFamilyMembers: formatGraphQLError(action.payload)
             };
+        case 'INSUREE_FAMILY_CAN_ADD_INSUREE_REQ':
+            return {
+                ...state,
+                checkingCanAddInsuree: true,
+                checkedCanAddInsuree: false,
+                canAddInsureeWarnings: [],
+                errorCanAddInsuree: null,
+            };
+        case 'INSUREE_FAMILY_CAN_ADD_INSUREE_RESP':
+            return {
+                ...state,
+                checkingCanAddInsuree: false,
+                checkedCanAddInsuree: true,
+                canAddInsureeWarnings: action.payload.data.canAddInsuree,
+                errorCanAddInsuree: formatGraphQLError(action.payload)
+            }
+        case 'INSUREE_FAMILY_CAN_ADD_INSUREE_ERR':
+            return {
+                ...state,
+                checkingCanAddInsuree: false,
+                checkedCanAddInsuree: false,
+                errorCanAddInsuree: formatGraphQLError(action.payload),
+            }
         case 'INSUREE_FAMILY_MEMBERS_ERR':
             return {
                 ...state,

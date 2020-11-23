@@ -94,6 +94,15 @@ export function fetchFamilyMembers(mm, filters) {
   return graphql(payload, 'INSUREE_FAMILY_MEMBERS');
 }
 
+export function checkCanAddInsuree(family) {
+  let filters = [`familyId:${decodeId(family.id)}`]
+  const payload = formatQuery("canAddInsuree",
+    filters,
+    null
+  );
+  return graphql(payload, 'INSUREE_FAMILY_CAN_ADD_INSUREE');
+}
+
 export function selectFamilyMember(member) {
   return dispatch => {
     dispatch({ type: 'INSUREE_FAMILY_MEMBER', payload: member })
@@ -137,7 +146,7 @@ export function fetchFamily(mm, familyUuid, headInsureeChfId) {
   } else {
     filters.push(`headInsuree_ChfId: "${headInsureeChfId}"`)
   }
-  const payload = formatPageQueryWithCount("families",
+  const payload = formatPageQuery("families",
     filters,
     FAMILY_FULL_PROJECTION(mm)
   );

@@ -6,5 +6,5 @@ export function insureeLabel(insuree) {
 }
 
 export function familyLabel(family) {
-    return !!family && !!family.headInsuree && !!family.headInsuree.chfId ? family.headInsuree.chfId : ""
+    return !!family && !!family.headInsuree ? insureeLabel(family.headInsuree) : ""
 }

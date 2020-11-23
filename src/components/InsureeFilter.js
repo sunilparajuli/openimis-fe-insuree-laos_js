@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import _debounce from "lodash/debounce";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { injectIntl } from 'react-intl';
 import { Checkbox, FormControlLabel, Grid, Slider } from "@material-ui/core";
 import {
     withModulesManager, formatMessage,
-    FormattedMessage, PublishedComponent, ControlledField, TextInput
+    Contributions, PublishedComponent, ControlledField, TextInput
 } from "@openimis/fe-core";
 
 const styles = theme => ({
@@ -22,6 +20,8 @@ const styles = theme => ({
     paperDivider: theme.paper.divider,
 });
 
+const INSUREE_FILTER_CONTRIBUTION_KEY = "insuree.Filter";
+
 class InsureeFilter extends Component {
 
     state = {
@@ -34,7 +34,7 @@ class InsureeFilter extends Component {
             !!this.props.filters['showHistory'] &&
             this.state.showHistory !== this.props.filters['showHistory']['value']
         ) {
-            this.setState((sate, props) => ({ showHistory: props.filters['showHistory']['value'] }))
+            this.setState((state, props) => ({ showHistory: props.filters['showHistory']['value'] }))
         }
     }
 
@@ -257,6 +257,7 @@ class InsureeFilter extends Component {
                         } />
                     </Grid>
                 </Grid>
+                <Contributions filters={filters} onChangeFilters={onChangeFilters} contributionKey={INSUREE_FILTER_CONTRIBUTION_KEY} />
             </Grid>
         )
     }

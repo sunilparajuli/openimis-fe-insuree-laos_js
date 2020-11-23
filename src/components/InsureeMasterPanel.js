@@ -49,6 +49,8 @@ class InsureeMasterPanel extends FormPanel {
                                         <Grid item xs={3} >
                                             <PublishedComponent
                                                 pubRef="insuree.RelationPicker"
+                                                withNull={true}
+                                                nullLabel={formatMessage(this.props.intl, "insuree", `Relation.none`)}
                                                 readOnly={readOnly}
                                                 value={!!edited && !!edited.relationship ? edited.relationship.id : ""}
                                                 onChange={v => this.updateAttribute('relationship', { id: v })}

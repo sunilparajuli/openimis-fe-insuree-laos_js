@@ -18,10 +18,11 @@ import {
     withModulesManager, formatDateFromISO, historyPush, withTooltip,
     FormattedMessage,
     formatSorter, sort,
-    Table, PagedDataHandler, PublishedComponent
+    coreAlert,
+    Table, PagedDataHandler, PublishedComponent, ProgressOrError
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
-import { fetchFamilyMembers, selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily } from "../actions";
+import { fetchFamilyMembers, selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily, checkCanAddInsuree } from "../actions";
 import { RIGHT_INSUREE_DELETE } from "../constants";
 import { insureeLabel, familyLabel } from "../utils/utils";
 import ChangeInsureeFamilyDialog from "./ChangeInsureeFamilyDialog";
@@ -43,6 +44,8 @@ class FamilyInsureesOverview extends PagedDataHandler {
         removeInsuree: null,
         changeInsureeFamily: null,
         reset: 0,
+        canAddAction: null,
+        checkedCanAdd: false,
     }
 
     constructor(props) {
@@ -65,6 +68,25 @@ class FamilyInsureesOverview extends PagedDataHandler {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.familyChanged(prevProps)) {
             this.query();
+        } else if (!prevProps.checkedCanAddInsuree && !!this.props.checkedCanAddInsuree) {
+            if (_.isEmpty(this.props.canAddInsureeWarnings)) {
+                this.setState(
+                    { checkedCanAdd: true },
+                    e => this.state.canAddAction()
+                )
+            } else {
+                let messages = this.props.canAddInsureeWarnings
+                messages.push(formatMessage(this.props.intl, "insuree", "addInsuree.alert.message"))
+                this.props.coreAlert(
+                    formatMessage(this.props.intl, "insuree", "addInsuree.alert.title"),
+                    messages,
+                )
+            }
+        } else if (!!prevProps.alert && !this.props.alert) {
+            this.setState(
+                { checkedCanAdd: true },
+                e => this.state.canAddAction()
+            )
         }
     }
 
@@ -231,23 +253,46 @@ class FamilyInsureesOverview extends PagedDataHandler {
             })
     }
 
-    render() {
-        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, readOnly } = this.props;
-        let actions = !!readOnly ? [] : [
+    checkCanAddInsuree = (action) => {
+        this.setState(
             {
-                button: <div><PublishedComponent //div needed for the tooltip style!!
-                    pubRef="insuree.InsureePicker"
-                    IconRender={AddExistingIcon}
-                    forcedFilter={["head: false"]}
-                    onChange={changeInsureeFamily => this.setState({ changeInsureeFamily })} />
+                canAddAction: action,
+                checkedCanAdd: false
+            },
+            e => this.props.checkCanAddInsuree(this.props.family)
+        )
+    }
+
+    render() {
+        const { intl, classes, pageInfo, family, familyMembers, fetchingFamilyMembers, errorFamilyMembers, readOnly,
+            checkingCanAddInsuree, errorCanAddInsuree
+        } = this.props;
+        let actions = !!readOnly || !!checkingCanAddInsuree || !!errorCanAddInsuree ? [] : [
+            {
+                button: <div>
+                    <PublishedComponent //div needed for the tooltip style!!
+                        pubRef="insuree.InsureePicker"
+                        IconRender={AddExistingIcon}
+                        forcedFilter={["head: false"]}
+                        onChange={changeInsureeFamily => this.setState({ changeInsureeFamily })}
+                        check={() => this.checkCanAddInsuree(() => this.setState({ checkedCanAdd: true }))}
+                        checked={this.state.checkedCanAdd} />
                 </div>,
                 tooltip: formatMessage(intl, "insuree", "familyAddExsistingInsuree.tooltip")
             },
             {
-                button: <IconButton onClick={this.addNewInsuree}><AddIcon /></IconButton>,
+                button: <IconButton onClick={e => this.checkCanAddInsuree(this.addNewInsuree)}><AddIcon /></IconButton>,
                 tooltip: formatMessage(intl, "insuree", "familyAddNewInsuree.tooltip")
             },
         ];
+        if (!!checkingCanAddInsuree || !!errorCanAddInsuree) {
+            actions.push(
+                {
+                    button: <div><ProgressOrError progress={checkingCanAddInsuree} error={errorCanAddInsuree} /></div>,
+                    tooltip: formatMessage(intl, "insuree", "familyCheckCanAdd")
+                }
+            )
+        }
         return (
             <Paper className={classes.paper}>
                 <EnquiryDialog open={this.state.enquiryOpen} chfid={this.state.chfid} onClose={() => { this.setState({ enquiryOpen: false, chfid: null }) }} />
@@ -310,12 +355,17 @@ class FamilyInsureesOverview extends PagedDataHandler {
 
 const mapStateToProps = state => ({
     rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
+    alert: !!state.core ? state.core.alert : null,
     family: state.insuree.family,
     fetchingFamilyMembers: state.insuree.fetchingFamilyMembers,
     fetchedFamilyMembers: state.insuree.fetchedFamilyMembers,
     familyMembers: state.insuree.familyMembers,
     pageInfo: state.insuree.familyMembersPageInfo,
     errorFamilyMembers: state.insuree.errorFamilyMembers,
+    checkingCanAddInsuree: state.insuree.checkingCanAddInsuree,
+    checkedCanAddInsuree: state.insuree.checkedCanAddInsuree,
+    canAddInsureeWarnings: state.insuree.canAddInsureeWarnings,
+    errorCanAddInsuree: state.insuree.errorCanAddInsuree,
     submittingMutation: state.insuree.submittingMutation,
     mutation: state.insuree.mutation,
 });
@@ -324,6 +374,7 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({
         fetch: fetchFamilyMembers,
         selectFamilyMember, deleteInsuree, removeInsuree, setFamilyHead, changeFamily,
+        checkCanAddInsuree, coreAlert,
     }, dispatch);
 };
 
