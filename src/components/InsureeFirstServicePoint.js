@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
-import { withModulesManager, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { withModulesManager, FormattedMessage, PublishedComponent, decodeId } from "@openimis/fe-core";
 
 const styles = theme => ({
     msg: {
@@ -32,7 +32,7 @@ class InsureeFirstServicePoint extends Component {
                 <Grid item xs={12} className={classes.details}>
                     <PublishedComponent
                         id="location.HealthFacilityFullPath"
-                        hfid={insuree.healthFacility.id}
+                        hfid={decodeId(insuree.healthFacility.id)}
                     />
                 </Grid>
             </Grid>
