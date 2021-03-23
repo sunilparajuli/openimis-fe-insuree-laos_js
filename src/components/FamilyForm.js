@@ -6,12 +6,12 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import ReplayIcon from "@material-ui/icons/Replay"
 import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush,
-    Form, ProgressOrError, journalize, coreConfirm
+    Form, ProgressOrError, journalize, coreConfirm, parseData
 } from "@openimis/fe-core";
 import { RIGHT_FAMILY, RIGHT_FAMILY_EDIT } from "../constants";
 import FamilyMasterPanel from "./FamilyMasterPanel";
 
-import { fetchFamily, newFamily, createFamily } from "../actions";
+import { fetchFamily, newFamily, createFamily, fetchFamilyMutation } from "../actions";
 import FamilyInsureesOverview from "./FamilyInsureesOverview";
 import HeadInsureeMasterPanel from "./HeadInsureeMasterPanel";
 
@@ -92,11 +92,33 @@ class FamilyForm extends Component {
     }
 
     reload = () => {
-        this.props.fetchFamily(
-            this.props.modulesManager,
-            this.state.family_uuid,
-            !!this.state.family.headInsuree ? this.state.family.headInsuree.chfId : null
-        );
+        const { family } = this.state;
+        const { clientMutationId, familyUuid } = this.props.mutation;
+        if (clientMutationId && !familyUuid) { // creation, we need to fetch the new family uuid from mutations logs and redirect to family overview
+            this.props.fetchFamilyMutation(
+                this.props.modulesManager,
+                clientMutationId
+            ).then(res => {
+                const mutationLogs = parseData(res.payload.data.mutationLogs)
+                if (mutationLogs
+                    && mutationLogs[0]
+                    && mutationLogs[0].families
+                    && mutationLogs[0].families[0]
+                    && mutationLogs[0].families[0].family) {
+                        const uuid = parseData(res.payload.data.mutationLogs)[0].families[0].family.uuid;
+                        if (uuid) {
+                            historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [uuid]);
+                        }
+                }
+            });
+        } else {
+            this.props.fetchFamily(
+                this.props.modulesManager,
+                familyUuid,
+                !!family.headInsuree ? family.headInsuree.chfId : null,
+                family.clientMutationId
+            );
+        }
     }
 
     canSave = () => {
@@ -194,7 +216,7 @@ const mapStateToProps = (state, props) => ({
 })
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchFamily, newFamily, createFamily, journalize, coreConfirm }, dispatch);
+    return bindActionCreators({ fetchFamilyMutation, fetchFamily, newFamily, createFamily, journalize, coreConfirm }, dispatch);
 };
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(

@@ -131,6 +131,15 @@ export function newFamily() {
   }
 }
 
+export function fetchFamilyMutation(mm, clientMutationId) {
+  let payload = formatPageQuery("mutationLogs",
+    [`clientMutationId:"${clientMutationId}"`],
+    ["id", "families{family{uuid}}"]
+  );
+  return graphql(payload, 'INSUREE_INSUREE');
+}
+
+
 export function fetchInsureeOfficers(mm) {
   const payload = formatPageQuery("insureeOfficers",
     null,
