@@ -61,9 +61,11 @@ class FamilyForm extends Component {
         }
         if (!prevProps.fetchedFamily && !!this.props.fetchedFamily) {
             var family = this.props.family;
-            family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
-            this.setState(
-                { family, family_uuid: family.uuid, lockNew: false, newFamily: false });
+            if (family) {
+                family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
+                this.setState(
+                    { family, family_uuid: family.uuid, lockNew: false, newFamily: false });
+            }
         } else if (prevProps.family_uuid && !this.props.family_uuid) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: insureeLabel(this.state.family.headInsuree) })
             this.setState({ family: this._newFamily(), newFamily: true, lockNew: false, family_uuid: null });
@@ -157,18 +159,21 @@ class FamilyForm extends Component {
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
             overview = false, openFamilyButton, readOnly = false,
             add, save, back, mutation } = this.props;
-        const { family } = this.state;
+        const { family, newFamily } = this.state;
         if (!rights.includes(RIGHT_FAMILY)) return null;
         let runningMutation = !!family && !!family.clientMutationId
         let contributedMutations = modulesManager.getContribs(INSUREE_FAMILY_OVERVIEW_CONTRIBUTED_MUTATIONS_KEY);
         for (let i = 0; i < contributedMutations.length && !runningMutation; i++) {
             runningMutation = contributedMutations[i](state)
         }
-        let actions = [{
-            doIt: this.reload,
-            icon: <ReplayIcon />,
-            onlyIfDirty: !readOnly && !runningMutation
-        }];
+        let actions = [];
+        if (family_uuid || !!family.clientMutationId) {
+            actions.push({
+                doIt: this.reload,
+                icon: <ReplayIcon />,
+                onlyIfDirty: !readOnly && !runningMutation
+            });
+        }
         return (
             <div className={!!runningMutation ? classes.lockedPage : null}>
                 <ProgressOrError progress={fetchingFamily} error={errorFamily} />
@@ -181,7 +186,7 @@ class FamilyForm extends Component {
                         edited={family}
                         reset={this.state.reset}
                         back={back}
-                        add={!!add && !this.state.newFamily ? this._add : null}
+                        add={!!add && !newFamily ? this._add : null}
                         readOnly={readOnly || runningMutation || !!family.validityTo}
                         actions={actions}
                         openFamilyButton={openFamilyButton}
