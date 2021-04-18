@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
-import { withModulesManager, FormattedMessage, PublishedComponent, decodeId } from "@openimis/fe-core";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {withStyles, withTheme} from "@material-ui/core/styles";
+import {Grid} from "@material-ui/core";
+import {decodeId, FormattedMessage, PublishedComponent, withModulesManager} from "@openimis/fe-core";
 
 const styles = theme => ({
     msg: {
@@ -19,11 +19,24 @@ const styles = theme => ({
 class InsureeFirstServicePoint extends Component {
     render() {
         const { classes, insuree } = this.props;
-        if (!insuree || !insuree.healthFacility) return (
+        if (!insuree || !insuree.healthFacility) {
+          return (
             <div className={classes.msg}>
                 <FormattedMessage module="insuree" id="insuree.noFSP" />
             </div>
-        );
+          )
+        }
+        let healthFacilityId = insuree.healthFacility.id;
+        let decodeCount = 0;
+        if (!/^\d+$/.test(healthFacilityId)) {
+          decodeCount = 1;
+          healthFacilityId = decodeId(healthFacilityId);
+          if (!/^\d+$/.test(healthFacilityId)) {
+            decodeCount = 2;
+            healthFacilityId = decodeId(healthFacilityId);
+          }
+        }
+        console.log(`hf_id: ${insuree.healthFacility.id} decoded to ${healthFacilityId}, dc: ${decodeCount}`);
         return (
             <Grid container>
                 <Grid item xs={12} className={classes.title}>
@@ -32,7 +45,7 @@ class InsureeFirstServicePoint extends Component {
                 <Grid item xs={12} className={classes.details}>
                     <PublishedComponent
                         id="location.HealthFacilityFullPath"
-                        hfid={decodeId(insuree.healthFacility.id)}
+                        hfid={healthFacilityId}
                     />
                 </Grid>
             </Grid>
