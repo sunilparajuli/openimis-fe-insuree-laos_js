@@ -6,12 +6,12 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import ReplayIcon from "@material-ui/icons/Replay"
 import {
     formatMessageWithValues, withModulesManager, withHistory, historyPush,
-    Form, ProgressOrError, journalize, coreConfirm
+    Form, ProgressOrError, journalize, coreConfirm, parseData
 } from "@openimis/fe-core";
 import { RIGHT_FAMILY, RIGHT_FAMILY_EDIT } from "../constants";
 import FamilyMasterPanel from "./FamilyMasterPanel";
 
-import { fetchFamily, newFamily, createFamily } from "../actions";
+import { fetchFamily, newFamily, createFamily, fetchFamilyMutation } from "../actions";
 import FamilyInsureesOverview from "./FamilyInsureesOverview";
 import HeadInsureeMasterPanel from "./HeadInsureeMasterPanel";
 
@@ -61,9 +61,11 @@ class FamilyForm extends Component {
         }
         if (!prevProps.fetchedFamily && !!this.props.fetchedFamily) {
             var family = this.props.family;
-            family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
-            this.setState(
-                { family, family_uuid: family.uuid, lockNew: false, newFamily: false });
+            if (family) {
+                family.ext = !!family.jsonExt ? JSON.parse(family.jsonExt) : {};
+                this.setState(
+                    { family, family_uuid: family.uuid, lockNew: false, newFamily: false });
+            }
         } else if (prevProps.family_uuid && !this.props.family_uuid) {
             document.title = formatMessageWithValues(this.props.intl, "insuree", !!this.props.overview ? "FamilyOverview.title" : "Family.title", { label: insureeLabel(this.state.family.headInsuree) })
             this.setState({ family: this._newFamily(), newFamily: true, lockNew: false, family_uuid: null });
@@ -92,11 +94,33 @@ class FamilyForm extends Component {
     }
 
     reload = () => {
-        this.props.fetchFamily(
-            this.props.modulesManager,
-            this.state.family_uuid,
-            !!this.state.family.headInsuree ? this.state.family.headInsuree.chfId : null
-        );
+        const { family } = this.state;
+        const { clientMutationId, familyUuid } = this.props.mutation;
+        if (clientMutationId && !familyUuid) { // creation, we need to fetch the new family uuid from mutations logs and redirect to family overview
+            this.props.fetchFamilyMutation(
+                this.props.modulesManager,
+                clientMutationId
+            ).then(res => {
+                const mutationLogs = parseData(res.payload.data.mutationLogs)
+                if (mutationLogs
+                    && mutationLogs[0]
+                    && mutationLogs[0].families
+                    && mutationLogs[0].families[0]
+                    && mutationLogs[0].families[0].family) {
+                        const uuid = parseData(res.payload.data.mutationLogs)[0].families[0].family.uuid;
+                        if (uuid) {
+                            historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [uuid]);
+                        }
+                }
+            });
+        } else {
+            this.props.fetchFamily(
+                this.props.modulesManager,
+                familyUuid,
+                !!family.headInsuree ? family.headInsuree.chfId : null,
+                family.clientMutationId
+            );
+        }
     }
 
     canSave = () => {
@@ -135,18 +159,21 @@ class FamilyForm extends Component {
             family_uuid, fetchingFamily, fetchedFamily, errorFamily, insuree,
             overview = false, openFamilyButton, readOnly = false,
             add, save, back, mutation } = this.props;
-        const { family } = this.state;
+        const { family, newFamily } = this.state;
         if (!rights.includes(RIGHT_FAMILY)) return null;
         let runningMutation = !!family && !!family.clientMutationId
         let contributedMutations = modulesManager.getContribs(INSUREE_FAMILY_OVERVIEW_CONTRIBUTED_MUTATIONS_KEY);
         for (let i = 0; i < contributedMutations.length && !runningMutation; i++) {
             runningMutation = contributedMutations[i](state)
         }
-        let actions = [{
-            doIt: this.reload,
-            icon: <ReplayIcon />,
-            onlyIfDirty: !readOnly && !runningMutation
-        }];
+        let actions = [];
+        if (family_uuid || !!family.clientMutationId) {
+            actions.push({
+                doIt: this.reload,
+                icon: <ReplayIcon />,
+                onlyIfDirty: !readOnly && !runningMutation
+            });
+        }
         return (
             <div className={!!runningMutation ? classes.lockedPage : null}>
                 <ProgressOrError progress={fetchingFamily} error={errorFamily} />
@@ -159,7 +186,7 @@ class FamilyForm extends Component {
                         edited={family}
                         reset={this.state.reset}
                         back={back}
-                        add={!!add && !this.state.newFamily ? this._add : null}
+                        add={!!add && !newFamily ? this._add : null}
                         readOnly={readOnly || runningMutation || !!family.validityTo}
                         actions={actions}
                         openFamilyButton={openFamilyButton}
@@ -194,7 +221,7 @@ const mapStateToProps = (state, props) => ({
 })
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchFamily, newFamily, createFamily, journalize, coreConfirm }, dispatch);
+    return bindActionCreators({ fetchFamilyMutation, fetchFamily, newFamily, createFamily, journalize, coreConfirm }, dispatch);
 };
 
 export default withHistory(withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
