@@ -19,21 +19,28 @@ const styles = theme => ({
 
 class EnquiryDialog extends Component {
 
-    state = { loading: false }
+    insureeChanged = () => !!this.props.insuree && (this.props.insuree.chfId !== this.props.chfid)
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.chfid !== this.props.chfid) {
-            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
-        }
-    }
     escFunction = event => {
         if (event.keyCode === 27) {
             this.props.onClose();
         }
     }
     componentDidMount() {
+        if (!this.props.open) return;
         document.addEventListener("keydown", this.escFunction, false);
+        if (this.insureeChanged()) {
+            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
+        }
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (!this.props.open) return;
+        if (this.insureeChanged() || (prevProps.chfid !== this.props.chfid)) {
+            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
+        }
+    }
+
     componentWillUnmount() {
         document.removeEventListener("keydown", this.escFunction, false);
     }
@@ -56,7 +63,7 @@ class EnquiryDialog extends Component {
                         <Fragment>
                             <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
                             <Router history={history}>
-                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} />
+                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} insuree={insuree} />
                             </Router>
                         </Fragment>
                     )}
@@ -72,10 +79,10 @@ class EnquiryDialog extends Component {
 }
 
 const mapStateToProps = state => ({
-    fetching: state.insuree.fetching,
-    fetched: state.insuree.fetched,
+    fetching: state.insuree.fetchingInsuree,
+    fetched: state.insuree.fetchedInsuree,
     insuree: state.insuree.insuree,
-    error: state.insuree.error
+    error: state.insuree.errorInsuree
 });
 
 const mapDispatchToProps = dispatch => {

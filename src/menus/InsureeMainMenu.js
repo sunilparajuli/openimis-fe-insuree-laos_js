@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { injectIntl } from 'react-intl';
 import { connect } from "react-redux";
-import { AssignmentInd, GroupAdd, People, PersonPin } from "@material-ui/icons";
-import { formatMessage, MainMenuContribution } from "@openimis/fe-core";
+import { AssignmentInd, GroupAdd, People, Person } from "@material-ui/icons";
+import { formatMessage, MainMenuContribution, withModulesManager } from "@openimis/fe-core";
 import {
   RIGHT_FAMILY,
-  RIGHT_ADD_FAMILY,
+  RIGHT_FAMILY_ADD,
   RIGHT_INSUREE,
 } from "../constants";
 
@@ -13,14 +13,14 @@ const INSUREE_MAIN_MENU_CONTRIBUTION_KEY = "insuree.MainMenu";
 
 class InsureeMainMenu extends Component {
   render() {
-    const { rights } = this.props;
+    const { modulesManager, rights } = this.props;
     let entries = [];
-    if (rights.includes(RIGHT_ADD_FAMILY)) {
+    if (rights.includes(RIGHT_FAMILY_ADD)) {
       entries.push(
         {
-          text: formatMessage(this.props.intl, "insuree", "menu.addFamilyOrGroup"),
+          text: "Add Family/Group",
           icon: <GroupAdd />,
-          route: "/insuree/create",
+          route: "/" + modulesManager.getRef("insuree.route.family"),
           withDivider: true
         }
       )
@@ -30,7 +30,7 @@ class InsureeMainMenu extends Component {
         {
           text: formatMessage(this.props.intl, "insuree", "menu.familiesOrGroups"),
           icon: <People />,
-          route: "/insuree/families"
+          route: "/" + modulesManager.getRef("insuree.route.families")
         }
       )
     }
@@ -38,8 +38,8 @@ class InsureeMainMenu extends Component {
       entries.push(
         {
           text: formatMessage(this.props.intl, "insuree", "menu.insurees"),
-          icon: <PersonPin />,
-          route: "/insuree/insurees"
+          icon: <Person />,
+          route: "/" + modulesManager.getRef("insuree.route.insurees")
         }
       )
     }
@@ -61,4 +61,4 @@ const mapStateToProps = state => ({
   rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
 });
 
-export default injectIntl(connect(mapStateToProps)(InsureeMainMenu));
+export default withModulesManager(injectIntl(connect(mapStateToProps)(InsureeMainMenu)));

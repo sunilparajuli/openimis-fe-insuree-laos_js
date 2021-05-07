@@ -3,39 +3,37 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { injectIntl } from 'react-intl';
 import { formatMessage, SelectInput, withModulesManager } from "@openimis/fe-core";
-import { fetchInsureeGenders } from "../actions";
+import { fetchConfirmationTypes } from "../actions";
 import _debounce from "lodash/debounce";
 import _ from "lodash";
 
-class InsureeGenderPicker extends Component {
+class ConfirmationTypePicker extends Component {
 
     componentDidMount() {
-        if (!this.props.insureeGenders) {
+        if (!this.props.confirmationTypes) {
             // prevent loading multiple times the cache when component is
             // several times on a page
             setTimeout(
                 () => {
-                    !this.props.fetching && !this.props.fetched && this.props.fetchInsureeGenders(this.props.modulesManager)
+                    !this.props.fetching && !this.props.fetched && this.props.fetchConfirmationTypes(this.props.modulesManager)
                 },
                 Math.floor(Math.random() * 300)
             );
         }
     }
 
-    nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `InsureeGender.null`)
+    nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `ConfirmationType.null`)
 
-    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `InsureeGender.${i}`)}` : this.nullDisplay
+    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `ConfirmationType.${i}`)}` : this.nullDisplay
 
-    onSuggestionSelected = v => {
-        this.props.onChange(v, this.formatSuggestion(v));
-    }
+    onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 
     render() {
-        const { intl, insureeGenders, module = "insuree", withLabel = true, label = "InsureeGenderPicker.label", withPlaceholder = false, placeholder, value, reset,
+        const { intl, confirmationTypes, module="insuree", withLabel = true, label = "ConfirmationTypePicker.label", withPlaceholder = false, placeholder, value, reset,
             readOnly = false, required = false,
             withNull = false, nullLabel = null
         } = this.props;
-        let options = !!insureeGenders ? insureeGenders.map(v => ({ value: v, label: this.formatSuggestion(v) })) : []
+        let options = !!confirmationTypes ? confirmationTypes.map(v => ({ value: v, label: this.formatSuggestion(v) })) : []
         if (withNull) {
             options.unshift({ value: null, label: this.formatSuggestion(null) })
         }
@@ -43,7 +41,7 @@ class InsureeGenderPicker extends Component {
             module={module}
             options={options}
             label={!!withLabel ? label : null}
-            placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "InsureeGenderPicker.placehoder")) : null}
+            placeholder={!!withPlaceholder ? (placeholder || formatMessage(intl, "insuree", "ConfirmationTypePicker.placehoder")) : null}
             onChange={this.onSuggestionSelected}
             value={value}
             reset={reset}
@@ -56,14 +54,14 @@ class InsureeGenderPicker extends Component {
 }
 
 const mapStateToProps = state => ({
-    insureeGenders: state.insuree.insureeGenders,
-    fetching: state.insuree.fetchingInsureeGenders,
-    fetched: state.medical.fetchedInsureeGenders,
+    confirmationTypes: state.insuree.confirmationTypes,
+    fetching: state.insuree.fetchingConfirmationTypes,
+    fetched: state.medical.fetchedConfirmationTypes,
 });
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchInsureeGenders }, dispatch);
+    return bindActionCreators({ fetchConfirmationTypes }, dispatch);
 };
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(
-    withModulesManager(InsureeGenderPicker)));
+    withModulesManager(ConfirmationTypePicker)));
