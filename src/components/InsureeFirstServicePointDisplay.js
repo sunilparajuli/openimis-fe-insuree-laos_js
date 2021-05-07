@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
-import { withModulesManager, FormattedMessage, PublishedComponent, decodeId } from "@openimis/fe-core";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {withStyles, withTheme} from "@material-ui/core/styles";
+import {Grid} from "@material-ui/core";
+import {decodeId, FormattedMessage, PublishedComponent, withModulesManager} from "@openimis/fe-core";
 
 const styles = theme => ({
     centered: {
