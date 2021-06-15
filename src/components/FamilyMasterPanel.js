@@ -13,11 +13,9 @@ import {
 import { People as PeopleIcon } from '@material-ui/icons';
 import {
     historyPush, withHistory, withModulesManager,
-    TextInput, formatMessage, PublishedComponent, FormattedMessage, FormPanel, Contributions
+    TextInput, formatMessage, PublishedComponent, FormattedMessage, FormPanel
 } from "@openimis/fe-core";
 
-
-const FAMILY_MASTER_PANEL_CONTRIBUTION_KEY = "insuree.Family.master"
 
 const styles = theme => ({
     tableTitle: theme.table.title,
@@ -76,16 +74,6 @@ class FamilyMasterPanel extends FormPanel {
 
             </Fragment>
         )
-    }
-
-    updateContribution = (contributionKey, contributionValue) => {
-        let contributionAttribute = this.getAttribute('contribution');
-
-        if (!contributionAttribute) {
-            contributionAttribute = {}
-        } 
-        contributionAttribute[contributionKey] = contributionValue;
-        this.updateAttribute('contribution', contributionAttribute);
     }
 
     render() {
@@ -175,14 +163,7 @@ class FamilyMasterPanel extends FormPanel {
                             label={formatMessage(intl, "insuree", "Family.poverty")}
                         />
                     </Grid>
-                    <Divider />
                 </Grid>
-                    <Contributions {...this.props} 
-                        updateAttribute={this.updateContribution} 
-                        formData={this.getAttributes()} 
-                        formContribution={this.getAttribute('contribution')}
-                        edited={this.props.edited}
-                        contributionKey={FAMILY_MASTER_PANEL_CONTRIBUTION_KEY} />
             </Fragment>
         );
     }

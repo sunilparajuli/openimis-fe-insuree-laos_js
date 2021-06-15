@@ -10,7 +10,7 @@ const FAMILY_FULL_PROJECTION = mm => [
   "validityFrom", "validityTo",
   FAMILY_HEAD_PROJECTION,
   "location" + mm.getProjection("location.Location.FlatProjection"),
-  "clientMutationId",
+  "clientMutationId"
 ];
 
 const INSUREE_FULL_PROJECTION = mm => [
@@ -260,7 +260,6 @@ export function formatFamilyGQL(mm, family) {
     ${!!family.confirmationType && !!family.confirmationType.code ? `confirmationTypeId: "${family.confirmationType.code}"` : ""}
     ${!!family.confirmationNo ? `confirmationNo: "${formatGQLString(family.confirmationNo)}"` : ""}
     ${!!family.jsonExt ? `jsonExt: ${formatJsonField(family.jsonExt)}` : ""}
-    ${!!family.contribution ? `contribution: ${formatJsonField(family.contribution)}` : ""}
   `
 }
 
