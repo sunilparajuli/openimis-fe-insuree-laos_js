@@ -15,6 +15,9 @@ const styles = theme => ({
 });
 
 
+const FAMILY_FILTERS_CONTRIBUTION_KEY = "insuree.FamilyFilters";
+const FAMILY_ACTION_CONTRIBUTION_KEY = "insuree.FamilyActions";
+
 class FamiliesPage extends Component {
 
     onDoubleClick = (f, newTab = false) => {
@@ -32,6 +35,8 @@ class FamiliesPage extends Component {
                 <FamilySearcher
                     cacheFiltersKey="insureeFamiliesPageFiltersCache"
                     onDoubleClick={this.onDoubleClick}
+                    filterPaneContributionsKey={FAMILY_FILTERS_CONTRIBUTION_KEY}
+                    actionsContributionKey={FAMILY_ACTION_CONTRIBUTION_KEY}
                 />
                 {rights.includes(RIGHT_FAMILY_ADD) &&
                     withTooltip(

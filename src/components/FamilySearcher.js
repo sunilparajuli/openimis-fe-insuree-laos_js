@@ -188,10 +188,10 @@ class FamilySearcher extends Component {
     render() {
         const { intl,
             families, familiesPageInfo, fetchingFamilies, fetchedFamilies, errorFamilies,
-            defaultFilters, filterPaneContributionsKey, cacheFiltersKey, onDoubleClick
+            defaultFilters, filterPaneContributionsKey, cacheFiltersKey, onDoubleClick, actionsContributionKey
         } = this.props;
         let count = familiesPageInfo.totalCount;
-
+        console.log("Family action contrib key:", actionsContributionKey)
         return (
             <Fragment>
                 <DeleteFamilyDialog
@@ -223,6 +223,8 @@ class FamilySearcher extends Component {
                     rowLocked={this.rowLocked}
                     onDoubleClick={f => !f.clientMutationId && onDoubleClick(f)}
                     reset={this.state.reset}
+                    actions={[]}
+                    actionsContributionKey={actionsContributionKey}
                 />
             </Fragment>
         )
