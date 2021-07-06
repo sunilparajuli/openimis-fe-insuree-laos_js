@@ -191,7 +191,6 @@ class FamilySearcher extends Component {
             defaultFilters, filterPaneContributionsKey, cacheFiltersKey, onDoubleClick, actionsContributionKey
         } = this.props;
         let count = familiesPageInfo.totalCount;
-        console.log("Family action contrib key:", actionsContributionKey)
         return (
             <Fragment>
                 <DeleteFamilyDialog
