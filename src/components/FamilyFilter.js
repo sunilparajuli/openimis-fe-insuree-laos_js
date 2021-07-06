@@ -6,7 +6,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { injectIntl } from 'react-intl';
 import { Checkbox, FormControlLabel, Grid, Slider } from "@material-ui/core";
 import {
-    withModulesManager, formatMessage,
+    withModulesManager, formatMessage, Contributions,
     FormattedMessage, PublishedComponent, ControlledField, TextInput
 } from "@openimis/fe-core";
 
@@ -26,6 +26,7 @@ class FamilyFilter extends Component {
 
     state = {
         showHistory: false,
+        additionalFilters: {}
     }
 
     constructor(props) {
@@ -206,11 +207,42 @@ class FamilyFilter extends Component {
         )
     }
 
+    onChangeAdditionalFilters = (module, fltrs) => {
+        const { onChangeFilters } = this.props;
+
+        let filters = { ...this.state.additionalFilters };
+        if (!('additionalFilters' in filters)) {
+            filters.additionalFilters = {}
+        }
+
+        fltrs.forEach(filter => {
+            if (filter.value === null && (module in filters.additionalFilters)) {
+                delete (filters.additionalFilters[module][filter.id]);
+            } else {
+                console.log('f1: ', filters);
+
+                if (!(module in filters.additionalFilters)) {
+                    filters.additionalFilters[module] = {}
+                }
+                filters.additionalFilters[module][filter.id] = filter;
+            }
+        });
+        let filterContent = !!JSON.stringify(filters.additionalFilters) ? JSON.stringify(filters.additionalFilters) : "{}"
+        filterContent = filterContent.replaceAll('\"', '\\"')
+
+        console.log('additional filters', filterContent)
+        onChangeFilters([{
+            id: 'additionalFilter',
+            value: filters.additionalFilters,
+            filter: `additionalFilter: "${filterContent}"`
+        }])
+    }
+
     familyHeadFilter = () => this.personFilter("headInsuree")
     familyMemberFilter = () => this.personFilter("members")
 
     render() {
-        const { intl, classes, filters, onChangeFilters } = this.props;
+        const { intl, classes, filters, onChangeFilters, filterPaneContributionsKey } = this.props;
         return (
             <Grid container className={classes.form}>
                 <ControlledField module="insuree" id="FamilyFilter.location" field={
@@ -256,6 +288,25 @@ class FamilyFilter extends Component {
                         />
                     </Grid>
                 } />
+                <ControlledField module="insuree" id="PolicyFilter.officer" field={
+                    <Grid item xs={3} className={classes.item}>
+                        <PublishedComponent
+                            pubRef="policy.PolicyOfficerPicker"
+                            withNull={true}
+                            value={this._filterValue('officer')}
+                            onChange={v => onChangeFilters([
+                                {
+                                    id: 'officer',
+                                    value: v,
+                                    filter: v === null ? null : `officer: "${v.uuid}"`
+                                }
+                            ])}
+                        />
+                    </Grid>
+                } />
+                {!!filterPaneContributionsKey && (
+                    <Contributions filters={filters} onChangeFilters={this.onChangeAdditionalFilters} contributionKey={filterPaneContributionsKey} />
+                )}
                 <ControlledField module="insuree" id="FamilyFilter.showHistory" field={
                     <Grid item xs={2} className={classes.item}>
                         <FormControlLabel
