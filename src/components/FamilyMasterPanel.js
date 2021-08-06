@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment } from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { injectIntl } from 'react-intl';
 import {
@@ -83,7 +83,7 @@ class FamilyMasterPanel extends FormPanel {
 
         if (!contributionAttribute) {
             contributionAttribute = {}
-        } 
+        }
         contributionAttribute[contributionKey] = contributionValue;
         this.updateAttribute('contribution', contributionAttribute);
     }
@@ -177,9 +177,9 @@ class FamilyMasterPanel extends FormPanel {
                     </Grid>
                     <Divider />
                 </Grid>
-                    <Contributions {...this.props} 
-                        updateAttribute={this.updateContribution} 
-                        formData={this.getAttributes()} 
+                    <Contributions {...this.props}
+                        updateAttribute={this.updateContribution}
+                        formData={this.getAttributes()}
                         formContribution={this.getAttribute('contribution')}
                         edited={this.props.edited}
                         contributionKey={FAMILY_MASTER_PANEL_CONTRIBUTION_KEY} />
