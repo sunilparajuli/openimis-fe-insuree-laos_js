@@ -120,7 +120,6 @@ class InsureeMasterPanel extends FormPanel {
                                             module="insuree"
                                             readOnly={readOnly}
                                             withNull={true}
-                                            nullLabel={formatMessage(intl, "insuree", "InsureeGender.none")}
                                             onChange={v => this.updateAttribute('gender', { code: v })}
                                         />
                                     </Grid>
@@ -130,7 +129,6 @@ class InsureeMasterPanel extends FormPanel {
                                             module="insuree"
                                             readOnly={readOnly}
                                             withNull={true}
-                                            nullLabel="InsureeMaritalStatus.N"
                                             onChange={v => this.updateAttribute('marital', v)}
                                         />
                                     </Grid>
