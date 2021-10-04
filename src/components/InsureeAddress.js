@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid, FormControlLabel, Checkbox } from "@material-ui/core";
@@ -16,18 +15,14 @@ class InsureeAddress extends Component {
   };
 
   renderLocation = () => {
-    const { intl, classes, value, readOnly, onChangeLocation } = this.props;
+    const { value, classes, readOnly, onChangeLocation } = this.props;
     if (
       !this.state.editedLocation &&
-      (!value ||
-        !value.currentVillage ||
-        (!!value.currentVillage &&
-          !!value.family &&
-          !!value.family.location &&
-          value.currentVillage.uuid === value.family.location.id))
+      (!value || !value.currentVillage || value.family?.location?.id === value.currentVillage.uuid)
     ) {
       return (
         <FormControlLabel
+          className={classes.item}
           control={
             <Checkbox
               color="primary"
@@ -54,15 +49,10 @@ class InsureeAddress extends Component {
   };
 
   renderAddress = () => {
-    const { intl, classes, value, readOnly, onChangeAddress } = this.props;
+    const { value, readOnly, onChangeAddress } = this.props;
     if (
       !this.state.editedAddress &&
-      (!value ||
-        !value.currentAddress ||
-        (!!value.currerntAddress &&
-          !!value.family &&
-          !!value.family.address &&
-          value.currentAddress === value.family.address))
+      (!value || !value.currentAddress || value.family?.address === value.currentAddress)
     ) {
       return (
         <FormControlLabel
@@ -85,17 +75,17 @@ class InsureeAddress extends Component {
         multiline
         rows={5}
         readOnly={readOnly}
-        value={!!value && !!value.currentAddress ? value.currentAddress : ""}
+        value={value?.currentAddress ?? ""}
         onChange={onChangeAddress}
       />
     );
   };
 
   render() {
-    const { classes, value } = this.props;
+    const { classes } = this.props;
     return (
       <Grid container>
-        <Grid item xs={6} className={classes.item}>
+        <Grid item xs={6}>
           {this.renderLocation()}
         </Grid>
         <Grid item xs={6} className={classes.item}>
@@ -106,8 +96,4 @@ class InsureeAddress extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  insuree: state.insuree.insuree,
-});
-
-export default injectIntl(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeAddress))));
+export default injectIntl(withTheme(withStyles(styles)(InsureeAddress)));
