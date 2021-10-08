@@ -11,6 +11,7 @@ import {
   journalize,
   Form,
   ProgressOrError,
+  Helmet,
 } from "@openimis/fe-core";
 import { RIGHT_INSUREE } from "../constants";
 import FamilyDisplayPanel from "./FamilyDisplayPanel";
@@ -40,7 +41,6 @@ class InsureeForm extends Component {
   }
 
   componentDidMount() {
-    document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", { label: "" });
     if (!!this.props.insuree_uuid) {
       this.setState(
         (state, props) => ({ insuree_uuid: props.insuree_uuid }),
@@ -65,19 +65,11 @@ class InsureeForm extends Component {
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if ((prevState.insuree && prevState.insuree.chfId) !== (this.state.insuree && this.state.insuree.chfId)) {
-      document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", {
-        label: insureeLabel(this.state.insuree),
-      });
-    }
     if (prevProps.fetchedInsuree !== this.props.fetchedInsuree && !!this.props.fetchedInsuree) {
       var insuree = this.props.insuree || {};
       insuree.ext = !!insuree.jsonExt ? JSON.parse(insuree.jsonExt) : {};
       this.setState({ insuree, insuree_uuid: insuree.uuid, lockNew: false, newInsuree: false });
     } else if (prevProps.insuree_uuid && !this.props.insuree_uuid) {
-      document.title = formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", {
-        label: insureeLabel(this.state.insuree),
-      });
       this.setState({ insuree: this._newInsuree(), newInsuree: true, lockNew: false, insuree_uuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -152,6 +144,11 @@ class InsureeForm extends Component {
     ];
     return (
       <Fragment>
+        <Helmet
+          title={formatMessageWithValues(this.props.intl, "insuree", "Insuree.title", {
+            label: insureeLabel(this.state.insuree),
+          })}
+        />
         <ProgressOrError progress={fetchingInsuree} error={errorInsuree} />
         <ProgressOrError progress={fetchingFamily} error={errorFamily} />
         {((!!fetchedInsuree && !!insuree && insuree.uuid === insuree_uuid) || !insuree_uuid) &&
