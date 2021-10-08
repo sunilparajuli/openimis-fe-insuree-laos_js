@@ -29,7 +29,7 @@ class EducationPicker extends Component {
 
     nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `Education.null`)
 
-    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `Education.${i}`)}` : this.nullDisplay
+    formatSuggestion = i => `${formatMessage(this.props.intl, "insuree", `Education.${i}`)}`
 
     onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 

@@ -29,7 +29,7 @@ class ProfessionPicker extends Component {
 
     nullDisplay = this.props.nullLabel || formatMessage(this.props.intl, "insuree", `Profession.null`)
 
-    formatSuggestion = i => !!i ? `${formatMessage(this.props.intl, "insuree", `Profession.${i}`)}` : this.nullDisplay
+    formatSuggestion = i => `${formatMessage(this.props.intl, "insuree", `Profession.${i}`)}`
 
     onSuggestionSelected = v => this.props.onChange(v, this.formatSuggestion(v));
 
