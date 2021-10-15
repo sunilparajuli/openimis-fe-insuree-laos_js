@@ -128,15 +128,6 @@ class InsureeSearcher extends Component {
     return !!loc ? loc.name : "";
   };
 
-  adornedChfId = (i) => (
-    <Fragment>
-      <IconButton size="small" onClick={(e) => !i.clientMutationId && this.setState({ open: true, chfid: i.chfId })}>
-        <SearchIcon />
-      </IconButton>
-      {i.chfId}
-    </Fragment>
-  );
-
   handleClose = () => {
     this.setState({ open: false, chfid: null });
   };
@@ -170,7 +161,7 @@ class InsureeSearcher extends Component {
 
   itemFormatters = (filters) => {
     var formatters = [
-      (insuree) => this.adornedChfId(insuree),
+      (insuree) => insuree.chfId,
       (insuree) => insuree.lastName,
       (insuree) => insuree.otherNames,
       (insuree) => (
@@ -205,6 +196,14 @@ class InsureeSearcher extends Component {
     formatters.push(
       (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityFrom),
       (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityTo),
+      (insuree) => (
+        <IconButton
+          size="small"
+          onClick={(e) => !insuree.clientMutationId && this.setState({ open: true, chfid: insuree.chfId })}
+        >
+          <SearchIcon />
+        </IconButton>
+      ),
       (insuree) => {
         if (!insuree.family) return null;
         return (
