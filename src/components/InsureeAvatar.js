@@ -62,7 +62,7 @@ class InsureeAvatar extends Component {
   updateAttribute = (attr, v) => this.updateAttributes({ [attr]: v });
 
   render() {
-    const { intl, classes, title, withMeta = false, readOnly } = this.props;
+    const { intl, classes, withMeta = false, readOnly } = this.props;
     const { photo } = this.state;
     return (
       <Grid container direction="column" alignItems="center" justify="center">
@@ -96,10 +96,14 @@ class InsureeAvatar extends Component {
           <Grid item xs={12} className={classes.item}>
             <Grid container direction="column" alignItems="center" justify="center">
               <Grid item>
-                <IconButton variant="contained" component="label">
+                {readOnly ? (
                   <Avatar src={this.url()} className={classes.bigAvatar} />
-                  <input type="file" style={{ display: "none" }} onChange={(f) => this.fileSelected(f)} />
-                </IconButton>
+                ) : (
+                  <IconButton variant="contained" component="label">
+                    <Avatar src={this.url()} className={classes.bigAvatar} />
+                    <input type="file" style={{ display: "none" }} onChange={(f) => this.fileSelected(f)} />
+                  </IconButton>
+                )}
               </Grid>
             </Grid>
           </Grid>
