@@ -14,6 +14,7 @@ import {
   journalize,
   coreConfirm,
   parseData,
+  Helmet,
 } from "@openimis/fe-core";
 import { RIGHT_FAMILY, RIGHT_FAMILY_EDIT } from "../constants";
 import FamilyMasterPanel from "./FamilyMasterPanel";
@@ -48,12 +49,6 @@ class FamilyForm extends Component {
   }
 
   componentDidMount() {
-    document.title = formatMessageWithValues(
-      this.props.intl,
-      "insuree",
-      !!this.props.overview ? "FamilyOverview.title" : "Family.title",
-      { label: "" },
-    );
     if (this.props.family_uuid) {
       this.setState(
         (state, props) => ({ family_uuid: props.family_uuid }),
@@ -63,17 +58,6 @@ class FamilyForm extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      (prevState.family && prevState.family.headInsuree && prevState.family.headInsuree.chfId) !==
-      (this.state.family && this.state.family.headInsuree && this.state.family.headInsuree.chfId)
-    ) {
-      document.title = formatMessageWithValues(
-        this.props.intl,
-        "insuree",
-        !!this.props.overview ? "FamilyOverview.title" : "Family.title",
-        { label: insureeLabel(this.state.family.headInsuree) },
-      );
-    }
     if (!prevProps.fetchedFamily && !!this.props.fetchedFamily) {
       var family = this.props.family;
       if (family) {
@@ -81,12 +65,6 @@ class FamilyForm extends Component {
         this.setState({ family, family_uuid: family.uuid, lockNew: false, newFamily: false });
       }
     } else if (prevProps.family_uuid && !this.props.family_uuid) {
-      document.title = formatMessageWithValues(
-        this.props.intl,
-        "insuree",
-        !!this.props.overview ? "FamilyOverview.title" : "Family.title",
-        { label: insureeLabel(this.state.family.headInsuree) },
-      );
       this.setState({ family: this._newFamily(), newFamily: true, lockNew: false, family_uuid: null });
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
@@ -209,6 +187,14 @@ class FamilyForm extends Component {
     }
     return (
       <div className={!!runningMutation ? classes.lockedPage : null}>
+        <Helmet
+          title={formatMessageWithValues(
+            this.props.intl,
+            "insuree",
+            !!this.props.overview ? "FamilyOverview.title" : "Family.title",
+            { label: insureeLabel(this.state.family.headInsuree) },
+          )}
+        />
         <ProgressOrError progress={fetchingFamily} error={errorFamily} />
         {((!!fetchedFamily && !!family && family.uuid === family_uuid) || !family_uuid) && (
           <Form
