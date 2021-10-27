@@ -25,11 +25,6 @@ const INSUREE_INSUREE_CONTRIBUTION_KEY = "insuree.Insuree";
 const INSUREE_INSUREE_PANELS_CONTRIBUTION_KEY = "insuree.Insuree.panels";
 
 class InsureeMasterPanel extends FormPanel {
-  constructor(props) {
-    super(props);
-    this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12);
-  }
-
   render() {
     const {
       intl,
@@ -81,16 +76,14 @@ class InsureeMasterPanel extends FormPanel {
             <Divider />
             <Grid container className={classes.item}>
               <Grid item xs={4} className={classes.item}>
-                <TextInput
+                <PublishedComponent
+                  pubRef="insuree.InsureeNumberInput"
                   module="insuree"
                   label="Insuree.chfId"
                   required={true}
                   readOnly={readOnly}
-                  value={!!edited && !!edited.chfId ? edited.chfId : ""}
+                  value={edited?.chfId}
                   onChange={(v) => this.updateAttribute("chfId", v)}
-                  inputProps={{
-                    "maxLength": this.chfIdMaxLength,
-                  }}
                 />
               </Grid>
               <Grid item xs={4} className={classes.item}>
@@ -143,6 +136,7 @@ class InsureeMasterPanel extends FormPanel {
                       module="insuree"
                       readOnly={readOnly}
                       withNull={true}
+                      nullLabel="InsureeMaritalStatus.N"
                       onChange={(v) => this.updateAttribute("marital", v)}
                     />
                   </Grid>
