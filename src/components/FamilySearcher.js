@@ -189,7 +189,6 @@ class FamilySearcher extends Component {
       fetchingFamilies,
       fetchedFamilies,
       errorFamilies,
-      defaultFilters,
       filterPaneContributionsKey,
       cacheFiltersKey,
       onDoubleClick,
@@ -220,7 +219,7 @@ class FamilySearcher extends Component {
           fetch={this.fetch}
           rowIdentifier={this.rowIdentifier}
           filtersToQueryParams={this.filtersToQueryParams}
-          defaultOrderBy="headInsuree__chfId"
+          defaultOrderBy="-validityFrom"
           headers={this.headers}
           itemFormatters={this.itemFormatters}
           sorts={this.sorts}

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
-import { IconButton, Tooltip } from "@material-ui/core";
+import { Grid, IconButton, Tooltip } from "@material-ui/core";
 import { Search as SearchIcon, People as PeopleIcon, Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import {
   withModulesManager,
@@ -86,20 +86,12 @@ class InsureeSearcher extends Component {
       "insuree.insureeSummaries.email",
       "insuree.insureeSummaries.phone",
       "insuree.insureeSummaries.dob",
-    ];
-    for (var i = 0; i < this.locationLevels; i++) {
-      h.push(`location.locationType.${i}`);
-    }
-    h.push(
+      ...Array.from(Array(this.locationLevels)).map((_, i) => `location.locationType.${i}`),
       "insuree.insureeSummaries.validityFrom",
-      "insuree.insureeSummaries.validityTo",
-      "insuree.insureeSummaries.openFamily",
-      "insuree.insureeSummaries.openNewTab",
-    );
-    if (!!this.props.rights.includes(RIGHT_INSUREE_DELETE)) {
-      h.push("insuree.insureeSummaries.delete");
-    }
-    return h;
+      filters.showHistory && "insuree.insureeSummaries.validityTo",
+      "",
+    ];
+    return h.filter(Boolean);
   };
 
   sorts = (filters) => {
@@ -150,15 +142,6 @@ class InsureeSearcher extends Component {
     this.setState({ confirmedAction }, confirm);
   };
 
-  deleteInsureeAction = (i) =>
-    !!i.validityTo ? null : (
-      <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.deleteFamily.tooltip")}>
-        <IconButton onClick={(e) => !i.clientMutationId && this.confirmDelete(i)}>
-          <DeleteIcon />
-        </IconButton>
-      </Tooltip>
-    );
-
   itemFormatters = (filters) => {
     var formatters = [
       (insuree) => insuree.chfId,
@@ -195,44 +178,59 @@ class InsureeSearcher extends Component {
     }
     formatters.push(
       (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityFrom),
-      (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityTo),
+      filters.showHistory &&
+        ((insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityTo)),
       (insuree) => (
-        <IconButton
-          size="small"
-          onClick={(e) => !insuree.clientMutationId && this.setState({ open: true, chfid: insuree.chfId })}
-        >
-          <SearchIcon />
-        </IconButton>
-      ),
-      (insuree) => {
-        if (!insuree.family) return null;
-        return (
-          <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
+        <Grid container wrap="nowrap" spacing="2">
+          <Grid item>
             <IconButton
-              onClick={(e) =>
-                !insuree.clientMutationId &&
-                historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [
-                  insuree.family.uuid,
-                ])
-              }
+              size="small"
+              onClick={(e) => !insuree.clientMutationId && this.setState({ open: true, chfid: insuree.chfId })}
             >
-              <PeopleIcon />
+              <SearchIcon />
             </IconButton>
-          </Tooltip>
-        );
-      },
-      (insuree) => (
-        <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openNewTabButton.tooltip")}>
-          <IconButton onClick={(e) => !insuree.clientMutationId && this.props.onDoubleClick(insuree, true)}>
-            <TabIcon />
-          </IconButton>
-        </Tooltip>
+          </Grid>
+
+          {insuree.family && (
+            <Grid item>
+              <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
+                <IconButton
+                  size="small"
+                  onClick={(e) =>
+                    !insuree.clientMutationId &&
+                    historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [
+                      insuree.family.uuid,
+                    ])
+                  }
+                >
+                  <PeopleIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          )}
+          <Grid item>
+            <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openNewTabButton.tooltip")}>
+              <IconButton
+                size="small"
+                onClick={(e) => !insuree.clientMutationId && this.props.onDoubleClick(insuree, true)}
+              >
+                <TabIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+          {this.props.rights.includes(RIGHT_INSUREE_DELETE) && !insuree.validityTo && (
+            <Grid item>
+              <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.deleteFamily.tooltip")}>
+                <IconButton size="small" onClick={(e) => !insuree.clientMutationId && this.confirmDelete(insuree)}>
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          )}
+        </Grid>
       ),
     );
-    if (!!this.props.rights.includes(RIGHT_INSUREE_DELETE)) {
-      formatters.push(this.deleteInsureeAction);
-    }
-    return formatters;
+    return formatters.filter(Boolean);
   };
 
   rowDisabled = (selection, i) => !!i.validityTo;

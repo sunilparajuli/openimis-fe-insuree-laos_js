@@ -101,9 +101,8 @@ export function fetchFamilySummaries(mm, filters) {
     "confirmationNo",
     "validityFrom",
     "validityTo",
-    FAMILY_HEAD_PROJECTION,
+    "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone}",
     "location" + mm.getProjection("location.Location.FlatProjection"),
-    "clientMutationId",
   ];
   const payload = formatPageQueryWithCount("families", filters, projections);
   return graphql(payload, "INSUREE_FAMILIES");
@@ -203,7 +202,6 @@ export function fetchInsureeSummaries(mm, filters) {
     "marital",
     "family{uuid,location" + mm.getProjection("location.Location.FlatProjection") + "}",
     "currentVillage" + mm.getProjection("location.Location.FlatProjection"),
-    "clientMutationId",
   ];
   const payload = formatPageQueryWithCount("insurees", filters, projections);
   return graphql(payload, "INSUREE_INSUREES");
