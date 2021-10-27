@@ -40,8 +40,8 @@ class InsureeMasterPanel extends FormPanel {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Grid container className={classes.tableTitle}>
-              <Grid item xs={3} className={classes.tableTitle}>
-                <Typography>
+              <Grid item xs={3} container alignItems="center" className={classes.item}>
+                <Typography variant="h5">
                   <FormattedMessage module="insuree" id={title} values={titleParams} />
                 </Typography>
               </Grid>
