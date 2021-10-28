@@ -1,96 +1,71 @@
-import React, { Component, Fragment } from "react";
-import { injectIntl } from 'react-intl';
+import React, { useEffect, Fragment } from "react";
+import { injectIntl } from "react-intl";
 import { Dialog, Button, DialogActions, DialogContent } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Router } from "react-router-dom";
 import { fetchInsuree } from "../actions";
 import {
-    formatMessage, formatMessageWithValues, Contributions, Error, ProgressOrError,
-    withModulesManager, withHistory
+  formatMessage,
+  formatMessageWithValues,
+  Contributions,
+  Error,
+  ProgressOrError,
+  withModulesManager,
+  withHistory,
 } from "@openimis/fe-core";
 import InsureeSummary from "./InsureeSummary";
 
-const INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY = "insuree.EnquiryDialog";
+const useStyles = makeStyles(() => ({
+  summary: {
+    marginBottom: 32,
+  },
+}));
 
-const styles = theme => ({
-});
+const EnquiryDialog = (props) => {
+  const { intl, modulesManager, fetchInsuree, fetching, fetched, insuree, error, onClose, open, chfid } = props;
+  const classes = useStyles();
 
-class EnquiryDialog extends Component {
-
-    insureeChanged = () => !!this.props.insuree && (this.props.insuree.chfId !== this.props.chfid)
-
-    escFunction = event => {
-        if (event.keyCode === 27) {
-            this.props.onClose();
-        }
+  useEffect(() => {
+    if (open && insuree?.id !== chfid) {
+      fetchInsuree(modulesManager, chfid);
     }
-    componentDidMount() {
-        if (!this.props.open) return;
-        document.addEventListener("keydown", this.escFunction, false);
-        if (this.insureeChanged()) {
-            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
-        }
-    }
+  }, [open, chfid]);
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!this.props.open) return;
-        if (this.insureeChanged() || (prevProps.chfid !== this.props.chfid)) {
-            this.props.fetchInsuree(this.props.modulesManager, this.props.chfid);
-        }
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("keydown", this.escFunction, false);
-    }
-
-    render() {
-        const { intl, history, fetching, fetched, insuree, error, onClose } = this.props;
-        return (
-            <Dialog maxWidth="lg" fullWidth={true} open={this.props.open}>
-                <DialogContent>
-                    <ProgressOrError progress={fetching} error={error} />
-                    {!!fetched && !insuree && (
-                        <Error error={
-                            {
-                                code: formatMessage(intl, 'insuree', 'notFound'),
-                                detail: formatMessageWithValues(intl, 'insuree', 'chfidNotFound', { chfid: this.props.chfid })
-                            }
-                        } />
-                    )}
-                    {!fetching && !!insuree && (
-                        <Fragment>
-                            <InsureeSummary modulesManager={this.props.modulesManager} insuree={insuree} />
-                            <Router history={history}>
-                                <Contributions contributionKey={INSUREE_ENQUIRY_DIALOG_CONTRIBUTION_KEY} insuree={insuree} />
-                            </Router>
-                        </Fragment>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onClose} color="primary">
-                        {formatMessage(intl, 'insuree', 'close')}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-}
-
-const mapStateToProps = state => ({
-    fetching: state.insuree.fetchingInsuree,
-    fetched: state.insuree.fetchedInsuree,
-    insuree: state.insuree.insuree,
-    error: state.insuree.errorInsuree
-});
-
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ fetchInsuree }, dispatch);
+  return (
+    <Dialog maxWidth="xl" fullWidth open={open} onClose={onClose}>
+      <DialogContent>
+        <ProgressOrError progress={fetching} error={error} />
+        {!!fetched && !insuree && (
+          <Error
+            error={{
+              code: formatMessage(intl, "insuree", "notFound"),
+              detail: formatMessageWithValues(intl, "insuree", "chfidNotFound", { chfid }),
+            }}
+          />
+        )}
+        {!fetching && insuree && (
+          <Fragment>
+            <InsureeSummary modulesManager={modulesManager} insuree={insuree} className={classes.summary} />
+            <Contributions contributionKey="insuree.EnquiryDialog" insuree={insuree} />
+          </Fragment>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="primary">
+          {formatMessage(intl, "insuree", "close")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
-export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(
-    injectIntl(withTheme(
-        withStyles(styles)(EnquiryDialog)
-    ))))
-);
+const mapStateToProps = (state) => ({
+  fetching: state.insuree.fetchingInsuree,
+  fetched: state.insuree.fetchedInsuree,
+  insuree: state.insuree.insuree,
+  error: state.insuree.errorInsuree,
+});
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchInsuree }, dispatch);
+export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(injectIntl(EnquiryDialog))));

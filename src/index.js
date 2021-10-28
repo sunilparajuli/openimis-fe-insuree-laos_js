@@ -21,6 +21,7 @@ import ConfirmationTypePicker from "./pickers/ConfirmationTypePicker";
 import FamilyTypePicker from "./pickers/FamilyTypePicker";
 import PhotoStatusPicker from "./pickers/PhotoStatusPicker";
 import RelationPicker from "./pickers/RelationPicker";
+import InsureeNumberInput from "./pickers/InsureeNumberInput";
 import InsureeAvatar from "./components/InsureeAvatar";
 import InsureeCappedItemServiceLink from "./components/InsureeCappedItemServiceLink";
 import InsureeProfileLink from "./components/InsureeProfileLink";
@@ -40,18 +41,18 @@ const ROUTE_INSUREE_INSUREES = "insuree/insurees";
 const ROUTE_INSUREE_INSUREE = "insuree/insuree";
 
 const DEFAULT_CONFIG = {
-  "translations": [{ key: 'en', messages: messages_en }],
-  "reducers": [{ key: 'insuree', reducer }],
+  "translations": [{ key: "en", messages: messages_en }],
+  "reducers": [{ key: "insuree", reducer }],
   "refs": [
     { key: "insuree.InsureeOfficerPicker", ref: InsureeOfficerPicker },
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
     { key: "insuree.InsureePicker.projection", ref: ["id", "uuid", "chfId", "lastName", "otherNames"] },
-    { key: "insuree.InsureePicker.sort", ref: 'insuree__last_name' },
+    { key: "insuree.InsureePicker.sort", ref: "insuree__last_name" },
     { key: "insuree.FamilyPicker", ref: FamilyPicker },
     { key: "insuree.FamilyPicker.projection", ref: ["id", "uuid", "headInsuree{id chfId uuid lastName otherNames}"] },
-    { key: "insuree.FamilyPicker.sort", ref: 'family__head_insuree__lastName' },
+    { key: "insuree.FamilyPicker.sort", ref: "family__head_insuree__lastName" },
     { key: "insuree.familyLabel", ref: familyLabel },
     { key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
     { key: "insuree.InsureeMaritalStatusPicker", ref: InsureeMaritalStatusPicker },
@@ -63,6 +64,7 @@ const DEFAULT_CONFIG = {
     { key: "insuree.FamilyTypePicker", ref: FamilyTypePicker },
     { key: "insuree.PhotoStatusPicker", ref: PhotoStatusPicker },
     { key: "insuree.RelationPicker", ref: RelationPicker },
+    { key: "insuree.InsureeNumberInput", ref: InsureeNumberInput },
 
     { key: "insuree.route.families", ref: ROUTE_INSUREE_FAMILIES },
     { key: "insuree.route.familyOverview", ref: ROUTE_INSUREE_FAMILY_OVERVIEW },
@@ -93,9 +95,8 @@ const DEFAULT_CONFIG = {
   "insuree.InsureeSummaryExt": [InsureeFirstServicePointDisplay],
   "insuree.Insuree.panels": [InsureeFirstServicePointPanel],
   "policy.Policy.headPanel": [FamilyDisplayPanel],
-}
+};
 
 export const InsureeModule = (cfg) => {
   return { ...DEFAULT_CONFIG, ...cfg };
-}
-
+};

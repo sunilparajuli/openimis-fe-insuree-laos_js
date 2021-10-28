@@ -1,122 +1,90 @@
-import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { injectIntl } from 'react-intl';
 import { Avatar, Grid, IconButton } from "@material-ui/core";
-import {
-    formatMessage, toISODate,
-    PublishedComponent, TextInput
-} from "@openimis/fe-core";
+import { toISODate, useModulesManager, useTranslations, PublishedComponent } from "@openimis/fe-core";
 import _ from "lodash";
 import moment from "moment";
 
-const styles = theme => ({
-    bigAvatar: theme.bigAvatar
+const styles = (theme) => ({
+  bigAvatar: theme.bigAvatar,
+  hiddenInput: {
+    display: "none",
+  },
+  item: {
+    ...theme.paper.item,
+    paddingInline: 0,
+  },
 });
 
-class InsureeAvatar extends Component {
+const InsureeAvatar = (props) => {
+  const { photo, classes, className, withMeta = false, readOnly, onChange } = props;
+  const modulesManager = useModulesManager();
+  const { formatMessage } = useTranslations("insuree", modulesManager);
 
-    state = {
-        open: false,
+  const getUrl = (photo) => {
+    if (photo?.photo) {
+      return `data:image/png;base64,${photo.photo}`;
     }
-
-    componentDidMount() {
-        this.setState({ photo: this.props.photo || {} })
+    if (photo?.filename) {
+      return `/photos/${photo.folder}/${photo.filename}`;
     }
+    return null;
+  };
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (!_.isEqual(prevProps.photo, this.props.photo)) {
-            this.setState({ photo: this.props.photo })
-        }
+  const onFileSelect = (event) => {
+    if (!!event.target.files) {
+      const file = event.target.files[0];
+      var reader = new FileReader();
+      reader.onloadend = (loaded) => {
+        onChange({
+          ...photo,
+          folder: null,
+          filename: null,
+          photo: btoa(loaded.target.result),
+          date: toISODate(moment().toDate()),
+        });
+      };
+      reader.readAsBinaryString(file);
     }
+  };
 
-    withPhoto = () => !!this.state.photo && (!!this.state.photo.photo || !!this.state.photo.filename)
+  const isRequired = Boolean(photo?.thumbnail || photo?.photo);
+  return (
+    <Grid container className={className} direction="row" wrap="nowrap" spacing={1}>
+      <div>
+        <IconButton variant="contained" component="label" size="small" edge="start">
+          <Avatar src={getUrl(photo)} className={classes.bigAvatar} />
+          <input type="file" className={classes.hiddenInput} onChange={onFileSelect} accept="image/*" />
+        </IconButton>
+      </div>
+      {withMeta && (
+        <Grid container direction="column" item>
+          <Grid item className={classes.item}>
+            <PublishedComponent
+              pubRef="core.DatePicker"
+              value={photo?.date}
+              module="insuree"
+              label="Insuree.photoDate"
+              readOnly={readOnly}
+              required={isRequired}
+              onChange={(date) => onChange({ ...photo, date })}
+            />
+          </Grid>
+          <Grid item className={classes.item}>
+            <PublishedComponent
+              pubRef="insuree.InsureeOfficerPicker"
+              value={photo?.officerId}
+              module="insuree"
+              label={formatMessage("Insuree.photoOfficer")}
+              readOnly={readOnly}
+              required={isRequired}
+              onChange={(v) => onChange({ ...photo, officerId: v?.id })}
+            />
+          </Grid>
+        </Grid>
+      )}
+    </Grid>
+  );
+};
 
-    url = () => {
-        if (!!this.state.photo && !!this.state.photo.photo) {
-            return `data:image/png;base64,${this.state.photo.photo}`;
-        }
-        if (!!this.state.photo && !!this.state.photo.filename) {
-            return `/photos/${this.state.photo.folder}/${this.state.photo.filename}`
-        }
-        return null;
-    }
-
-    fileSelected = (f) => {
-        if (!!f.target.files) {
-            const file = f.target.files[0];
-            var reader = new FileReader();
-            reader.onloadend = loaded => {
-                this.updateAttributes({ folder: null, filename: null, photo: btoa(loaded.target.result), date: toISODate(moment().toDate()) })
-            }
-            reader.readAsBinaryString(file);
-        }
-    }
-
-    updateAttributes = attrs => {
-        let photo = { ...this.props.photo, ...attrs }
-        this.props.onChange(photo)
-    }
-
-    updateAttribute = (attr, v) => this.updateAttributes({ [attr]: v })
-
-    render() {
-        const { intl, classes, title, withMeta = false, readOnly } = this.props;
-        const { photo } = this.state;
-        return (
-            <Grid container direction="column" alignItems="center" justify="center">
-                <Grid container>
-                    {!!withMeta && (
-                        <Fragment>
-                            <Grid item xs={4} className={classes.item} >
-                                <PublishedComponent pubRef="core.DatePicker"
-                                    value={!!photo ? photo.date : null}
-                                    module="insuree"
-                                    label="Insuree.photoDate"
-                                    readOnly={readOnly}
-                                    required={this.withPhoto()}
-                                    onChange={v => this.updateAttribute('date', v)}
-                                />
-                            </Grid>
-                            <Grid item xs={8} className={classes.item} >
-                                <PublishedComponent pubRef="insuree.InsureeOfficerPicker"
-                                    value={!!photo ? photo.officerId : null}
-                                    module="insuree"
-                                    label={formatMessage(intl, "insuree", "Insuree.photoOfficer")}
-                                    readOnly={readOnly}
-                                    required={this.withPhoto()}
-                                    onChange={v => this.updateAttribute('officerId', v ? v.id : v)}
-                                />
-                            </Grid>
-                        </Fragment>
-                    )}
-                    <Grid item xs={12} className={classes.item}>
-                        <Grid container direction="column" alignItems="center" justify="center">
-                            <Grid item>
-                                <IconButton variant="contained" component="label">
-                                    <Avatar
-                                        src={this.url()}
-                                        className={classes.bigAvatar}
-                                    />
-                                    <input
-                                        type="file"
-                                        style={{ display: "none" }}
-                                        onChange={f => this.fileSelected(f)}
-                                    />
-                                </IconButton>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
-        )
-    }
-}
-
-const mapStateToProps = state => ({
-    insuree: state.insuree.insuree,
-});
-
-export default withTheme(
-    injectIntl(withStyles(styles)(connect(mapStateToProps)(InsureeAvatar)))
-);
+export default withTheme(withStyles(styles)(InsureeAvatar));

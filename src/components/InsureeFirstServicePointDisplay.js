@@ -1,48 +1,17 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {withStyles, withTheme} from "@material-ui/core/styles";
-import {Grid} from "@material-ui/core";
-import {decodeId, FormattedMessage, PublishedComponent, withModulesManager} from "@openimis/fe-core";
+import React from "react";
+import { decodeId, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
+import { Typography } from "@material-ui/core";
 
-const styles = theme => ({
-    centered: {
-        textAlign: "center",
-        position: "relative",
-        top: "50%"
-    },
-    aligned: {
-        position: "relative",
-        top: "100%"
-    },
-})
+const InsureeFirstServicePointDisplay = ({ insuree }) => {
+  if (!insuree?.healthFacility) return <FormattedMessage module="insuree" id="insuree.noFSP" />;
+  return (
+    <div>
+      <Typography variant="h6">
+        <FormattedMessage module="insuree" id="FSP.title" />
+      </Typography>
+      <PublishedComponent pubRef="location.HealthFacilityFullPath" hfid={decodeId(insuree.healthFacility.id)} />
+    </div>
+  );
+};
 
-class InsureeFirstServicePointDisplay extends Component {
-    render() {
-        const { classes, insuree } = this.props;
-        if (!insuree || !insuree.healthFacility) return (
-            <div className={classes.centered}>
-                <FormattedMessage module="insuree" id="insuree.noFSP" />
-            </div>
-        );
-        return (
-            <Grid container>
-                <Grid item xs={12}>
-                    <FormattedMessage module="insuree" id="FSP.title" />
-                </Grid>
-                <Grid item xs={12} className={classes.aligned}>
-                    <PublishedComponent
-                        pubRef="location.HealthFacilityFullPath"
-                        hfid={decodeId(insuree.healthFacility.id)}
-                    />
-                </Grid>
-            </Grid>
-        );
-    }
-}
-
-
-const mapStateToProps = state => ({
-    insuree: state.insuree.insuree,
-});
-
-export default withModulesManager(withTheme(withStyles(styles)(connect(mapStateToProps)(InsureeFirstServicePointDisplay))));
+export default InsureeFirstServicePointDisplay;
