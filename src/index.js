@@ -33,6 +33,7 @@ import FamilyDisplayPanel from "./components/FamilyDisplayPanel";
 import { familyLabel } from "./utils/utils";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
+import { FAMILY_PICKER_PROJECTION, INSUREE_PICKER_PROJECTION } from "./actions";
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
@@ -48,10 +49,10 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
-    { key: "insuree.InsureePicker.projection", ref: ["id", "uuid", "chfId", "lastName", "otherNames"] },
+    { key: "insuree.InsureePicker.projection", ref: INSUREE_PICKER_PROJECTION },
     { key: "insuree.InsureePicker.sort", ref: "insuree__last_name" },
     { key: "insuree.FamilyPicker", ref: FamilyPicker },
-    { key: "insuree.FamilyPicker.projection", ref: ["id", "uuid", "headInsuree{id chfId uuid lastName otherNames}"] },
+    { key: "insuree.FamilyPicker.projection", ref: FAMILY_PICKER_PROJECTION },
     { key: "insuree.FamilyPicker.sort", ref: "family__head_insuree__lastName" },
     { key: "insuree.familyLabel", ref: familyLabel },
     { key: "insuree.InsureeGenderPicker", ref: InsureeGenderPicker },
@@ -95,6 +96,18 @@ const DEFAULT_CONFIG = {
   "insuree.InsureeSummaryExt": [InsureeFirstServicePointDisplay],
   "insuree.Insuree.panels": [InsureeFirstServicePointPanel],
   "policy.Policy.headPanel": [FamilyDisplayPanel],
+  "invoice.SubjectAndThirdpartyPicker": [
+    {
+      type: "insuree",
+      picker: InsureePicker,
+      pickerProjection: INSUREE_PICKER_PROJECTION,
+    },
+    {
+      type: "family",
+      picker: FamilyPicker,
+      pickerProjection: FAMILY_PICKER_PROJECTION,
+    },
+  ],
 };
 
 export const InsureeModule = (cfg) => {
