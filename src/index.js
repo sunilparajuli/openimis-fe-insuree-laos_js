@@ -34,6 +34,9 @@ import { familyLabel } from "./utils/utils";
 import messages_en from "./translations/en.json";
 import reducer from "./reducer";
 import { FAMILY_PICKER_PROJECTION, INSUREE_PICKER_PROJECTION } from "./actions";
+import { decodeId } from "@openimis/fe-core";
+import EnrolledFamiliesReport from "./reports/EnrolledFamiliesReport";
+import InsureeFamilyOverviewReport from "./reports/InsureeFamilyOverviewReport";
 
 const ROUTE_INSUREE_FAMILIES = "insuree/families";
 const ROUTE_INSUREE_FAMILY_OVERVIEW = "insuree/familyOverview";
@@ -44,6 +47,27 @@ const ROUTE_INSUREE_INSUREE = "insuree/insuree";
 const DEFAULT_CONFIG = {
   "translations": [{ key: "en", messages: messages_en }],
   "reducers": [{ key: "insuree", reducer }],
+  "reports": [
+    {
+      key: "insuree_family_overview",
+      component: InsureeFamilyOverviewReport,
+      isValid: (values) => values.dateFrom && values.dateTo,
+      getParams: (values) => ({
+        dateFrom: values.dateFrom,
+        dateTo: values.dateTo,
+      }),
+    },
+    {
+      key: "enrolled_families",
+      component: EnrolledFamiliesReport,
+      isValid: (values) => values.location && values.dateFrom && values.dateTo,
+      getParams: (values) => ({
+        locationId: decodeId(values.location.id),
+        dateFrom: values.dateFrom,
+        dateTo: values.dateTo,
+      }),
+    },
+  ],
   "refs": [
     { key: "insuree.InsureeOfficerPicker", ref: InsureeOfficerPicker },
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
