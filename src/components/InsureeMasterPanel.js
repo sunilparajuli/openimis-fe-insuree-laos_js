@@ -126,6 +126,7 @@ class InsureeMasterPanel extends FormPanel {
                       module="insuree"
                       readOnly={readOnly}
                       withNull={true}
+                      required={true}
                       onChange={(v) => this.updateAttribute("gender", { code: v })}
                     />
                   </Grid>
