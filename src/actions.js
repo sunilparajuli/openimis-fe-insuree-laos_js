@@ -7,6 +7,7 @@ import {
   decodeId,
   formatMutation,
   formatGQLString,
+  graphqlWithVariables
 } from "@openimis/fe-core";
 
 const FAMILY_HEAD_PROJECTION = "headInsuree{id,uuid,chfId,lastName,otherNames,email,phone,dob,gender{code}}";
@@ -261,7 +262,7 @@ export function formatInsureeGQL(mm, insuree) {
 export function formatFamilyGQL(mm, family) {
   let headInsuree = family.headInsuree;
   headInsuree["head"] = true;
-  return `  
+  return `
     ${family.uuid !== undefined && family.uuid !== null ? `uuid: "${family.uuid}"` : ""}
     headInsuree: {${formatInsureeGQL(mm, headInsuree)}}
     ${!!family.location ? `locationId: ${decodeId(family.location.id)}` : ""}
@@ -401,4 +402,22 @@ export function changeFamily(mm, family_uuid, insuree, cancelPolicies, clientMut
       insureeUuid: insuree.uuid,
     },
   );
+}
+
+export function insureeNumberValidationCheck(mm, variables) {
+  return graphqlWithVariables(
+    `
+      query ($number: String!) {
+        isValid: insureeNumberValidity(insureeNumber: $number)
+      }
+    `,
+    variables,
+    `INSUREE_NUMBER_VALIDATION_FIELDS`,
+  );
+}
+
+export function insureeNumberValidationClear() {
+  return (dispatch) => {
+    dispatch({ type: `INSUREE_NUMBER_VALIDATION_FIELDS_CLEAR` });
+  };
 }
