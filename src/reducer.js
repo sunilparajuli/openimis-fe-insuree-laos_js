@@ -424,6 +424,7 @@ function reducer(
           insureeNumber: {
             isValidating: true,
             isValid: false,
+            validationErrorMessage: null,
             validationError: null,
           },
         },
@@ -435,7 +436,8 @@ function reducer(
           ...state.validationFields,
           insureeNumber: {
             isValidating: false,
-            isValid: action.payload?.data.isValid,
+            isValid: action.payload?.data.insureeNumberValidity.isValid,
+            validationErrorMessage: action.payload?.data.insureeNumberValidity.errorMessage,
             validationError: formatGraphQLError(action.payload),
           },
         },
@@ -460,6 +462,20 @@ function reducer(
           insureeNumber: {
             isValidating: true,
             isValid: false,
+            validationErrorMessage: null,
+            validationError: null,
+          },
+        },
+      };
+    case "INSUREE_NUMBER_VALIDATION_FIELDS_SET_VALID":
+      return {
+        ...state,
+        validationFields: {
+          ...state.validationFields,
+          insureeNumber: {
+            isValidating: false,
+            isValid: true,
+            validationErrorMessage: null,
             validationError: null,
           },
         },
