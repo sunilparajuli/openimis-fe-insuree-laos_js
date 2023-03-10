@@ -31,6 +31,7 @@ class InsureeFirstServicePointPanel extends FormPanel {
                   readOnly={readOnly}
                   onChange={(hf) => updateAttribute("healthFacility", hf)}
                   allRegions={allRegions}
+                  ignoreLocation={true}
                 />
               )}
             </Grid>
