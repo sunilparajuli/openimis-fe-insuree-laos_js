@@ -50,7 +50,6 @@ class InsureeFilter extends Component {
     const { filters } = this.props;
     return !!filters && !!filters[k] ? filters[k].value : null;
   };
-
   _onChangeShowHistory = () => {
     let filters = [
       {
@@ -275,6 +274,7 @@ class InsureeFilter extends Component {
                     value={this._filterValue("dobTo")}
                     module="insuree"
                     label="Insuree.dobTo"
+                    minDate={filters?.dobFrom}
                     onChange={(d) =>
                       onChangeFilters([
                         {
