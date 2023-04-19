@@ -91,7 +91,7 @@ function reducer(
     case "INSUREE_INSUREE_CLEAR":
       return {
         ...state,
-        fetchingInsuree: true,
+        fetchingInsuree: false,
         fetchedInsuree: false,
         insuree: null,
         errorInsuree: null,
