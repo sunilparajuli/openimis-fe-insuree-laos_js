@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import { injectIntl } from "react-intl";
-import { fetchInsureesForPicker } from "../actions";
+import { fetchInsureesForPicker, checkIfHeadSelected} from "../actions";
 import { TextInput, Picker, withModulesManager } from "@openimis/fe-core";
 import _ from "lodash";
 
@@ -149,6 +149,7 @@ class InsureePicker extends Component {
   };
 
   onSelect = (v) => {
+    this.props.checkIfHeadSelected(v);
     this.setState({ selected: v }, this.props.onChange(v, this.formatSuggestion(v)));
   };
 
@@ -218,7 +219,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fetchInsureesForPicker }, dispatch);
+  return bindActionCreators({ fetchInsureesForPicker, checkIfHeadSelected }, dispatch);
 };
 
 export default withModulesManager(

@@ -98,6 +98,12 @@ export function fetchInsureesForPicker(mm, filters) {
   return graphql(payload, "INSUREE_INSUREES");
 }
 
+export function clearInsuree() {
+  return (dispatch) => {
+    dispatch({ type: "INSUREE_INSUREE_CLEAR" });
+  };
+}
+
 export function fetchFamilySummaries(mm, filters) {
   let projections = [
     "id",
@@ -152,6 +158,15 @@ export function fetchFamilyMutation(mm, clientMutationId) {
     "mutationLogs",
     [`clientMutationId:"${clientMutationId}"`],
     ["id", "families{family{uuid}}"],
+  );
+  return graphql(payload, "INSUREE_INSUREE");
+}
+
+export function fetchInsureeMutation(mm, clientMutationId) {
+  let payload = formatPageQuery(
+    "mutationLogs",
+    [`clientMutationId:"${clientMutationId}"`],
+    ["id", "insurees{insuree{uuid}}"],
   );
   return graphql(payload, "INSUREE_INSUREE");
 }
@@ -429,5 +444,13 @@ export function insureeNumberSetValid() {
 export function insureeNumberValidationClear() {
   return (dispatch) => {
     dispatch({ type: `INSUREE_NUMBER_VALIDATION_FIELDS_CLEAR` });
+  };
+}
+
+export function checkIfHeadSelected(insuree) {
+  const headSelected = Boolean(insuree) ? true : false;
+
+  return (dispatch) => {
+    dispatch({ type: "INSUREE_CHECK_IS_HEAD_SELECTED", payload: { headSelected } });
   };
 }

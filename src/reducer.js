@@ -60,6 +60,7 @@ function reducer(
     canAddInsureeWarnings: [],
     errorCanAddInsuree: null,
     submittingMutation: false,
+    headSelected: false,
     mutation: {},
   },
   action,
@@ -86,6 +87,14 @@ function reducer(
         ...state,
         fetchingInsuree: false,
         errorInsuree: formatServerError(action.payload),
+      };
+    case "INSUREE_INSUREE_CLEAR":
+      return {
+        ...state,
+        fetchingInsuree: false,
+        fetchedInsuree: false,
+        insuree: null,
+        errorInsuree: null,
       };
     case "INSUREE_FAMILY_NEW":
       return {
@@ -479,6 +488,11 @@ function reducer(
             validationError: null,
           },
         },
+      };
+    case "INSUREE_CHECK_IS_HEAD_SELECTED":
+      return {
+        ...state,
+        headSelected: action.payload?.headSelected,
       };
     case "INSUREE_MUTATION_REQ":
       return dispatchMutationReq(state, action);
