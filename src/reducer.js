@@ -73,6 +73,7 @@ function reducer(
         fetchedInsuree: false,
         insuree: null,
         errorInsuree: null,
+        family: null,
       };
     case "INSUREE_INSUREE_RESP":
       return {
@@ -81,6 +82,7 @@ function reducer(
         fetchedInsuree: true,
         insuree: parseData(action.payload.data.insurees)[0],
         errorInsuree: formatGraphQLError(action.payload),
+        family: parseData(action.payload.data.insurees)[0]?.family,
       };
     case "INSUREE_INSUREE_ERR":
       return {
@@ -95,6 +97,7 @@ function reducer(
         fetchedInsuree: false,
         insuree: null,
         errorInsuree: null,
+        family: null,
       };
     case "INSUREE_FAMILY_NEW":
       return {
