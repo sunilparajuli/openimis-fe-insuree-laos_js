@@ -11,7 +11,6 @@ import InsureeOfficerPicker from "./pickers/InsureeOfficerPicker";
 import FamilyPicker from "./pickers/FamilyPicker";
 import InsureePicker from "./pickers/InsureePicker";
 import InsureeChfIdPicker from "./pickers/InsureeChfIdPicker";
-import InsureeNameByChfIdPicker from "./pickers/InsureeNameByChfIdPicker";
 import InsureeGenderPicker from "./pickers/InsureeGenderPicker";
 import EducationPicker from "./pickers/EducationPicker";
 import ProfessionPicker from "./pickers/ProfessionPicker";
@@ -102,7 +101,6 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
-    { key: "insuree.InsureeNameByChfIdPicker", ref: InsureeNameByChfIdPicker },
     { key: "insuree.InsureePicker.projection", ref: INSUREE_PICKER_PROJECTION },
     { key: "insuree.InsureePicker.sort", ref: "insuree__last_name" },
     { key: "insuree.FamilyPicker", ref: FamilyPicker },
