@@ -172,7 +172,7 @@ class InsureeSearcher extends Component {
       ),
       (insuree) => insuree.email,
       (insuree) => insuree.phone,
-      (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob, this.props.isSecondaryCalendarEnabled),
+      (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob),
     ];
     for (var i = 0; i < this.locationLevels; i++) {
       // need a fixed variable to refer to as parentLocation argument
@@ -182,9 +182,9 @@ class InsureeSearcher extends Component {
       );
     }
     formatters.push(
-      (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob, this.props.isSecondaryCalendarEnabled),
+      (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityFrom),
       filters.showHistory &&
-      ((insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob, this.props.isSecondaryCalendarEnabled)),
+      ((insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.validityTo)),
       (insuree) => (
         <Grid container wrap="nowrap" spacing="2">
           <Grid item>
@@ -300,7 +300,6 @@ const mapStateToProps = (state) => ({
   submittingMutation: state.insuree.submittingMutation,
   mutation: state.insuree.mutation,
   confirmed: state.core.confirmed,
-  isSecondaryCalendarEnabled: state.core.isSecondaryCalendarEnabled ?? false,
 });
 
 const mapDispatchToProps = (dispatch) => {
