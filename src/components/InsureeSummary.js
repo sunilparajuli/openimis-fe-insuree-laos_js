@@ -1,13 +1,15 @@
 import React, { Fragment } from "react";
 import { injectIntl } from "react-intl";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Box, Typography } from "@material-ui/core";
+import { Grid, Box, Typography, Button } from "@material-ui/core";
 import {
   formatMessage,
   withModulesManager,
   formatDateFromISO,
   Contributions,
   ControlledField,
+  historyPush,
+  withHistory,
 } from "@openimis/fe-core";
 
 const INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY = "insuree.InsureeSummaryAvatar";
@@ -21,8 +23,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+function goToFamilyUuid(mm, history, uuid) {
+  historyPush(mm, history, "insuree.route.familyOverview", [uuid], true);
+}
+
 const InsureeSummary = (props) => {
-  const { insuree, intl, modulesManager, className } = props;
+  const { insuree, intl, modulesManager, className, history } = props;
   const classes = useStyles();
   const hasAvatarContribution = modulesManager.getContribs(INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY).length > 0;
   const hasExtContributions = modulesManager.getContribs(INSUREE_SUMMARY_EXT_CONTRIBUTION_KEY).length > 0;
@@ -96,6 +102,18 @@ const InsureeSummary = (props) => {
               <Contributions contributionKey={INSUREE_SUMMARY_EXT_CONTRIBUTION_KEY} insuree={insuree} />
             </Grid>
           )}
+          {!!insuree?.family?.uuid && (
+            <Grid item>
+              <Button 
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={() => goToFamilyUuid(modulesManager, history, insuree.family.uuid)}
+              >
+                {formatMessage(intl, "insuree", "insureeSummaries.goToFamilyButton")}
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </Box>
       <Grid item xs={12}>
@@ -105,4 +123,4 @@ const InsureeSummary = (props) => {
   );
 };
 
-export default withModulesManager(injectIntl(InsureeSummary));
+export default withModulesManager(withHistory(injectIntl(InsureeSummary)));
