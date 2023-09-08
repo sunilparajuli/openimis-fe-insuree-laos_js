@@ -124,6 +124,7 @@ class FamilyForm extends Component {
   canSave = () => {
     if (!this.state.family.location) return false;
     if (!this.state.family.uuid && !this.props.isChfIdValid) return false;
+    if (this.state.family.validityTo) return false;
 
     return this.state.family.headInsuree && isValidInsuree(this.state.family.headInsuree, this.props.modulesManager);
   };
@@ -177,8 +178,9 @@ class FamilyForm extends Component {
         onlyIfDirty: !readOnly && !runningMutation,
       });
     }
+    const shouldBeLocked = !!runningMutation || family?.validityTo;
     return (
-      <div className={!!runningMutation ? classes.lockedPage : null}>
+      <div className={shouldBeLocked ? classes.lockedPage : null}>
         <Helmet
           title={formatMessageWithValues(
             this.props.intl,
