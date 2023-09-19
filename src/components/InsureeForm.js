@@ -19,9 +19,10 @@ import {
 } from "@openimis/fe-core";
 import { fetchInsureeFull, fetchFamily, clearInsuree, fetchInsureeMutation } from "../actions";
 import { RIGHT_INSUREE } from "../constants";
-import { insureeLabel, isValidInsuree } from "../utils/utils";
+import {insureeLabel, isValidInsuree, isValidWorker} from "../utils/utils";
 import FamilyDisplayPanel from "./FamilyDisplayPanel";
 import InsureeMasterPanel from "../components/InsureeMasterPanel";
+import WorkerMasterPanel from "./worker/WorkerMasterPanel";
 
 const styles = (theme) => ({
   page: theme.page,
@@ -31,12 +32,16 @@ const styles = (theme) => ({
 const INSUREE_INSUREE_FORM_CONTRIBUTION_KEY = "insuree.InsureeForm";
 
 class InsureeForm extends Component {
-  state = {
-    lockNew: false,
-    reset: 0,
-    insuree: this._newInsuree(),
-    newInsuree: true,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isWorker: props.modulesManager.getConf("fe-core", "workerConfig.isWorker", false),
+      lockNew: false,
+      reset: 0,
+      insuree: this._newInsuree(),
+      newInsuree: true,
+    };
+  }
 
   _newInsuree() {
     let insuree = {};
@@ -150,8 +155,8 @@ class InsureeForm extends Component {
     if (!doesInsureeChange) return false;
     if (this.state.lockNew) return false;
     if (!this.props.isChfIdValid) return false;
-    
-    return isValidInsuree(this.state.insuree, this.props.modulesManager);
+
+    return this.state.isWorker ? isValidWorker(this.state.insuree) : isValidInsuree(this.state.insuree, this.props.modulesManager);
   };
 
   _save = (insuree) => {
@@ -216,7 +221,7 @@ class InsureeForm extends Component {
               readOnly={readOnly || runningMutation || !!insuree.validityTo}
               actions={actions}
               HeadPanel={FamilyDisplayPanel}
-              Panels={[InsureeMasterPanel]}
+              Panels={[this.state.isWorker ? WorkerMasterPanel : InsureeMasterPanel]}
               contributedPanelsKey={INSUREE_INSUREE_FORM_CONTRIBUTION_KEY}
               insuree={this.state.insuree}
               onEditedChanged={this.onEditedChanged}

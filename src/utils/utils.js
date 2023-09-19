@@ -29,3 +29,7 @@ export const isValidInsuree = (insuree, modulesManager) => {
 
   return true;
 };
+
+export const isValidWorker = (worker) => {
+  return worker?.chfId;
+};
