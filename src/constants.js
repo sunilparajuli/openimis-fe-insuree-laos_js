@@ -3,6 +3,11 @@ export const FAMILY_POVERTY_STATUS = [true, false];
 export const PHOTO_STATUS = ["with", "without"];
 export const EMPTY_STRING = "";
 export const MODULE_NAME = "insuree";
+
+export const INSUREE_ACTIVE_STRING = "AC";
+export const INSUREE_INACTIVE_STRING = "IN";
+export const INSUREE_DEAD_STRING = "DE";
+export const INSUREE_STATUS = [INSUREE_ACTIVE_STRING, INSUREE_INACTIVE_STRING, INSUREE_DEAD_STRING];
 export const HYPHEN = "-";
 
 export const RIGHT_FAMILY = 101001; //101000 in doc ... but in practice...

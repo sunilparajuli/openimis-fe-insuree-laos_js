@@ -16,6 +16,8 @@ import EducationPicker from "./pickers/EducationPicker";
 import ProfessionPicker from "./pickers/ProfessionPicker";
 import IdentificationTypePicker from "./pickers/IdentificationTypePicker";
 import InsureeMaritalStatusPicker from "./pickers/InsureeMaritalStatusPicker";
+import InsureeStatusPicker from "./pickers/InsureeStatusPicker";
+import InsureeStatusReasonPicker from "./pickers/InsureeStatusReasonPicker";
 import FamilyPovertyStatusPicker from "./pickers/FamilyPovertyStatusPicker";
 import ConfirmationTypePicker from "./pickers/ConfirmationTypePicker";
 import FamilyTypePicker from "./pickers/FamilyTypePicker";
@@ -56,7 +58,7 @@ const DEFAULT_CONFIG = {
       component: InsureeMissingPhotoReport,
       isValid: (values) => true,
       getParams: (values) => {
-        const params = {}
+        const params = {};
         if (values.officer) {
           params.officerId = decodeId(values.officer.id);
         }
@@ -74,7 +76,7 @@ const DEFAULT_CONFIG = {
         dateFrom: values.dateFrom,
         dateTo: values.dateTo,
         officerId: decodeId(values.officer.id),
-        locationId: decodeId(values.location.id)
+        locationId: decodeId(values.location.id),
       }),
     },
     {
@@ -102,6 +104,8 @@ const DEFAULT_CONFIG = {
     { key: "insuree.InsureeOfficerPicker.projection", ref: ["id", "uuid", "code", "lastName", "otherNames"] },
     { key: "insuree.InsureePicker", ref: InsureePicker },
     { key: "insuree.InsureeChfIdPicker", ref: InsureeChfIdPicker },
+    { key: "insuree.InsureeStatusPicker", ref: InsureeStatusPicker },
+    { key: "insuree.InsureeStatusReasonPicker", ref: InsureeStatusReasonPicker },
     { key: "insuree.InsureePicker.projection", ref: INSUREE_PICKER_PROJECTION },
     { key: "insuree.InsureePicker.sort", ref: "insuree__last_name" },
     { key: "insuree.FamilyPicker", ref: FamilyPicker },
