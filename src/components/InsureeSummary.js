@@ -1,7 +1,10 @@
 import React, { Fragment } from "react";
 import { injectIntl } from "react-intl";
-import { makeStyles } from "@material-ui/core/styles";
+
 import { Grid, Box, Typography, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { People } from "@material-ui/icons";
+
 import {
   formatMessage,
   formatMessageWithValues,
@@ -12,6 +15,9 @@ import {
   historyPush,
   withHistory,
 } from "@openimis/fe-core";
+import { DEFAULT } from "../constants";
+import { formatLocationString } from "../utils/utils";
+import InsureeProfileLink from "./InsureeProfileLink";
 
 const INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY = "insuree.InsureeSummaryAvatar";
 const INSUREE_SUMMARY_CORE_CONTRIBUTION_KEY = "insuree.InsureeSummaryCore";
@@ -20,12 +26,12 @@ const INSUREE_SUMMARY_CONTRIBUTION_KEY = "insuree.InsureeSummary";
 
 const useStyles = makeStyles(() => ({
   label: {
-    textAlign: "right",
+    marginLeft: "10px",
   },
 }));
 
-function goToFamilyUuid(mm, history, uuid) {
-  historyPush(mm, history, "insuree.route.familyOverview", [uuid], true);
+function goToFamilyUuid(modulesManager, history, uuid) {
+  historyPush(modulesManager, history, "insuree.route.familyOverview", [uuid], true);
 }
 
 const formatLocationString = (location) => {
@@ -42,7 +48,12 @@ const InsureeSummary = (props) => {
   const showInsureeSummaryAddress = props.modulesManager.getConf(
     "fe-insuree",
     "showInsureeSummaryAddress",
-    false
+    DEFAULT.SHOW_INSUREE_SUMMARY_ADDRESS
+  );
+  const showInsureeProfile = props.modulesManager.getConf(
+    "fe-insuree",
+    "InsureeSummary.showInsureeProfileLink",
+    DEFAULT.SHOW_INSUREE_PROFILE,
   );
 
   return (
@@ -134,14 +145,19 @@ const InsureeSummary = (props) => {
           )}
           {!!insuree?.family?.uuid && (
             <Grid item>
-              <Button 
+              <Button
                 variant="contained"
                 color="primary"
-                className={classes.button}
                 onClick={() => goToFamilyUuid(modulesManager, history, insuree.family.uuid)}
               >
-                {formatMessage(intl, "insuree", "insureeSummaries.goToFamilyButton")}
+                <People />
+                <span className={classes.label}> {formatMessage(intl, "insuree", "insureeSummaries.goToFamilyButton")} </span>
               </Button>
+            </Grid>
+          )}
+          {showInsureeProfile && (
+            <Grid item>
+              <InsureeProfileLink insureeUuid={insuree.uuid} />
             </Grid>
           )}
         </Grid>
