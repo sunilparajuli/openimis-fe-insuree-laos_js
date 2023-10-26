@@ -73,7 +73,6 @@ function reducer(
         fetchedInsuree: false,
         insuree: null,
         errorInsuree: null,
-        family: null,
       };
     case "INSUREE_INSUREE_RESP":
       return {
@@ -82,7 +81,6 @@ function reducer(
         fetchedInsuree: true,
         insuree: parseData(action.payload.data.insurees)[0],
         errorInsuree: formatGraphQLError(action.payload),
-        family: parseData(action.payload.data.insurees)[0]?.family,
       };
     case "INSUREE_INSUREE_ERR":
       return {
@@ -97,7 +95,6 @@ function reducer(
         fetchedInsuree: false,
         insuree: null,
         errorInsuree: null,
-        family: null,
       };
     case "INSUREE_FAMILY_NEW":
       return {
@@ -136,7 +133,6 @@ function reducer(
         fetchingFamilyMembers: true,
         fetchedFamilyMembers: false,
         insureeFamilyMembers: null,
-        insuree: null,
         errorFamilyMembers: null,
       };
     case "INSUREE_FAMILY_MEMBERS_RESP":
@@ -286,7 +282,7 @@ function reducer(
         ...state,
         fetchingConfirmationTypes: false,
         fetchedConfirmationTypes: true,
-        confirmationTypes: action.payload.data.confirmationTypes.map((c) => c.code),
+        confirmationTypes: action.payload.data.confirmationTypes,
         errorConfirmationTypes: formatGraphQLError(action.payload),
       };
     case "INSUREE_CONFIRMATION_TYPES_ERR":
