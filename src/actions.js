@@ -122,8 +122,10 @@ export function fetchInsuree(mm, chfid) {
   return graphql(payload, "INSUREE_INSUREE");
 }
 
-export function fetchInsureeFull(mm, uuid) {
-  let payload = formatPageQuery("insurees", [`uuid:"${uuid}"`], INSUREE_FULL_PROJECTION(mm), "clientMutationId");
+export function fetchInsureeFull(mm, uuid, ignoreLocation=false) {
+  let args = [`uuid:"${uuid}"`]
+  if (ignoreLocation) args.push('ignoreLocation: true')
+  let payload = formatPageQuery("insurees", args, INSUREE_FULL_PROJECTION(mm), "clientMutationId");
   return graphql(payload, "INSUREE_INSUREE");
 }
 
@@ -241,7 +243,8 @@ export function fetchRelations(mm) {
   return graphql(payload, "INSUREE_RELATIONS");
 }
 
-export function fetchInsureeSummaries(mm, filters) {
+export function fetchInsureeSummaries(mm, filters, ignoreLocation=false) {
+  if (ignoreLocation) filters.push('ignoreLocation: true');
   var projections = [
     "id",
     "uuid",

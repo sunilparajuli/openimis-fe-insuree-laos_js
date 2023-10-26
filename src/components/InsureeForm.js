@@ -35,12 +35,12 @@ class InsureeForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isWorker: props.modulesManager.getConf("fe-core", "workerConfig.isWorker", false),
       lockNew: false,
       reset: 0,
       insuree: this._newInsuree(),
       newInsuree: true,
     };
+    this.isWorker = props.modulesManager.getConf("fe-core", "workerConfig.isWorker", false);
   }
 
   _newInsuree() {
@@ -53,7 +53,7 @@ class InsureeForm extends Component {
     if (!!this.props.insuree_uuid) {
       this.setState(
         (state, props) => ({ insuree_uuid: props.insuree_uuid }),
-        (e) => this.props.fetchInsureeFull(this.props.modulesManager, this.props.insuree_uuid),
+        (e) => this.props.fetchInsureeFull(this.props.modulesManager, this.props.insuree_uuid, this.isWorker),
       );
     } else if (!!this.props.family_uuid && (!this.props.family || this.props.family.uuid !== this.props.family_uuid)) {
       this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid);
@@ -131,7 +131,7 @@ class InsureeForm extends Component {
     } else {
       family_uuid
         ? historyPush(this.props.modulesManager, this.props.history, "insuree.route.familyOverview", [family_uuid])
-        : this.props.fetchInsureeFull(this.props.modulesManager, this.state.insuree_uuid);
+        : this.props.fetchInsureeFull(this.props.modulesManager, this.state.insuree_uuid, this.isWorker);
     }
 
     this.setState((state, props) => {
@@ -156,7 +156,7 @@ class InsureeForm extends Component {
     if (this.state.lockNew) return false;
     if (!this.props.isChfIdValid) return false;
 
-    return this.state.isWorker ? isValidWorker(this.state.insuree) : isValidInsuree(this.state.insuree, this.props.modulesManager);
+    return this.isWorker ? isValidWorker(this.state.insuree) : isValidInsuree(this.state.insuree, this.props.modulesManager);
   };
 
   _save = (insuree) => {
@@ -221,7 +221,7 @@ class InsureeForm extends Component {
               readOnly={readOnly || runningMutation || !!insuree.validityTo}
               actions={actions}
               HeadPanel={FamilyDisplayPanel}
-              Panels={[this.state.isWorker ? WorkerMasterPanel : InsureeMasterPanel]}
+              Panels={[this.isWorker ? WorkerMasterPanel : InsureeMasterPanel]}
               contributedPanelsKey={INSUREE_INSUREE_FORM_CONTRIBUTION_KEY}
               insuree={this.state.insuree}
               onEditedChanged={this.onEditedChanged}
