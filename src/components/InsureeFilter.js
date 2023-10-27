@@ -13,7 +13,7 @@ import {
   ControlledField,
   TextInput,
 } from "@openimis/fe-core";
-import {WITHOUT_STR} from "../constants";
+import {DEFAULT, WITHOUT_STR} from "../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -32,7 +32,7 @@ const INSUREE_FILTER_CONTRIBUTION_KEY = "insuree.Filter";
 class InsureeFilter extends Component {
     constructor(props) {
         super(props);
-        this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", false);
+        this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
     }
   debouncedOnChangeFilter = _debounce(
     this.props.onChangeFilters,

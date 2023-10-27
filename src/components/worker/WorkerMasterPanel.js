@@ -1,8 +1,8 @@
 import React from "react";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Paper, Grid, Typography, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
+import { Paper, Grid, Typography, Divider } from "@material-ui/core";
+
 import {
-  formatMessage,
   FormattedMessage,
   PublishedComponent,
   FormPanel,
@@ -50,7 +50,7 @@ class WorkerMasterPanel extends FormPanel {
                   label="Insuree.nationalId"
                   required={true}
                   readOnly={readOnly}
-                  value={edited?.chfId}
+                  value={edited?.chfId ?? ""}
                   editedId={editedId}
                   onChange={(v) => this.updateAttribute("chfId", v)}
                 />
@@ -61,7 +61,7 @@ class WorkerMasterPanel extends FormPanel {
                   label="Insuree.lastName"
                   required={true}
                   readOnly={readOnly}
-                  value={!!edited && !!edited.lastName ? edited.lastName : ""}
+                  value={edited?.lastName ?? ""}
                   onChange={(v) => this.updateAttribute("lastName", v)}
                 />
               </Grid>
@@ -71,7 +71,7 @@ class WorkerMasterPanel extends FormPanel {
                   label="Insuree.otherNames"
                   required={true}
                   readOnly={readOnly}
-                  value={!!edited && !!edited.otherNames ? edited.otherNames : ""}
+                  value={edited?.otherNames ?? ""}
                   onChange={(v) => this.updateAttribute("otherNames", v)}
                 />
               </Grid>

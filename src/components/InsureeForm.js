@@ -18,7 +18,7 @@ import {
   Helmet,
 } from "@openimis/fe-core";
 import { fetchInsureeFull, fetchFamily, clearInsuree, fetchInsureeMutation } from "../actions";
-import { RIGHT_INSUREE } from "../constants";
+import {DEFAULT, RIGHT_INSUREE} from "../constants";
 import {insureeLabel, isValidInsuree, isValidWorker} from "../utils/utils";
 import FamilyDisplayPanel from "./FamilyDisplayPanel";
 import InsureeMasterPanel from "../components/InsureeMasterPanel";
@@ -40,7 +40,7 @@ class InsureeForm extends Component {
       insuree: this._newInsuree(),
       newInsuree: true,
     };
-    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", false);
+    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
   }
 
   _newInsuree() {

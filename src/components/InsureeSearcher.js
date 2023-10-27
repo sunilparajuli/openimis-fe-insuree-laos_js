@@ -19,7 +19,7 @@ import {
 import EnquiryDialog from "./EnquiryDialog";
 import {
   RIGHT_INSUREE_DELETE,
-  INSUREE_MARITAL_STATUS
+  INSUREE_MARITAL_STATUS, DEFAULT
 } from "../constants";
 import { fetchInsureeSummaries, deleteInsuree } from "../actions";
 
@@ -45,7 +45,7 @@ class InsureeSearcher extends Component {
     );
     this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "insureeFilter.defaultPageSize", 10);
     this.locationLevels = this.props.modulesManager.getConf("fe-location", "location.Location.MaxLevels", 4);
-    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", false);
+    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
