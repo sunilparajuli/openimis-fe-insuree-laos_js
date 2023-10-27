@@ -31,7 +31,7 @@ const INSUREE_FILTER_CONTRIBUTION_KEY = "insuree.Filter";
 class InsureeFilter extends Component {
     constructor(props) {
         super(props);
-        this.isWorker = props.modulesManager.getConf("fe-core", "workerConfig.isWorker", false);
+        this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", false);
     }
   debouncedOnChangeFilter = _debounce(
     this.props.onChangeFilters,
