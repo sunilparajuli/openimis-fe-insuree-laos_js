@@ -26,3 +26,5 @@ export const DEFAULT = {
   SHOW_INSUREE_PROFILE: false,
   SHOW_INSUREE_SUMMARY_ADDRESS: false,
 };
+
+export const WITHOUT_STR = "without"

@@ -123,8 +123,8 @@ export function fetchInsuree(mm, chfid) {
 }
 
 export function fetchInsureeFull(mm, uuid, ignoreLocation=false) {
-  let args = [`uuid:"${uuid}"`]
-  if (ignoreLocation) args.push('ignoreLocation: true')
+  let args = [`uuid:"${uuid}"`];
+  if (ignoreLocation) args.push('ignoreLocation: true');
   let payload = formatPageQuery("insurees", args, INSUREE_FULL_PROJECTION(mm), "clientMutationId");
   return graphql(payload, "INSUREE_INSUREE");
 }

@@ -13,6 +13,7 @@ import {
   ControlledField,
   TextInput,
 } from "@openimis/fe-core";
+import {WITHOUT_STR} from "../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -300,7 +301,7 @@ class InsureeFilter extends Component {
                                       {
                                           id: "photoStatus",
                                           value: s,
-                                          filter: `photo_Isnull: ${s === "without"}`,
+                                          filter: `photo_Isnull: ${s === WITHOUT_STR}`,
                                       },
                                   ])
                               }
