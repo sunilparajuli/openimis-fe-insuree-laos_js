@@ -24,6 +24,7 @@
   "insuree.Insuree.label": "Insuree",
   "insuree.Insuree.picker.dialog.title": "Search Insuree",
   "insuree.Insuree.chfId": "Insurance No.",
+  "insuree.Insuree.nationalId": "National ID",
   "insuree.Insuree.lastName": "Last Name",
   "insuree.Insuree.otherNames": "Given Names",
   "insuree.Insuree.names": "Name",
