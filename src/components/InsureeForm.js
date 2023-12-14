@@ -18,8 +18,8 @@ import {
   Helmet,
 } from "@openimis/fe-core";
 import { fetchInsureeFull, fetchFamily, clearInsuree, fetchInsureeMutation } from "../actions";
-import {DEFAULT, RIGHT_INSUREE} from "../constants";
-import {insureeLabel, isValidInsuree, isValidWorker} from "../utils/utils";
+import { DEFAULT, INSUREE_ACTIVE_STRING, RIGHT_INSUREE } from "../constants";
+import { insureeLabel, isValidInsuree, isValidWorker } from "../utils/utils";
 import FamilyDisplayPanel from "./FamilyDisplayPanel";
 import InsureeMasterPanel from "../components/InsureeMasterPanel";
 import WorkerMasterPanel from "./worker/WorkerMasterPanel";
@@ -46,6 +46,8 @@ class InsureeForm extends Component {
   _newInsuree() {
     let insuree = {};
     insuree.jsonExt = {};
+    insuree.status = INSUREE_ACTIVE_STRING;
+    insuree.statusReason = null;
     return insuree;
   }
 
@@ -156,7 +158,9 @@ class InsureeForm extends Component {
     if (this.state.lockNew) return false;
     if (!this.props.isChfIdValid) return false;
 
-    return this.isWorker ? isValidWorker(this.state.insuree) : isValidInsuree(this.state.insuree, this.props.modulesManager);
+    return this.isWorker
+      ? isValidWorker(this.state.insuree)
+      : isValidInsuree(this.state.insuree, this.props.modulesManager);
   };
 
   _save = (insuree) => {
