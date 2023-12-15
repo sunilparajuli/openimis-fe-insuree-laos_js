@@ -53,6 +53,10 @@ class InsureeForm extends Component {
 
   componentDidMount() {
     if (!!this.props.insuree_uuid) {
+      if (!!this.props.family_uuid) {
+        this.props.fetchFamily(this.props.modulesManager, this.props.family_uuid);
+      }
+
       this.setState(
         (state, props) => ({ insuree_uuid: props.insuree_uuid }),
         (e) => this.props.fetchInsureeFull(this.props.modulesManager, this.props.insuree_uuid, this.isWorker),
