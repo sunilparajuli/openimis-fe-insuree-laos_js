@@ -92,6 +92,11 @@ class InsureeForm extends Component {
         };
       });
     }
+
+    if (!this.state.insuree.family && this.props.family) {
+      const updatedInsuree = { ...this.state.insuree, family: this.props.family };
+      this.setState({ insuree: updatedInsuree });
+    }
   }
 
   componentWillUnmount = () => {
