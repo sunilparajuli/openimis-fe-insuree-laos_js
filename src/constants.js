@@ -1,6 +1,7 @@
 export const INSUREE_MARITAL_STATUS = ["N", "W", "S", "D", "M"];
 export const FAMILY_POVERTY_STATUS = [true, false];
 export const PHOTO_STATUS = ["with", "without"];
+export const FAMILY_STATUS = ["with", "without"];
 export const EMPTY_STRING = "";
 export const MODULE_NAME = "insuree";
 
@@ -30,3 +31,4 @@ export const DEFAULT = {
 };
 
 export const WITHOUT_STR = "without"
+export const FAMILY_WITHOUT_STR = "without"

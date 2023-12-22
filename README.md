@@ -51,6 +51,7 @@ It is dedicated to be deployed as a module of [openimis-fe_js](https://github.co
 - `insuree.FamilyPovertyStatusPicker`, picker (drop down) for available poverty status
 - `insuree.FamilyTypePicker`, picker (drop down) for available family types
 - `insuree.PhotoStatusPicker`, picker (drop down) for available photo status
+- `insuree.FamilyStatusPicker`, picker (drop down) for available family status (with/without)
 - `insuree.RelationPicker`, picker (drop down) for available relation in family (spouse,...)
 - `insuree.Avatar`, loading insuree Avatar (from legacy openIMIS, via `/photo/:insuree.photo.folder/:insuree.photo.filename` URL). This component is the default contribution to `insuree.InsureeSummaryAvatar`
 - `insuree.Summary`: component displaying an insuree summary (highly extensible via contribution point). Known usage: Enquiry dialog

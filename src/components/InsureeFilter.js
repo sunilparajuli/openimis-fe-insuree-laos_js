@@ -13,7 +13,7 @@ import {
   ControlledField,
   TextInput,
 } from "@openimis/fe-core";
-import {DEFAULT, WITHOUT_STR} from "../constants";
+import {DEFAULT, WITHOUT_STR, FAMILY_WITHOUT_STR} from "../constants";
 
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
@@ -239,6 +239,27 @@ class InsureeFilter extends Component {
                           }
                       />
                   </Grid>
+              }
+          />)}
+          {!this.isWorker && (<ControlledField
+            module="insuree"
+            id="InsureeFilter.familyStatus"
+            field={
+                <Grid item xs={6} className={classes.item}>
+                    <PublishedComponent
+                        pubRef="insuree.FamilyStatusPicker"
+                        value={this._filterValue("familyStatus")}
+                        onChange={(s) =>
+                            onChangeFilters([
+                                {
+                                    id: "familyStatus",
+                                    value: s,
+                                    filter: `family_Isnull: ${s === FAMILY_WITHOUT_STR}`,
+                                },
+                            ])
+                        }
+                    />
+                </Grid>
               }
           />)}
           {!this.isWorker && (<ControlledField
