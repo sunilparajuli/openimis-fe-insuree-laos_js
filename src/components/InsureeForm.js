@@ -145,8 +145,8 @@ class InsureeForm extends Component {
           ...state,
           clientMutationId: false,
         }));
-        return;
       }
+      return;
     }
 
     if (isSaved) {
@@ -167,8 +167,8 @@ class InsureeForm extends Component {
           ...state,
           clientMutationId: false,
         }));
-        return;
       }
+      return;
     }
 
     this.setState({
