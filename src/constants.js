@@ -31,4 +31,3 @@ export const DEFAULT = {
 };
 
 export const WITHOUT_STR = "without"
-export const FAMILY_WITHOUT_STR = "without"
