@@ -118,6 +118,8 @@ class InsureeSearcher extends Component {
     return results;
   };
 
+  rowSecondaryHighlighted = (insuree) => !insuree?.family;
+
   parentLocation = (location, level) => {
     if (!location) return "";
     let loc = location;
@@ -280,6 +282,7 @@ class InsureeSearcher extends Component {
           defaultPageSize={this.defaultPageSize}
           fetch={this.fetch}
           rowIdentifier={this.rowIdentifier}
+          rowSecondaryHighlighted={this.rowSecondaryHighlighted}
           filtersToQueryParams={this.filtersToQueryParams}
           defaultOrderBy="chfId"
           headers={this.headers}
