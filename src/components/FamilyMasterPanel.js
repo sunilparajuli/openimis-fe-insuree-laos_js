@@ -133,9 +133,8 @@ class FamilyMasterPanel extends FormPanel {
           <Grid item xs={2} className={classes.item}>
             <PublishedComponent
               pubRef="insuree.FamilyTypePicker"
-              withNull={true}
+              withNull={false}
               readOnly={readOnly}
-              nullLabel={formatMessage(intl, "insuree", "Family.FamilyType.null")}
               value={!!edited && !!edited.familyType ? edited.familyType.code : null}
               onChange={(v) => this.updateAttribute("familyType", { code: v })}
             />
@@ -143,9 +142,8 @@ class FamilyMasterPanel extends FormPanel {
           <Grid item xs={2} className={classes.item}>
             <PublishedComponent
               pubRef="insuree.ConfirmationTypePicker"
-              withNull={true}
+              withNull={false}
               readOnly={readOnly}
-              nullLabel={formatMessage(intl, "insuree", "Family.ConfirmationType.null")}
               value={edited?.confirmationType ?? null}
               onChange={(v) => this.updateAttribute("confirmationType", v)}
             />
@@ -165,7 +163,6 @@ class FamilyMasterPanel extends FormPanel {
               module="insuree"
               label="Family.address"
               multiline
-              rows={2}
               readOnly={readOnly}
               value={!edited ? "" : edited.address}
               onChange={(v) => this.updateAttribute("address", v)}

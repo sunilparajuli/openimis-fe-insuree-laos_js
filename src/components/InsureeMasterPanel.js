@@ -144,8 +144,7 @@ class InsureeMasterPanel extends FormPanel {
                       value={!!edited && !!edited.marital ? edited.marital : ""}
                       module="insuree"
                       readOnly={readOnly}
-                      withNull={true}
-                      nullLabel="InsureeMaritalStatus.N"
+                      withNull={false}
                       onChange={(v) => this.updateAttribute("marital", v)}
                     />
                   </Grid>
@@ -196,8 +195,7 @@ class InsureeMasterPanel extends FormPanel {
                       module="insuree"
                       value={!!edited && !!edited.profession ? edited.profession.id : null}
                       readOnly={readOnly}
-                      withNull={true}
-                      nullLabel={formatMessage(intl, "insuree", "Profession.none")}
+                      withNull={false}
                       onChange={(v) => this.updateAttribute("profession", { id: v })}
                     />
                   </Grid>
@@ -207,8 +205,7 @@ class InsureeMasterPanel extends FormPanel {
                       module="insuree"
                       value={!!edited && !!edited.education ? edited.education.id : ""}
                       readOnly={readOnly}
-                      withNull={true}
-                      nullLabel={formatMessage(intl, "insuree", "insuree.Education.none")}
+                      withNull={false}
                       onChange={(v) => this.updateAttribute("education", { id: v })}
                     />
                   </Grid>
@@ -218,8 +215,7 @@ class InsureeMasterPanel extends FormPanel {
                       module="insuree"
                       value={!!edited && !!edited.typeOfId ? edited.typeOfId.code : null}
                       readOnly={readOnly}
-                      withNull={true}
-                      nullLabel={formatMessage(intl, "insuree", "IdentificationType.none")}
+                      withNull={false}
                       onChange={(v) => this.updateAttribute("typeOfId", { code: v })}
                     />
                   </Grid>
