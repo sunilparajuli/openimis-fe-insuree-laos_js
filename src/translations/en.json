@@ -252,5 +252,6 @@
   "insuree.InsureeReasonPicker.placeholder": "Search reason…",
   "insuree.FamilyMembersTable.InsuranceNo": "Insurance No.",
   "insuree.FamilyMembersTable.memberName": "Family Member",
-  "insuree.FamilyMembersTable.phone": "Phone"
+  "insuree.FamilyMembersTable.phone": "Phone",
+  "insuree.FamilyMembersTable.noMembers": "Family not registered."
 }
