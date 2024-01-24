@@ -203,7 +203,7 @@ class InsureeSearcher extends Component {
             </Grid>
               )}
 
-          {insuree.family && (
+          {!this.isWorker && insuree.family &&  (
             <Grid item>
               <Tooltip title={formatMessage(this.props.intl, "insuree", "insureeSummaries.openFamilyButton.tooltip")}>
                 <IconButton
