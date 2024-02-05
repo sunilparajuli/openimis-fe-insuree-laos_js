@@ -6,6 +6,8 @@
   "insuree.menu.familiesOrGroups": "Families/Groups",
   "insuree.menu.insurees": "Insurees",
   "insuree.menu.workers": "Workers",
+  "insuree.workers.filename": "workers_export",
+  "insuree.workers.export": "DOWNLOAD WORKERS",
   "insuree.ageUnit": "Years",
   "insuree.label.regionFSP": "Region of FSP",
   "insuree.label.districtFSP": "District of FSP",
