@@ -16,7 +16,7 @@ import {
 import { fetchFamilySummaries, deleteFamily } from "../actions";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import FamilyFilter from "./FamilyFilter";
-import { RIGHT_FAMILY_DELETE } from "../constants";
+import { DEFAULT, RIGHT_FAMILY_DELETE } from "../constants";
 import { familyLabel } from "../utils/utils";
 import DeleteFamilyDialog from "./DeleteFamilyDialog";
 
@@ -37,6 +37,11 @@ class FamilySearcher extends Component {
     );
     this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "familyFilter.defaultPageSize", 10);
     this.locationLevels = this.props.modulesManager.getConf("fe-location", "location.Location.MaxLevels", 4);
+    this.renderLastNameFirst = props.modulesManager.getConf(
+      "fe-insuree",
+      "renderLastNameFirst",
+      DEFAULT.RENDER_LAST_NAME_FIRST,
+    );
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -76,8 +81,8 @@ class FamilySearcher extends Component {
   headers = (filters) => {
     var h = [
       "insuree.familySummaries.insuranceNo",
-      "insuree.familySummaries.lastName",
-      "insuree.familySummaries.otherNames",
+      this.renderLastNameFirst ? "insuree.familySummaries.lastName" : "insuree.familySummaries.otherNames",
+      !this.renderLastNameFirst ? "insuree.familySummaries.lastName" : "insuree.familySummaries.otherNames",
       "insuree.familySummaries.email",
       "insuree.familySummaries.phone",
       "insuree.familySummaries.dob",
@@ -101,8 +106,8 @@ class FamilySearcher extends Component {
   sorts = (filters) => {
     var results = [
       ["headInsuree__chfId", true],
-      ["headInsuree__lastName", true],
-      ["headInsuree__otherNames", true],
+      this.renderLastNameFirst ? ["headInsuree__lastName", true] : ["headInsuree__otherNames", true],
+      !this.renderLastNameFirst ? ["headInsuree__lastName", true] : ["headInsuree__otherNames", true],
       ["headInsuree__email", true],
       ["headInsuree__phone", true],
       ["headInsuree__dob", true],
@@ -148,8 +153,14 @@ class FamilySearcher extends Component {
   itemFormatters = (filters) => {
     var formatters = [
       (family) => (!!family.headInsuree ? family.headInsuree.chfId : ""),
-      (family) => (!!family.headInsuree ? family.headInsuree.lastName : ""),
-      (family) => (!!family.headInsuree ? family.headInsuree.otherNames : ""),
+      (family) =>
+        (family.headInsuree && this.renderLastNameFirst
+          ? family.headInsuree.lastName
+          : family.headInsuree.otherNames) || "",
+      (family) =>
+        (family.headInsuree && !this.renderLastNameFirst
+          ? family.headInsuree.lastName
+          : family.headInsuree.otherNames) || "",
       (family) => (!!family.headInsuree ? family.headInsuree.email : ""),
       (family) => (!!family.headInsuree ? family.headInsuree.phone : ""),
       (family) =>

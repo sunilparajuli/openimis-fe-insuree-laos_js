@@ -54,6 +54,11 @@ class InsureeSearcher extends Component {
     this.defaultPageSize = props.modulesManager.getConf("fe-insuree", "insureeFilter.defaultPageSize", 10);
     this.locationLevels = this.props.modulesManager.getConf("fe-location", "location.Location.MaxLevels", 4);
     this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
+    this.renderLastNameFirst = props.modulesManager.getConf(
+      "fe-insuree",
+      "renderLastNameFirst",
+      DEFAULT.RENDER_LAST_NAME_FIRST,
+    );
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -105,8 +110,8 @@ class InsureeSearcher extends Component {
   headers = (filters) => {
     var h = [
       "insuree.insureeSummaries.insuranceNo",
-      "insuree.insureeSummaries.lastName",
-      "insuree.insureeSummaries.otherNames",
+      this.renderLastNameFirst ? "insuree.insureeSummaries.lastName" : "insuree.insureeSummaries.otherNames",
+      !this.renderLastNameFirst ? "insuree.insureeSummaries.lastName" : "insuree.insureeSummaries.otherNames",
       this.isWorker ? null : "insuree.insureeSummaries.maritalStatus",
       this.isWorker ? null : "insuree.insureeSummaries.gender",
       this.isWorker ? null : "insuree.insureeSummaries.email",
@@ -123,8 +128,8 @@ class InsureeSearcher extends Component {
   sorts = (filters) => {
     var results = [
       ["chfId", true],
-      ["lastName", true],
-      ["otherNames", true],
+      this.renderLastNameFirst ? ["lastName", true] : ["otherNames", true],
+      !this.renderLastNameFirst ? ["lastName", true] : ["otherNames", true],
       ["marital", true],
       ["gender__code", true],
       ["email", true],
@@ -177,8 +182,8 @@ class InsureeSearcher extends Component {
   itemFormatters = (filters) => {
     var formatters = [
       (insuree) => insuree.chfId,
-      (insuree) => insuree.lastName,
-      (insuree) => insuree.otherNames,
+      (insuree) => (this.renderLastNameFirst ? insuree.lastName : insuree.otherNames) || "",
+      (insuree) => (!this.renderLastNameFirst ? insuree.lastName : insuree.otherNames) || "",
       this.isWorker
         ? null
         : (insuree) => (

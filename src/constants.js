@@ -28,6 +28,7 @@ export const DEFAULT = {
   SHOW_INSUREE_PROFILE: false,
   SHOW_INSUREE_SUMMARY_ADDRESS: false,
   IS_WORKER: false,
+  RENDER_LAST_NAME_FIRST: true,
 };
 
 export const WITHOUT_STR = "without"
