@@ -7,7 +7,7 @@ import { withModulesManager, TextInput, ProgressOrError, formatMessage } from "@
 
 import { fetchInsuree } from "../actions";
 import _debounce from "lodash/debounce";
-import { EMPTY_STRING } from "../constants";
+import { DEFAULT, EMPTY_STRING } from "../constants";
 
 const INIT_STATE = {
   search: "",
@@ -20,6 +20,11 @@ class InsureeChfIdPicker extends Component {
   constructor(props) {
     super(props);
     this.chfIdMaxLength = props.modulesManager.getConf("fe-insuree", "insureeForm.chfIdMaxLength", 12);
+    this.renderLastNameFirst = props.modulesManager.getConf(
+      "fe-insuree",
+      "renderLastNameFirst",
+      DEFAULT.RENDER_LAST_NAME_FIRST,
+    );
   }
 
   componentDidMount() {
@@ -68,7 +73,9 @@ class InsureeChfIdPicker extends Component {
       return search === EMPTY_STRING ? EMPTY_STRING : formatMessage(intl, "insuree", "notFound");
     }
 
-    return `${insuree.otherNames} ${insuree.lastName}`;
+    return this.renderLastNameFirst
+      ? `${insuree.lastName} ${insuree.otherNames}`
+      : `${insuree.otherNames} ${insuree.lastName}`;
   }
 
   render() {

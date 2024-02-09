@@ -39,15 +39,20 @@ const InsureeSummary = (props) => {
   const classes = useStyles();
   const hasAvatarContribution = modulesManager.getContribs(INSUREE_SUMMARY_AVATAR_CONTRIBUTION_KEY).length > 0;
   const hasExtContributions = modulesManager.getContribs(INSUREE_SUMMARY_EXT_CONTRIBUTION_KEY).length > 0;
-  const showInsureeSummaryAddress = props.modulesManager.getConf(
+  const showInsureeSummaryAddress = modulesManager.getConf(
     "fe-insuree",
     "showInsureeSummaryAddress",
     DEFAULT.SHOW_INSUREE_SUMMARY_ADDRESS
   );
-  const showInsureeProfile = props.modulesManager.getConf(
+  const showInsureeProfile = modulesManager.getConf(
     "fe-insuree",
     "InsureeSummary.showInsureeProfileLink",
     DEFAULT.SHOW_INSUREE_PROFILE,
+  );
+  const renderLastNameFirst = modulesManager.getConf(
+    "fe-insuree",
+    "renderLastNameFirst",
+    DEFAULT.RENDER_LAST_NAME_FIRST,
   );
 
   return (
@@ -74,12 +79,25 @@ const InsureeSummary = (props) => {
                 <Typography className={classes.rawValue} variant="h6">
                   {insuree && (
                     <Fragment>
-                      <ControlledField
-                        module="insuree"
-                        id="InsureeSummary.otherNames"
-                        field={`${insuree.otherNames} `}
-                      />
-                      <ControlledField module="insuree" id="InsureeSummary.lastName" field={insuree.lastName} />
+                      {renderLastNameFirst ? (
+                        <>
+                          <ControlledField module="insuree" id="InsureeSummary.lastName" field={insuree.lastName} />{" "}
+                          <ControlledField
+                            module="insuree"
+                            id="InsureeSummary.otherNames"
+                            field={`${insuree.otherNames}`}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <ControlledField
+                            module="insuree"
+                            id="InsureeSummary.otherNames"
+                            field={`${insuree.otherNames}`}
+                          />{" "}
+                          <ControlledField module="insuree" id="InsureeSummary.lastName" field={insuree.lastName} />
+                        </>
+                      )}
                     </Fragment>
                   )}
                 </Typography>
