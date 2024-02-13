@@ -72,7 +72,7 @@ class FamilyInsureesOverview extends PagedDataHandler {
     removeInsuree: null,
     changeInsureeFamily: null,
     reset: 0,
-    canAddAction: null,
+    canAddAction: () => null,
     checkedCanAdd: false,
     filters: {},
     showInsureeSearcher: false,
@@ -138,8 +138,6 @@ class FamilyInsureesOverview extends PagedDataHandler {
         messages.push(formatMessage(this.props.intl, "insuree", "addInsuree.alert.message"));
         this.props.coreAlert(formatMessage(this.props.intl, "insuree", "addInsuree.alert.title"), messages);
       }
-    } else if (!!prevProps.alert && !this.props.alert) {
-      this.setState({ checkedCanAdd: true }, (e) => this.state.canAddAction());
     }
     if (this.state.filters !== prevState.filters) {
       this.query();
