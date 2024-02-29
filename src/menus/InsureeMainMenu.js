@@ -11,7 +11,7 @@ const WORKER_MAIN_MENU_CONTRIBUTION_KEY = "worker.MainMenu";
 class InsureeMainMenu extends Component {
   constructor(props) {
     super(props);
-    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
+    this.isWorker = props.modulesManager.getConf("fe-core", "isWorker", DEFAULT.IS_WORKER);
     this.genericVoucherEnabled = props.modulesManager.getConf(
       "fe-worker_voucher",
       "genericVoucherEnabled",
