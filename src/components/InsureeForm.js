@@ -41,7 +41,7 @@ class InsureeForm extends Component {
       newInsuree: true,
       isSaved: false,
     };
-    this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
+    this.isWorker = props.modulesManager.getConf("fe-core", "isWorker", DEFAULT.IS_WORKER);
   }
 
   _newInsuree() {

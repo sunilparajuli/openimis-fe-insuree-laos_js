@@ -32,7 +32,7 @@ const INSUREE_FILTER_CONTRIBUTION_KEY = "insuree.Filter";
 class InsureeFilter extends Component {
     constructor(props) {
         super(props);
-        this.isWorker = props.modulesManager.getConf("fe-insuree", "isWorker", DEFAULT.IS_WORKER);
+        this.isWorker = props.modulesManager.getConf("fe-core", "isWorker", DEFAULT.IS_WORKER);
         this.renderLastNameFirst = props.modulesManager.getConf("fe-insuree", "renderLastNameFirst", DEFAULT.RENDER_LAST_NAME_FIRST);
     }
   debouncedOnChangeFilter = _debounce(
