@@ -34,15 +34,15 @@ const EnquiryDialog = ({
   error,
   onClose,
   open,
-  chfId,
+  chfid,
   match,
 }) => {
   const classes = useStyles();
   const prevMatchUrl = useRef(null);
 
   useEffect(() => {
-    if (open && insuree?.id !== chfId) {
-      fetchInsuree(modulesManager, chfId);
+    if (open && insuree?.id !== chfid) {
+      fetchInsuree(modulesManager, chfid);
     }
 
     if (!!match?.url && match.url !== prevMatchUrl.current) {
@@ -52,7 +52,7 @@ const EnquiryDialog = ({
     if (!!match?.url) {
       prevMatchUrl.current = match.url;
     }
-  }, [open, chfId, match?.url]);
+  }, [open, chfid, match?.url]);
 
   return (
     <Dialog maxWidth="xl" fullWidth open={open} onClose={onClose}>
@@ -62,7 +62,7 @@ const EnquiryDialog = ({
           <Error
             error={{
               code: formatMessage(intl, "insuree", "notFound"),
-              detail: formatMessageWithValues(intl, "insuree", "chfIdNotFound", { chfId }),
+              detail: formatMessageWithValues(intl, "insuree", "chfIdNotFound", { chfid }),
             }}
           />
         )}
