@@ -8,6 +8,7 @@ import {
   formatMutation,
   formatGQLString,
   graphqlWithVariables,
+  openBlob,
 } from "@openimis/fe-core";
 import { INSUREE_ACTIVE_STRING } from "./constants";
 
@@ -87,10 +88,11 @@ const INSUREE_FULL_PROJECTION = (mm) => [
   "statusReason{code,insureeStatusReason}",
   "email",
   "phone",
+  "insureeGroup",
   "healthFacility" + mm.getProjection("location.HealthFacilityPicker.projection"),
 ];
 
-export const INSUREE_PICKER_PROJECTION = ["id", "uuid", "chfId", "lastName", "otherNames", "dob"];
+export const INSUREE_PICKER_PROJECTION = ["id", "uuid", "chfId", "lastName", "otherNames", "dob", "gender{code}"];
 
 export function fetchInsureeGenders() {
   const payload = formatQuery("insureeGenders", null, ["code"]);
@@ -103,6 +105,7 @@ export function fetchInsuree(mm, chfid) {
     [`chfId:"${chfid}", ignoreLocation:true`],
     [
       "id",
+      "insureeSso",
       "uuid",
       "chfId",
       "lastName",
@@ -160,6 +163,7 @@ export function fetchFamilyMembers(mm, filters) {
   const payload = formatPageQueryWithCount("familyMembers", filters, projections);
   return graphql(payload, "INSUREE_FAMILY_MEMBERS");
 }
+
 
 export function checkCanAddInsuree(family) {
   let filters = [`familyId:${decodeId(family.id)}`];
@@ -248,6 +252,7 @@ export function fetchInsureeSummaries(mm, filters, ignoreLocation = false) {
   var projections = [
     "id",
     "uuid",
+    "insureeSso",
     "validityFrom",
     "validityTo",
     "chfId",
@@ -285,6 +290,7 @@ export function formatInsureeGQL(mm, insuree) {
     ${!!insuree.otherNames ? `otherNames: "${formatGQLString(insuree.otherNames)}"` : ""}
     ${!!insuree.gender && !!insuree.gender.code ? `genderId: "${insuree.gender.code}"` : ""}
     ${!!insuree.dob ? `dob: "${insuree.dob}"` : ""}
+    ${!!insuree.insureeGroup ? `insureeGroup: "${insuree.insureeGroup}"` : ""}
     head: ${!!insuree.head}
     ${!!insuree.marital ? `marital: "${insuree.marital}"` : ""}
     ${!!insuree.passport ? `passport: "${formatGQLString(insuree.passport)}"` : ""}
@@ -514,4 +520,103 @@ export function clearWorkersExport() {
       type: "WORKERS_EXPORT_CLEAR",
     });
   };
+}
+
+export function printMembership1(familyID) {
+  var url = new URL(`${window.location.origin}/api/insuree/insuree/family/${familyID}`);
+  return (dispatch) => {
+    return fetch(url)
+    .then(response => response.blob())
+    .then(blob=>openBlob(blob, `${familyID}.pdf`, "pdf"))
+    .then(e=>dispatch ({type : 'INSUREE_PRINT_MEMBERSHIP'}))
+  }
+}
+
+// export function printMembership(familyID, params) {
+//   var url = new URL(`${window.location.origin}/api/insuree/insuree/family/${familyID}/${params}`);
+
+//   return (dispatch) => {
+//     return fetch(url)
+//       .then(response => response.blob())
+//       .then(blob => openBlob(blob, `${familyID}.pdf`, "pdf"))
+//       .then(e => dispatch({ type: 'CLAIM_PRINT_INVOICE' }))
+//   }
+// }
+
+export function printMembership(familyID, params) {
+  var url = new URL(`${window.location.origin}/api/insuree/insuree/family/${familyID}/${params}`);
+
+  return (dispatch) => {
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        // Open the PDF in a new tab for preview
+        const fileURL = URL.createObjectURL(blob);
+        window.open(fileURL, '_blank');
+      })
+      .then(() => dispatch({ type: 'CLAIM_PRINT_INVOICE' }))
+      .catch(error => {
+        console.error('Error opening PDF:', error);
+        // Handle errors if needed
+      });
+  }
+}
+
+
+
+
+export function generateExcel(data) {
+  let filename = "excel_report_insuree";
+  var url = new URL(`${window.location.origin}/api/insuree/insuree/report/excel-export`);
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) { // Fixed: changed 'filterObject' to 'data'
+        const element = data[key]; // Fixed: changed 'filterObject' to 'data'
+        // Check if the key starts with "parentLocation" and has a value
+        if (key.startsWith("parentLocation") && element.value) {
+            // Append the value to the URL search parameters
+            url.searchParams.set("parentLocation", element.value.uuid);
+        }
+        if (key.startsWith("parentLocation_0") && element.value) {
+          // Append the parentLocation_0 UUID to the URL search parameters
+          url.searchParams.set("parent_location_0", element.value.uuid);
+        }
+        if (key.startsWith("parentLocation_1") && element.value) {
+          // Append the parentLocation_0 UUID to the URL search parameters
+          url.searchParams.set("parent_location_1", element.value.uuid);
+        }
+        if (key.startsWith("parentLocation_2") && element.value) {
+          // Append the parentLocation_0 UUID to the URL search parameters
+          url.searchParams.set("parent_location_2", element.value.uuid);
+
+        }
+        if (key.startsWith("parentLocation_3") && element.value) {
+          // Append the parentLocation_0 UUID to the URL search parameters
+          url.searchParams.set("parent_location_3", element.value.uuid);
+        }
+        if (key.startsWith("chfId") && element.value) {
+          url.searchParams.set("chfid", element.value);
+        }
+        if (key.startsWith("givenName") && element.value) {
+          url.searchParams.set("given_name", element.value);
+        }
+        if (key.startsWith("lastName") && element.value) {
+          url.searchParams.set("last_name", element.value);
+        }
+        if (key.startsWith("familyStatus") && element.value) {
+          url.searchParams.set("family_status", element.value);
+        }
+        if (key.startsWith("gender") && element.value) {
+          url.searchParams.set("gender", element.value);
+        }
+        // You can add more conditions for other keys if needed
+    }
+}
+
+  return (dispatch) => {
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => openBlob(blob, `${filename}.xlsx`, "xlsx"))
+      .then(e => dispatch({ type: 'CLAIM_PRINT_EXCEL_DONE' }))
+  }
 }

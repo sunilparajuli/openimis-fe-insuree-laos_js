@@ -4,7 +4,7 @@ import _debounce from "lodash/debounce";
 
 import { Checkbox, FormControlLabel, Grid } from "@material-ui/core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import {
   withModulesManager,
   formatMessage,
@@ -420,6 +420,8 @@ class FamilyFilter extends Component {
             </Grid>
           }
         />
+
+        <EventNoteIcon onClick={() => generateExcel(this.props.filters)} />
       </Grid>
     );
   }

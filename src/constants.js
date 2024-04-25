@@ -1,4 +1,5 @@
 export const INSUREE_MARITAL_STATUS = ["N", "W", "S", "D", "M"];
+export const INSUREE_RELATIONSHIP = [1,2];
 export const FAMILY_POVERTY_STATUS = [true, false];
 export const PHOTO_STATUS = ["with", "without"];
 export const FAMILY_STATUS = ["with", "without"];
@@ -23,6 +24,13 @@ export const RIGHT_INSUREE_ADD = 101102;
 export const RIGHT_INSUREE_EDIT = 101103;
 export const RIGHT_INSUREE_DELETE = 101104;
 export const RIGHT_INSUREE_ENQUIRE = 101105;
+
+
+export const INSUREE_NHI_GROUP_STRING = "NHI";
+export const INSUREE_NIH_GROUP_STRING = "NIH";
+export const INSUREE_SSO_GROUP_STRING = "SSO";
+export const INSUREE_GROUP_STATUS = [INSUREE_NHI_GROUP_STRING, INSUREE_NIH_GROUP_STRING, INSUREE_SSO_GROUP_STRING];
+
 
 export const DEFAULT = {
   SHOW_INSUREE_PROFILE: false,

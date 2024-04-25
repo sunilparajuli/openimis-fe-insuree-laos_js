@@ -168,6 +168,18 @@ class InsureeMasterPanel extends FormPanel {
                       onChange={(v) => this.updateAttribute("gender", { code: v })}
                     />
                   </Grid>
+
+                  <Grid item xs={3} className={classes.item}>
+                    <PublishedComponent
+                      pubRef="insuree.InsureeGroupPicker"
+                      value={edited.insureeGroup}
+                      module="insuree"
+                      readOnly={readOnly}
+                      withNull={false}
+                      required={true}
+                      onChange={(v) => this.updateAttribute("insureeGroup", v )}
+                    />
+                  </Grid>                  
                   <Grid item xs={3} className={classes.item}>
                     <PublishedComponent
                       pubRef="insuree.InsureeMaritalStatusPicker"
@@ -178,6 +190,7 @@ class InsureeMasterPanel extends FormPanel {
                       onChange={(v) => this.updateAttribute("marital", v)}
                     />
                   </Grid>
+
                   <Grid item xs={3} className={classes.item}>
                     <FormControlLabel
                       control={

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { injectIntl } from "react-intl";
-
+import Alert from '@material-ui/lab/Alert';
 import { Grid, Box, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { People } from "@material-ui/icons";
@@ -158,6 +158,7 @@ const InsureeSummary = (props) => {
             </Grid>
           )}
           {!!insuree?.family?.uuid && (
+            <>
             <Grid item>
               <Button
                 variant="contained"
@@ -170,6 +171,15 @@ const InsureeSummary = (props) => {
                 </span>
               </Button>
             </Grid>
+            <Grid item>
+              {insuree?.insureeSso ?(
+                <Alert severity="error">Member is also enrolled in SSO</Alert>)
+                :(<Alert severity="success">Member Only enrolled in Government Insurance</Alert>)
+                
+              }
+            </Grid>
+            </>
+            
           )}
           {showInsureeProfile && (
             <Grid item>

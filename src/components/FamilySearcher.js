@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { Checkbox, IconButton, Tooltip } from "@material-ui/core";
 import TabIcon from "@material-ui/icons/Tab";
+import PrintIcon from '@material-ui/icons/Print';
 import {
   withModulesManager,
   formatMessageWithValues,
@@ -11,9 +12,10 @@ import {
   formatMessage,
   Searcher,
   journalize,
+  coreConfirm
 } from "@openimis/fe-core";
 
-import { fetchFamilySummaries, deleteFamily } from "../actions";
+import { fetchFamilySummaries, deleteFamily, printMembership } from "../actions";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import FamilyFilter from "./FamilyFilter";
 import { DEFAULT, RIGHT_FAMILY_DELETE } from "../constants";
@@ -26,7 +28,9 @@ class FamilySearcher extends Component {
   state = {
     deleteFamily: null,
     reset: 0,
+    confirmedAction: null,
   };
+
 
   constructor(props) {
     super(props);
@@ -48,6 +52,9 @@ class FamilySearcher extends Component {
     if (prevProps.submittingMutation && !this.props.submittingMutation) {
       this.props.journalize(this.props.mutation);
       this.setState({ reset: this.state.reset + 1 });
+    }
+    if (!prevProps.confirmed && this.props.confirmed && !!this.state.confirmedAction) {
+      this.state.confirmedAction();
     }
   }
 
@@ -127,6 +134,26 @@ class FamilySearcher extends Component {
     return !!loc ? loc.name : "";
   };
 
+
+  confirmPrintCard = (i) => {
+    let confirmedAction = () =>
+    this.props.printMembership(i.uuid, 1);
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "insuree", "printMembership.title", {label : `${i?.chfId}`}),
+        formatMessageWithValues(this.props.intl, "insuree", "printMembership.message", 
+          {label : `${i?.headInsuree?.otherNames} ${i?.headInsuree?.lastName}`}
+        ),
+      );
+    this.setState({ confirmedAction }, confirm);
+  };
+
+
+
+
+  printMemershipDetails = (family) => {
+    this.props.printMembership(family.uuid)
+  }
   deleteFamilyAction = (i) =>
     !!i.validityTo ? null : (
       <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.deleteFamily.tooltip")}>
@@ -182,12 +209,22 @@ class FamilySearcher extends Component {
       filters?.showHistory?.value
         ? (family) => formatDateFromISO(this.props.modulesManager, this.props.intl, family.validityTo)
         : null,
+      
       (family) => (
         <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.openNewTabButton.tooltip")}>
           <IconButton onClick={(e) => !family.clientMutationId && this.props.onDoubleClick(family, true)}>
             {" "}
             <TabIcon />
           </IconButton>
+        </Tooltip>
+      ),
+      (family) => (
+        <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.printMembership.tooltip")}>
+          {/* <IconButton onClick={(e) => !family.clientMutationId && this.props.onDoubleClick(family, true)}>
+            {" "}
+            <TabIcon />
+          </IconButton> */}
+          <PrintIcon  onClick={()=> this.confirmPrintCard(family)}/>
         </Tooltip>
       ),
     );
@@ -263,10 +300,11 @@ const mapStateToProps = (state) => ({
   errorFamilies: state.insuree.errorFamilies,
   submittingMutation: state.insuree.submittingMutation,
   mutation: state.insuree.mutation,
+  confirmed: state.core.confirmed,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ fetchFamilySummaries, deleteFamily, journalize }, dispatch);
+  return bindActionCreators({ fetchFamilySummaries, deleteFamily, printMembership, coreConfirm, journalize }, dispatch);
 };
 
 export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(injectIntl(FamilySearcher)));

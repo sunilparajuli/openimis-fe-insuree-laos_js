@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogContent,
 } from "@material-ui/core";
+import PrintIcon from '@material-ui/icons/Print';
 import { Search as SearchIcon, People as PeopleIcon, Tab as TabIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import {
   withModulesManager,
@@ -28,7 +29,7 @@ import {
 } from "@openimis/fe-core";
 import EnquiryDialog from "./EnquiryDialog";
 import { RIGHT_INSUREE_DELETE, INSUREE_MARITAL_STATUS, DEFAULT } from "../constants";
-import { fetchInsureeSummaries, deleteInsuree, downloadWorkers, clearWorkersExport } from "../actions";
+import { fetchInsureeSummaries, deleteInsuree, downloadWorkers, clearWorkersExport, printMembership } from "../actions";
 
 import InsureeFilter from "./InsureeFilter";
 import { insureeLabel } from "../utils/utils";
@@ -105,6 +106,19 @@ class InsureeSearcher extends Component {
       prms.push(`orderBy: ["${state.orderBy}"]`);
     }
     return prms;
+  };
+
+  confirmPrintCard = (i) => {
+    let confirmedAction = () =>
+    this.props.printMembership(i.uuid, 2);
+    let confirm = (e) =>
+      this.props.coreConfirm(
+        formatMessageWithValues(this.props.intl, "insuree", "printMembership.title", {label : `${i?.chfId}`}),
+        formatMessageWithValues(this.props.intl, "insuree", "printMembership.message", 
+          {label : `${i?.otherNames} ${i?.lastName}`}
+        ),
+      );
+    this.setState({ confirmedAction }, confirm);
   };
 
   headers = (filters) => {
@@ -188,23 +202,23 @@ class InsureeSearcher extends Component {
       this.isWorker
         ? null
         : (insuree) => (
-            <PublishedComponent
-              pubRef="insuree.InsureeMaritalStatusPicker"
-              withLabel={false}
-              readOnly={true}
-              value={insuree.marital || INSUREE_MARITAL_STATUS[0]}
-            />
-          ),
+          <PublishedComponent
+            pubRef="insuree.InsureeMaritalStatusPicker"
+            withLabel={false}
+            readOnly={true}
+            value={insuree.marital || INSUREE_MARITAL_STATUS[0]}
+          />
+        ),
       this.isWorker
         ? null
         : (insuree) => (
-            <PublishedComponent
-              pubRef="insuree.InsureeGenderPicker"
-              withLabel={false}
-              readOnly={true}
-              value={!!insuree.gender ? insuree.gender.code : null}
-            />
-          ),
+          <PublishedComponent
+            pubRef="insuree.InsureeGenderPicker"
+            withLabel={false}
+            readOnly={true}
+            value={!!insuree.gender ? insuree.gender.code : null}
+          />
+        ),
       this.isWorker ? null : (insuree) => insuree.email,
       this.isWorker ? null : (insuree) => insuree.phone,
       this.isWorker ? null : (insuree) => formatDateFromISO(this.props.modulesManager, this.props.intl, insuree.dob),
@@ -263,6 +277,16 @@ class InsureeSearcher extends Component {
                 <TabIcon />
               </IconButton>
             </Tooltip>
+          </Grid>
+          <Grid item>
+            <Tooltip title={formatMessage(this.props.intl, "insuree", "familySummaries.printMembership.tooltip")}>
+              {/* <IconButton onClick={(e) => !family.clientMutationId && this.props.onDoubleClick(family, true)}>
+            {" "}
+            <TabIcon />
+          </IconButton> */}
+              <PrintIcon onClick={() => this.confirmPrintCard(insuree)} />
+            </Tooltip>
+
           </Grid>
           {this.props.rights.includes(RIGHT_INSUREE_DELETE) && !insuree.validityTo && (
             <Grid item>
@@ -381,6 +405,7 @@ const mapDispatchToProps = (dispatch) => {
       coreConfirm,
       clearWorkersExport,
       downloadWorkers,
+      printMembership
     },
     dispatch,
   );

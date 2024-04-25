@@ -94,6 +94,7 @@ class FamilyMasterPanel extends FormPanel {
             readOnly={true}
           />
         </Grid>
+
         <Grid item xs={1} className={classes.item}>
           <PublishedComponent
             pubRef="insuree.InsureeGenderPicker"
@@ -103,6 +104,7 @@ class FamilyMasterPanel extends FormPanel {
             readOnly={true}
           />
         </Grid>
+
       </Fragment>
     );
   };
